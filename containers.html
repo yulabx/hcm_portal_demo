@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>混合雲管理系統 - 虛擬主機管理</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA', // indigo-700
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#1F2937", // gray-800
+                        "surface-light": "#FFFFFF", // white
+                        "surface-dark": "#374151", // gray-700
+                        "text-light": "#111827", // gray-900
+                        "text-dark": "#F9FAFB", // gray-50
+                        "muted-light": "#6B7280", // gray-500
+                        "muted-dark": "#9CA3AF", // gray-400
+                        "border-light": "#E5E7EB", // gray-200
+                        "border-dark": "#4B5563", // gray-600
+                    },
+                    fontFamily: {
+                        sans: ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex h-screen">
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="#">
+                    <span class="material-icons-outlined mr-3">home</span>
+                    <span>首頁</span>
+                </a>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心</h3>
+
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-create-all.html">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-cluster-create-all.html">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>專案叢集申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>簽核作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="execute-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>申請執行</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        叢集管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="cluster.html">
+                        <span class="material-icons-outlined mr-3">storage</span>
+                        <span>叢集總覽</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案成員</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-list.html">
+                        <span class="material-icons-outlined mr-3">list_alt</span>
+                        <span>虛擬主機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">security</span>
+                        <span>虛擬防火牆服務</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md bg-primary/10 text-primary dark:bg-primary/20" href="#">
+                        <span class="material-icons-outlined mr-3">apps</span>
+                        <span>容器管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        作業執行追蹤</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">play_circle_outline</span>
+                        <span>執行作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">hourglass_empty</span>
+                        <span>執行狀態追蹤</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">history</span>
+                        <span>執行紀錄查詢</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">vpn_key</span>
+                        <span>全域角色管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span>
+                        <span>專案角色管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        帳號管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">find_in_page</span>
+                        <span>帳號查詢</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>帳號權限變更</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">timeline</span>
+                        <span>軌跡</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        統計</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">bar_chart</span>
+                        <span>資源統計</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        稽核管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">policy</span>
+                        <span>稽核管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 flex flex-col">
+            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="relative w-full max-w-md">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+                        placeholder="功能快速搜尋" type="text" />
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button
+                        class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                        e
+                    </div>
+                </div>
+            </header>
+            <div class="flex-1 p-8 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold mt-1">容器管理</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <a href="#"
+                            class="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 flex items-center">
+                            <span class="material-icons-outlined mr-2">upload</span>
+                            建立工作負載
+                        </a>
+                    </div>
+                </div>
+
+
+                <!-- 麵包屑 + Namespace -->
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div class="text-sm text-slate-500">
+                        <span class="text-slate-800 font-medium"></span>
+                    </div>
+                    <div class="text-sm text-slate-600">
+                        Namespace：
+                        <select id="nsSelect"
+                            class="ml-2 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 text-sm">
+                            <option value="eiw">itw</option>
+                            <option value="eiw">ita</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Segmented Tabs -->
+                <div class="mb-4">
+                    <div class="inline-flex rounded-xl bg-white shadow ring-1 ring-slate-200 overflow-hidden">
+                        <button data-tab="workloads"
+                            class="tab-btn px-4 py-2 text-sm font-medium bg-brand-50 text-brand-700">工作負載</button>
+                        <button data-tab="pods"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Pod</button>
+                        <button data-tab="net"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">服務與入口</button>
+                        <button data-tab="config"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">設定與儲存</button>
+                        <button data-tab="quota"
+                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">配額</button>
+                    </div>
+                </div>
+
+                <!-- 工具列 -->
+                <section class="mb-4 bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="relative">
+                            <span
+                                class="material-icons-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400">search</span>
+                            <input id="q" type="text" placeholder="名稱 / label=key:value / image:tag"
+                                class="pl-9 w-64 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400">
+                        </div>
+                        <select id="status"
+                            class="w-40 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400">
+                            <option value="">狀態（全部）</option>
+                            <option>Running</option>
+                            <option>Pending</option>
+                            <option>CrashLoopBackOff</option>
+                            <option>Failed</option>
+                        </select>
+                        <select id="kind"
+                            class="w-44 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400">
+                            <option value="">類型（全部）</option>
+                            <option>Deployment</option>
+                            <option>StatefulSet</option>
+                            <option>DaemonSet</option>
+                            <option>Job</option>
+                            <option>CronJob</option>
+                        </select>
+
+                        <div class="ml-auto flex items-center gap-2">
+                            <button id="autoRefresh"
+                                class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">
+                                <span class="material-icons-outlined align-[-3px] text-base">autorenew</span> 更新</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 表格卡片（工作負載） -->
+                <section id="tab-workloads" class="tab-panel">
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
+                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+                            <div class="text-sm text-slate-600">共 <span id="countWorkloads">3</span> 筆工作負載</div>
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-sm hover:bg-slate-50">重啟</button>
+                                <button class="px-2 py-1 rounded-md border text-sm hover:bg-slate-50">滾動更新</button>
+                                <button class="px-2 py-1 rounded-md border text-sm hover:bg-slate-50">刪除</button>
+                            </div>
+                        </div>
+                        <div class="overflow-auto scroll-area">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-slate-50 text-slate-600">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left w-8"></th>
+                                        <th class="px-4 py-2 text-left">名稱</th>
+                                        <th class="px-4 py-2 text-left">類型</th>
+                                        <th class="px-4 py-2 text-left">就緒度</th>
+                                        <th class="px-4 py-2 text-left">狀態</th>
+                                        <th class="px-4 py-2 text-left">映像</th>
+                                        <th class="px-4 py-2 text-left">更新策略</th>
+                                        <th class="px-4 py-2 text-left">Age</th>
+                                        <th class="px-4 py-2 text-left">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-100">
+                                    <!-- Row 1 -->
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-4 py-2">
+                                            <button class="expander rounded-md border px-2 py-1 text-xs"
+                                                aria-expanded="false">展開</button>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
+                                                data-kind="Deployment" data-name="web-deploy">web-deploy</a>
+                                        </td>
+                                        <td class="px-4 py-2">Deployment</td>
+                                        <td class="px-4 py-2">3/3</td>
+                                        <td class="px-4 py-2">
+                                            <span
+                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Available</span>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            ghcr.io/acme/web:<span class="font-mono">1.2.3</span>
+                                        </td>
+                                        <td class="px-4 py-2">RollingUpdate</td>
+                                        <td class="px-4 py-2">2d</td>
+                                        <td class="px-4 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">重啟</button>
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">縮放</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="hidden row-expand bg-slate-50/40">
+                                        <td colspan="9" class="px-6 py-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <div class="text-xs text-slate-500 mb-2">近期事件</div>
+                                                    <ul class="text-xs space-y-1">
+                                                        <li>[Normal] ScalingReplicaSet 由 2 → 3</li>
+                                                        <li>[Normal] Pulling image ghcr.io/acme/web:1.2.3</li>
+                                                        <li>[Normal] SuccessfulCreate pod/web-deploy-xxxxx</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="md:col-span-2">
+                                                    <div class="text-xs text-slate-500 mb-2">當前 Pod</div>
+                                                    <div class="overflow-auto border rounded-lg">
+                                                        <table class="min-w-full text-xs">
+                                                            <thead class="bg-white">
+                                                                <tr>
+                                                                    <th class="px-3 py-1 text-left">Pod</th>
+                                                                    <th class="px-3 py-1 text-left">狀態</th>
+                                                                    <th class="px-3 py-1 text-left">重啟</th>
+                                                                    <th class="px-3 py-1 text-left">節點</th>
+                                                                    <th class="px-3 py-1 text-left">操作</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y">
+                                                                <tr>
+                                                                    <td class="px-3 py-1">web-deploy-abc12</td>
+                                                                    <td class="px-3 py-1">Running</td>
+                                                                    <td class="px-3 py-1">0</td>
+                                                                    <td class="px-3 py-1">node-a</td>
+                                                                    <td class="px-3 py-1 space-x-2">
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Log</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Exec</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">重啟</button>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="px-3 py-1">web-deploy-def34</td>
+                                                                    <td class="px-3 py-1">Running</td>
+                                                                    <td class="px-3 py-1">0</td>
+                                                                    <td class="px-3 py-1">node-b</td>
+                                                                    <td class="px-3 py-1 space-x-2">
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Log</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Exec</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">重啟</button>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <td class="px-3 py-1">web-deploy-ghi56</td>
+                                                                    <td class="px-3 py-1">Running</td>
+                                                                    <td class="px-3 py-1">0</td>
+                                                                    <td class="px-3 py-1">node-c</td>
+                                                                    <td class="px-3 py-1 space-x-2">
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Log</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Exec</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">重啟</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 2 -->
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-4 py-2">
+                                            <button class="expander rounded-md border px-2 py-1 text-xs"
+                                                aria-expanded="false">展開</button>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
+                                                data-kind="StatefulSet" data-name="db-main">db-main</a>
+                                        </td>
+                                        <td class="px-4 py-2">StatefulSet</td>
+                                        <td class="px-4 py-2">1/1</td>
+                                        <td class="px-4 py-2"><span
+                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Available</span>
+                                        </td>
+                                        <td class="px-4 py-2">harbor.local/db:<span class="font-mono">12.1</span></td>
+                                        <td class="px-4 py-2">RollingUpdate</td>
+                                        <td class="px-4 py-2">5d</td>
+                                        <td class="px-4 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">重啟</button>
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">縮放</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="hidden row-expand bg-slate-50/40">
+                                        <td colspan="9" class="px-6 py-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div>
+                                                    <div class="text-xs text-slate-500 mb-2">近期事件</div>
+                                                    <ul class="text-xs space-y-1">
+                                                        <li>[Normal] SuccessfulCreate pod/db-main-0</li>
+                                                        <li>[Normal] Pulled harbor.local/db:12.1</li>
+                                                    </ul>
+                                                </div>
+                                                <div class="md:col-span-2">
+                                                    <div class="text-xs text-slate-500 mb-2">當前 Pod</div>
+                                                    <div class="overflow-auto border rounded-lg">
+                                                        <table class="min-w-full text-xs">
+                                                            <thead class="bg-white">
+                                                                <tr>
+                                                                    <th class="px-3 py-1 text-left">Pod</th>
+                                                                    <th class="px-3 py-1 text-left">狀態</th>
+                                                                    <th class="px-3 py-1 text-left">重啟</th>
+                                                                    <th class="px-3 py-1 text-left">節點</th>
+                                                                    <th class="px-3 py-1 text-left">操作</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody class="divide-y">
+                                                                <tr>
+                                                                    <td class="px-3 py-1">db-main-0</td>
+                                                                    <td class="px-3 py-1">Running</td>
+                                                                    <td class="px-3 py-1">0</td>
+                                                                    <td class="px-3 py-1">node-a</td>
+                                                                    <td class="px-3 py-1 space-x-2">
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Log</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">Exec</button>
+                                                                        <button
+                                                                            class="px-2 py-0.5 rounded border">重啟</button>
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+
+                                    <!-- Row 3 -->
+                                    <tr class="hover:bg-slate-50">
+                                        <td class="px-4 py-2">
+                                            <button class="expander rounded-md border px-2 py-1 text-xs"
+                                                aria-expanded="false">展開</button>
+                                        </td>
+                                        <td class="px-4 py-2">
+                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
+                                                data-kind="CronJob" data-name="report-cron">report-cron</a>
+                                        </td>
+                                        <td class="px-4 py-2">CronJob</td>
+                                        <td class="px-4 py-2">-</td>
+                                        <td class="px-4 py-2"><span
+                                                class="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Scheduled</span>
+                                        </td>
+                                        <td class="px-4 py-2">registry/report:<span class="font-mono">0.9.1</span></td>
+                                        <td class="px-4 py-2">-</td>
+                                        <td class="px-4 py-2">12h</td>
+                                        <td class="px-4 py-2">
+                                            <div class="flex items-center gap-2">
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                                <button
+                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">立即執行</button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr class="hidden row-expand bg-slate-50/40">
+                                        <td colspan="9" class="px-6 py-4">
+                                            <div class="text-xs text-slate-500 mb-2">最近觸發</div>
+                                            <ul class="text-xs list-disc pl-5 space-y-1">
+                                                <li>2025-10-02 00:00:03 成功</li>
+                                                <li>2025-10-01 00:00:03 成功</li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 其他分頁的占位（Pods/Net/Config/Quota） -->
+                <section id="tab-pods" class="tab-panel hidden">
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
+                        Pod 清單（示意）。可複用「展開列＋右側抽屜」模式顯示即時 Log 與容器資源。
+                    </div>
+                </section>
+
+                <section id="tab-net" class="tab-panel hidden">
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
+                        服務與入口（Service / Ingress）清單（示意）。
+                    </div>
+                </section>
+
+                <section id="tab-config" class="tab-panel hidden">
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
+                        設定與儲存（ConfigMap / Secret / PVC）清單（示意）。
+                    </div>
+                </section>
+
+                <section id="tab-quota" class="tab-panel hidden">
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
+                        配額與限制（ResourceQuota / LimitRange）摘要（示意）。
+                    </div>
+                </section>
+
+                </footer>
+        </main>
+    </div>
+
+    <aside id="drawer"
+        class="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white shadow-2xl ring-1 ring-slate-200 translate-x-full transition-transform">
+        <div class="flex items-center justify-between px-5 py-4 border-b">
+            <div>
+                <div class="text-xs text-slate-500">資源詳情</div>
+                <div id="drawerTitle" class="text-lg font-semibold">-</div>
+            </div>
+            <button id="closeDrawer" class="p-2 rounded-md hover:bg-slate-50">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+        <div class="h-[calc(100%-64px)] overflow-auto scroll-area p-5 space-y-6">
+            <!-- 概覽 -->
+            <section>
+                <h3 class="text-sm font-medium text-slate-700 mb-3">概覽</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div><span class="text-slate-500">Kind：</span><span id="dKind" class="font-medium">-</span></div>
+                    <div><span class="text-slate-500">Namespace：</span><span
+                            class="font-medium">project-namespace-a</span></div>
+                    <div><span class="text-slate-500">Label：</span><span class="font-mono text-xs">app=web,
+                            tier=frontend</span></div>
+                    <div><span class="text-slate-500">策略：</span><span class="font-medium">RollingUpdate</span></div>
+                </div>
+            </section>
+            <!-- 指標（示意靜態條） -->
+            <section>
+                <h3 class="text-sm font-medium text-slate-700 mb-3">度量（最近 15 分鐘）</h3>
+                <div class="space-y-2 text-sm">
+                    <div>CPU 使用 <div class="w-full h-2 bg-slate-100 rounded">
+                            <div class="h-2 bg-brand-500 rounded" style="width: 45%"></div>
+                        </div>
+                    </div>
+                    <div>記憶體 使用 <div class="w-full h-2 bg-slate-100 rounded">
+                            <div class="h-2 bg-brand-500 rounded" style="width: 32%"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- YAML（示例） -->
+            <section>
+                <h3 class="text-sm font-medium text-slate-700 mb-3">YAML（唯讀）</h3>
+                <pre class="bg-slate-50 rounded-lg p-3 text-xs overflow-auto"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deploy
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/acme/web:1.2.3
+          ports:
+            - containerPort: 8080
+</code></pre>
+            </section>
+            <!-- 事件 -->
+            <section>
+                <h3 class="text-sm font-medium text-slate-700 mb-3">近期事件</h3>
+                <ul class="text-xs space-y-1">
+                    <li>[Normal] ScalingReplicaSet 由 2 → 3</li>
+                    <li>[Normal] Pulled ghcr.io/acme/web:1.2.3</li>
+                    <li>[Normal] SuccessfulCreate pod/web-deploy-xxxxx</li>
+                </ul>
+            </section>
+        </div>
+    </aside>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script>
+        // 簡易分頁切換
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', e => {
+                const tab = btn.getAttribute('data-tab');
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('bg-brand-50', 'text-brand-700'));
+                btn.classList.add('bg-brand-50', 'text-brand-700');
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+                document.querySelector('#tab-' + tab).classList.remove('hidden');
+            });
+        });
+
+        // 展開列
+        document.querySelectorAll('.expander').forEach((btn, idx) => {
+            btn.addEventListener('click', () => {
+                const row = btn.closest('tr');
+                const next = row.nextElementSibling;
+                const expanded = next.classList.contains('hidden');
+                document.querySelectorAll('tr.row-expand').forEach(n => n.classList.add('hidden'));
+                document.querySelectorAll('.expander').forEach(b => b.setAttribute('aria-expanded', 'false'));
+                if (expanded) {
+                    next.classList.remove('hidden');
+                    btn.setAttribute('aria-expanded', 'true');
+                }
+            });
+        });
+
+        // 右側抽屜
+        const drawer = document.getElementById('drawer');
+        const title = document.getElementById('drawerTitle');
+        const dKind = document.getElementById('dKind');
+        document.querySelectorAll('.open-drawer').forEach(a => {
+            a.addEventListener('click', (e) => {
+                e.preventDefault();
+                title.textContent = a.dataset.name;
+                dKind.textContent = a.dataset.kind;
+                drawer.classList.remove('translate-x-full');
+            })
+        });
+        document.getElementById('closeDrawer').addEventListener('click', () => {
+            drawer.classList.add('translate-x-full');
+        });
+
+        // 自動更新（示意）
+        const autoBtn = document.getElementById('autoRefresh');
+        const autoState = document.getElementById('autoState');
+        let enabled = false;
+        autoBtn.addEventListener('click', () => {
+            enabled = !enabled;
+            autoState.textContent = enabled ? '開' : '關';
+        });
+    </script>
+
+
+    <script>
+        (function () {
+            const nsSelect = document.getElementById('nsSelect');
+            const nsName = document.getElementById('nsName');
+            const dNamespace = document.getElementById('dNamespace');
+
+            // Load saved namespace (if any)
+            const saved = window.localStorage.getItem('activeNamespace');
+            if (saved && nsSelect) {
+                for (const opt of nsSelect.options) {
+                    if (opt.value === saved) { nsSelect.value = saved; break; }
+                }
+                if (nsName) nsName.textContent = saved;
+                if (dNamespace) dNamespace.textContent = saved;
+            }
+
+            function applyNS(v) {
+                if (nsName) nsName.textContent = v;
+                if (dNamespace) dNamespace.textContent = v;
+                try { window.localStorage.setItem('activeNamespace', v); } catch (e) { }
+                // TODO: 若你有 API，可在此觸發重新載入：fetch(`/api/k8s/${v}/workloads?...`)
+            }
+
+            if (nsSelect) {
+                nsSelect.addEventListener('change', (e) => {
+                    applyNS(e.target.value);
+                });
+            }
+        })();
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>混合雲管理系統 - 虛擬主機管理</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA', // indigo-700
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#1F2937", // gray-800
+                        "surface-light": "#FFFFFF", // white
+                        "surface-dark": "#374151", // gray-700
+                        "text-light": "#111827", // gray-900
+                        "text-dark": "#F9FAFB", // gray-50
+                        "muted-light": "#6B7280", // gray-500
+                        "muted-dark": "#9CA3AF", // gray-400
+                        "border-light": "#E5E7EB", // gray-200
+                        "border-dark": "#4B5563", // gray-600
+                    },
+                    fontFamily: {
+                        sans: ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex h-screen">
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="#">
+                    <span class="material-icons-outlined mr-3">home</span>
+                    <span>首頁</span>
+                </a>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心</h3>
+
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-create-all.html">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-cluster-create-all.html">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>專案叢集申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>簽核作業</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        叢集管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="cluster.html">
+                        <span class="material-icons-outlined mr-3">storage</span>
+                        <span>叢集總覽</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案成員</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源</h3>
+                    <a class="flex items-center p-2 rounded-md bg-primary/10 text-primary dark:bg-primary/20" href="#">
+                        <span class="material-icons-outlined mr-3">list_alt</span>
+                        <span>虛擬主機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">security</span>
+                        <span>虛擬防火牆服務</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="containers.html">
+                        <span class="material-icons-outlined mr-3">apps</span>
+                        <span>容器管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        作業執行追蹤</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">play_circle_outline</span>
+                        <span>執行作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">hourglass_empty</span>
+                        <span>執行狀態追蹤</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">history</span>
+                        <span>執行紀錄查詢</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">vpn_key</span>
+                        <span>全域角色管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span>
+                        <span>專案角色管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        帳號管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">find_in_page</span>
+                        <span>帳號查詢</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>帳號權限變更</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">timeline</span>
+                        <span>軌跡</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        統計</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">bar_chart</span>
+                        <span>資源統計</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        稽核管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">policy</span>
+                        <span>稽核管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 flex flex-col">
+            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="relative w-full max-w-md">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+                        placeholder="功能快速搜尋" type="text" />
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button
+                        class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                        e
+                    </div>
+                </div>
+            </header>
+            <div class="flex-1 p-8 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold">虛擬主機管理</h2>
+                    <a href="vm-create.html"
+                        class="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 flex items-center">
+                        <span class="material-icons-outlined mr-2">add</span>
+                        新增虛擬主機
+                    </a>
+                </div>
+                <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow overflow-x-auto">
+                    <table class="w-full text-sm text-left text-muted-light dark:text-muted-dark">
+                        <thead
+                            class="text-xs text-text-light dark:text-text-dark uppercase bg-gray-50 dark:bg-gray-700">
+                            <tr>
+                                <th class="px-6 py-3" scope="col">主機名稱</th>
+                                <th class="px-6 py-3" scope="col">叢集</th>
+                                <th class="px-6 py-3" scope="col">專案名稱</th>
+                                <th class="px-6 py-3 text-center" scope="col">主機規格</th>
+                                <th class="px-6 py-3 text-center" scope="col">儲存空間</th>
+                                <th class="px-6 py-3" scope="col">映像檔</th>
+                                <th class="px-6 py-3" scope="col">
+                                    <span class="sr-only">操作</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4 font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                                    <a class="font-medium text-primary hover:underline"
+                                        href="vm-detail.html">itw-har01-vm-db01</a>
+                                </td>
+                                <td class="px-6 py-4">Harvester</td>
+                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
+                                <td class="px-6 py-4 text-center">100 GB</td>
+                                <td class="px-6 py-4">Ubuntu 24.04</td>
+                            </tr>
+                            <tr
+                                class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4 font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                                    <a class="font-medium text-primary hover:underline"
+                                        href="#">itw-har01-vm-eiwap01</a>
+                                </td>
+                                <td class="px-6 py-4">Harvester</td>
+                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
+                                <td class="px-6 py-4 text-center">100 GB</td>
+                                <td class="px-6 py-4">Ubuntu 24.04</td>
+                            </tr>
+                            <tr
+                                class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4 font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                                    <a class="font-medium text-primary hover:underline"
+                                        href="#">itw-har01-vm-eixap01</a>
+                                </td>
+                                <td class="px-6 py-4">Harvester</td>
+                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
+                                <td class="px-6 py-4 text-center">100 GB</td>
+                                <td class="px-6 py-4">Ubuntu 24.04</td>
+                            </tr>
+                            <tr
+                                class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4 font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                                    <a class="font-medium text-primary hover:underline"
+                                        href="#">itw-aws01-vm-eixap01</a>
+                                </td>
+                                <td class="px-6 py-4">AWS</td>
+                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
+                                <td class="px-6 py-4 text-center">100 GB</td>
+                                <td class="px-6 py-4">Ubuntu 24.04</td>
+                            </tr>
+                            <tr
+                                class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4 font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                                    <a class="font-medium text-primary hover:underline"
+                                        href="#">itw-aws01-vm-eiwap01</a>
+                                </td>
+                                <td class="px-6 py-4">AWS</td>
+                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
+                                <td class="px-6 py-4 text-center">100 GB</td>
+                                <td class="px-6 py-4">Ubuntu 24.04</td>
+                            </tr>
+                            <tr
+                                class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
+                                <td class="px-6 py-4 font-medium text-text-light dark:text-text-dark whitespace-nowrap">
+                                    <a class="font-medium text-primary hover:underline" href="#">ita-har01-vm-ap01</a>
+                                </td>
+                                <td class="px-6 py-4">Harvester</td>
+                                <td class="px-6 py-4">稅務好幫手</td>
+                                <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
+                                <td class="px-6 py-4 text-center">100 GB</td>
+                                <td class="px-6 py-4">Ubuntu 24.04</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <footer
+                    class="text-center p-4 text-sm text-muted-light dark:text-muted-dark border-t border-border-light dark:border-border-dark">
+                    版權所有 © 混合雲管理系統 2025
+                </footer>
+        </main>
+    </div>
+
+</body>
+
+</html>
