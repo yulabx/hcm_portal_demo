@@ -39,6 +39,44 @@
         body {
             font-family: 'Noto Sans TC', sans-serif;
         }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-content {
+            visibility: hidden;
+            position: absolute;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -335,6 +373,8 @@
                                                     <th class="px-4 py-2 font-medium text-center">主機規格</th>
                                                     <th class="px-4 py-2 font-medium text-center">儲存空間</th>
                                                     <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
                                                     <th class="px-4 py-2 font-medium">狀態</th>
                                                 </tr>
                                             </thead>
@@ -348,6 +388,32 @@
                                                     <td class="px-4 py-2 text-center">100 GB</td>
                                                     <td class="px-4 py-2">Ubuntu 24.04</td>
                                                     <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 65%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">65%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.6 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 72%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">72%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.8 / 8 GB</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
                                                         <span
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
                                                     </td>
@@ -360,6 +426,32 @@
                                                     <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
                                                     <td class="px-4 py-2 text-center">100 GB</td>
                                                     <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 45%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">45%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.8 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 58%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">58%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.6 / 8 GB</span>
+                                                        </div>
+                                                    </td>
                                                     <td class="px-4 py-2">
                                                         <span
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
@@ -385,6 +477,8 @@
                                                     <th class="px-4 py-2 font-medium text-center">主機規格</th>
                                                     <th class="px-4 py-2 font-medium text-center">儲存空間</th>
                                                     <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
                                                     <th class="px-4 py-2 font-medium">狀態</th>
                                                 </tr>
                                             </thead>
@@ -397,6 +491,32 @@
                                                     <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
                                                     <td class="px-4 py-2 text-center">100 GB</td>
                                                     <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 52%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">52%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.1 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 68%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">68%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.4 / 8 GB</span>
+                                                        </div>
+                                                    </td>
                                                     <td class="px-4 py-2">
                                                         <span
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
@@ -474,6 +594,8 @@
                                                     <th class="px-4 py-2 font-medium text-center">主機規格</th>
                                                     <th class="px-4 py-2 font-medium text-center">儲存空間</th>
                                                     <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
                                                     <th class="px-4 py-2 font-medium">狀態</th>
                                                 </tr>
                                             </thead>
@@ -486,6 +608,32 @@
                                                     <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
                                                     <td class="px-4 py-2 text-center">100 GB</td>
                                                     <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 38%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">38%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.5 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 55%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">55%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.4 / 8 GB</span>
+                                                        </div>
+                                                    </td>
                                                     <td class="px-4 py-2">
                                                         <span
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
@@ -511,6 +659,8 @@
                                                     <th class="px-4 py-2 font-medium text-center">主機規格</th>
                                                     <th class="px-4 py-2 font-medium text-center">儲存空間</th>
                                                     <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
                                                     <th class="px-4 py-2 font-medium">狀態</th>
                                                 </tr>
                                             </thead>
@@ -523,6 +673,32 @@
                                                     <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
                                                     <td class="px-4 py-2 text-center">100 GB</td>
                                                     <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 42%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">42%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.7 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 62%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">62%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.0 / 8 GB</span>
+                                                        </div>
+                                                    </td>
                                                     <td class="px-4 py-2">
                                                         <span
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
@@ -608,8 +784,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
                                                     </td>
                                                     <td class="px-4 py-2">eix/web:1.2.3</td>
-                                                    <td class="px-4 py-2 text-center">1.2 cores</td>
-                                                    <td class="px-4 py-2 text-center">3.2 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.2 / 2.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 64%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">64%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 3.2 / 5.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr class="border-t border-border-light dark:border-border-dark">
                                                     <td class="px-4 py-2">
@@ -623,8 +823,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
                                                     </td>
                                                     <td class="px-4 py-2">eix/api:2.1.0</td>
-                                                    <td class="px-4 py-2 text-center">0.8 cores</td>
-                                                    <td class="px-4 py-2 text-center">2.4 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 50%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">50%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 0.8 / 1.6 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.4 / 4.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr class="border-t border-border-light dark:border-border-dark">
                                                     <td class="px-4 py-2">
@@ -638,8 +862,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Running</span>
                                                     </td>
                                                     <td class="px-4 py-2">postgres:14</td>
-                                                    <td class="px-4 py-2 text-center">0.5 cores</td>
-                                                    <td class="px-4 py-2 text-center">4.0 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 40%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">40%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 0.5 / 1.25 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 80%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">80%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.0 / 5.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -679,8 +927,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
                                                     </td>
                                                     <td class="px-4 py-2">eiw/frontend:3.0.1</td>
-                                                    <td class="px-4 py-2 text-center">2.0 cores</td>
-                                                    <td class="px-4 py-2 text-center">4.8 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 67%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">67%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.0 / 3.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.8 / 8.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr class="border-t border-border-light dark:border-border-dark">
                                                     <td class="px-4 py-2">
@@ -694,8 +966,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
                                                     </td>
                                                     <td class="px-4 py-2">eiw/backend:3.0.1</td>
-                                                    <td class="px-4 py-2 text-center">1.8 cores</td>
-                                                    <td class="px-4 py-2 text-center">5.6 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 64%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">64%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.8 / 2.8 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 70%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">70%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.6 / 8.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr class="border-t border-border-light dark:border-border-dark">
                                                     <td class="px-4 py-2">
@@ -709,8 +1005,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Running</span>
                                                     </td>
                                                     <td class="px-4 py-2">redis:7-alpine</td>
-                                                    <td class="px-4 py-2 text-center">0.3 cores</td>
-                                                    <td class="px-4 py-2 text-center">1.2 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 30%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">30%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 0.3 / 1.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.2 / 2.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                                 <tr class="border-t border-border-light dark:border-border-dark">
                                                     <td class="px-4 py-2">
@@ -724,8 +1044,32 @@
                                                             class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
                                                     </td>
                                                     <td class="px-4 py-2">eiw/worker:3.0.1</td>
-                                                    <td class="px-4 py-2 text-center">1.5 cores</td>
-                                                    <td class="px-4 py-2 text-center">3.2 GB</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 75%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">75%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.5 / 2.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 64%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">64%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 3.2 / 5.0 GB</span>
+                                                        </div>
+                                                    </td>
                                                 </tr>
                                             </tbody>
                                         </table>
