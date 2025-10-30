@@ -227,9 +227,13 @@
                         <div>
                             <label class="block text-sm font-medium text-text-light dark:text-text-dark"
                                 for="vm-name">主機名稱</label>
-                            <input
-                                class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800 focus:border-primary focus:ring-primary shadow-sm"
-                                id="vm-name" name="system-name" placeholder="請輸入主機名稱" type="text" />
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <span
+                                    class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-border-light dark:border-border-dark bg-gray-50 text-gray-500 text-sm">{{prj}}-{{clu}}-vm-</span>
+                                <input type="text" name="vm-name"
+                                    class="flex-1 rounded-none rounded-r-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary"
+                                    id="vm-name" placeholder="請輸入主機名稱" />
+                            </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-text-light dark:text-text-dark"
