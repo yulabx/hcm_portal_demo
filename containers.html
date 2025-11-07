@@ -404,18 +404,17 @@
                 </div>
 
 
-                <!-- 服務健康矩陣（Namespace: itw） -->
+                <!-- 工作負載管理（Namespace: itw） -->
                 <section id="service-health" class="mb-6 mt-4">
                     <div
                         class="bg-white dark:bg-surface-dark rounded-xl shadow ring-1 ring-slate-200 dark:ring-border-dark overflow-hidden">
                         <div
                             class="px-4 py-3 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
                             <div class="flex items-center gap-3">
-                                <h3 class="text-base font-semibold text-slate-800 dark:text-text-dark">服務健康一覽（namespace:
+                                <h3 class="text-base font-semibold text-slate-800 dark:text-text-dark">工作負載管理（namespace:
                                     <span class="font-mono">itw</span>）
                                 </h3>
-                                <span class="text-xs text-slate-500 dark:text-muted-dark">Ingress → Service →
-                                    Pods（含控制器與 Pod 明細、Deployment 專用副本調整）</span>
+                                <span class="text-xs text-slate-500 dark:text-muted-dark">以工作負載類型維度查看各控制器狀態</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <button id="healthRefresh"
@@ -429,10 +428,12 @@
                             <table class="min-w-full text-sm">
                                 <thead class="bg-slate-50 dark:bg-surface-dark/60 text-slate-600 dark:text-muted-dark">
                                     <tr>
-                                        <th class="px-4 py-2 text-left w-48">服務</th>
-                                        <th class="px-4 py-2 text-left w-[30%]">Ingress / API Gateway</th>
-                                        <th class="px-4 py-2 text-left w-[30%]">Service / Endpoints</th>
-                                        <th class="px-4 py-2 text-left w-[30%]">Pods / HPA</th>
+                                        <th class="px-4 py-2 text-left w-48">工作負載名稱</th>
+                                        <th class="px-4 py-2 text-left w-32">類型</th>
+                                        <th class="px-4 py-2 text-left w-32">副本狀態</th>
+                                        <th class="px-4 py-2 text-left w-32">資源總計 (所有Pod)</th>
+                                        <th class="px-4 py-2 text-left w-40">狀態</th>
+                                        <th class="px-4 py-2 text-left">操作</th>
                                     </tr>
                                 </thead>
                                 <tbody id="healthRows" class="divide-y divide-slate-100 dark:divide-border-dark">
@@ -527,118 +528,187 @@
                 <h3 class="text-sm font-medium text-slate-700 mb-3">YAML（唯讀）</h3>
                 <pre id="dYaml" class="bg-slate-50 rounded-lg p-3 text-xs overflow-auto"><code># 選擇一個項目查看詳情</code></pre>
             </section>
+
+            <section id="serviceSection" style="display: none;">
+                <h3 class="text-sm font-medium text-slate-700 mb-3">Service 資訊</h3>
+                <div class="bg-slate-50 rounded-lg p-3 text-sm">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div><span class="text-slate-500">Service 名稱：</span><span id="serviceName"
+                                class="font-medium font-mono">-</span></div>
+                        <div><span class="text-slate-500">類型：</span><span id="serviceType" class="font-medium">-</span>
+                        </div>
+                        <div><span class="text-slate-500">Cluster IP：</span><span id="serviceClusterIP"
+                                class="font-mono">-</span></div>
+                        <div><span class="text-slate-500">Port：</span><span id="servicePort" class="font-mono">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="ingressSection" style="display: none;">
+                <h3 class="text-sm font-medium text-slate-700 mb-3">Ingress 資訊</h3>
+                <div class="bg-slate-50 rounded-lg p-3 text-sm">
+                    <div class="grid grid-cols-1 gap-3">
+                        <div><span class="text-slate-500">Host：</span><span id="ingressHost"
+                                class="font-medium font-mono">-</span></div>
+                        <div><span class="text-slate-500">Ingress Class：</span><span id="ingressClass"
+                                class="font-medium">-</span></div>
+                        <div><span class="text-slate-500">狀態：</span><span id="ingressStatus"
+                                class="font-medium">-</span></div>
+                    </div>
+                </div>
+            </section>
         </div>
     </aside>
 
     <script>
-        // ===== Demo: seed data =====
-        const svcHealth = [
+        // ===== Demo: 工作負載數據 =====
+        const workloads = [
             {
-                name: 'web-frontend',
-                ingress: {
-                    state: 'OK',
-                    five_xx: 0.003,
-                    host: 'portal.itw.example.com',
-                    more: 'AWS ALB',
-                    yaml: `apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: web-frontend-ingress\n  namespace: itw\n  annotations:\n    kubernetes.io/ingress.class: "aws-load-balancer-controller"\nspec:\n  rules:\n  - host: portal.itw.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: web-frontend-service\n            port:\n              number: 8080`
+                name: 'web-deploy',
+                kind: 'Deployment',
+                namespace: 'itw',
+                replicas: { desired: 6, ready: 6, available: 6 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '300m', limit: '500m', total: '1.8 cores' },
+                    memory: { request: '1.2Gi', limit: '2Gi', total: '7.2Gi' }
                 },
+                image: 'ghcr.io/acme/web:1.2.3',
+                age: '15d',
+                hasService: true,
                 service: {
-                    state: 'OK',
-                    endpoints: 6,
-                    kind: 'ClusterIP',
-                    addr: '10.43.2.10:8080',
-                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: web-frontend-service\n  namespace: itw\nspec:\n  selector:\n    app: web\n  ports:\n  - port: 8080\n    targetPort: 8080\n    protocol: TCP\n  type: ClusterIP`
+                    name: 'web-frontend-service',
+                    type: 'ClusterIP',
+                    clusterIP: '10.43.2.10',
+                    port: '8080:8080/TCP'
                 },
-                pods: { state: 'OK', ready: '6/6', cpu: 0.41, mem: 0.52 },
-                controller: { kind: 'Deployment', name: 'web-deploy' },
-                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web-deploy\n  namespace: itw\nspec:\n  replicas: 6\n  selector:{matchLabels:{app:web}}\n  template:{metadata:{labels:{app:web}},spec:{containers:[{name:web,image:ghcr.io/acme/web:1.2.3,ports:[{containerPort:8080}]}]}}`,
-                podDetails: genPods('web-frontend', 6)
+                hasIngress: true,
+                ingress: {
+                    host: 'portal.itw.example.com',
+                    class: 'aws-load-balancer',
+                    status: '正常'
+                },
+                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web-deploy\n  namespace: itw\nspec:\n  replicas: 6\n  selector:\n    matchLabels:\n      app: web\n  template:\n    metadata:\n      labels:\n        app: web\n    spec:\n      containers:\n      - name: web\n        image: ghcr.io/acme/web:1.2.3\n        ports:\n        - containerPort: 8080`,
+                podDetails: genPods('web-deploy', 6)
             },
             {
-                name: 'api-service',
-                ingress: {
-                    state: 'OK',
-                    five_xx: 0.008,
-                    host: 'api.itw.example.com',
-                    more: 'NGINX Ingress',
-                    yaml: `apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: api-service-ingress\n  namespace: itw\n  annotations:\n    kubernetes.io/ingress.class: "nginx"\n    nginx.ingress.kubernetes.io/rewrite-target: /\nspec:\n  rules:\n  - host: api.itw.example.com\n    http:\n      paths:\n      - path: /api\n        pathType: Prefix\n        backend:\n          service:\n            name: api-service\n            port:\n              number: 80`
+                name: 'api-ss',
+                kind: 'StatefulSet',
+                namespace: 'itw',
+                replicas: { desired: 4, ready: 4, available: 4 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '200m', limit: '400m', total: '800m' },
+                    memory: { request: '800Mi', limit: '1.5Gi', total: '3.2Gi' }
                 },
+                image: 'ghcr.io/acme/api:2.0.0',
+                age: '12d',
+                hasService: true,
                 service: {
-                    state: 'OK',
-                    endpoints: 4,
-                    kind: 'ClusterIP',
-                    addr: '10.43.3.20:80',
-                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: api-service\n  namespace: itw\nspec:\n  selector:\n    app: api\n  ports:\n  - port: 80\n    targetPort: 8080\n    protocol: TCP\n  type: ClusterIP`
+                    name: 'api-service',
+                    type: 'ClusterIP',
+                    clusterIP: '10.43.3.20',
+                    port: '80:8080/TCP'
                 },
-                pods: { state: 'OK', ready: '4/4', cpu: 0.33, mem: 0.44 },
-                controller: { kind: 'StatefulSet', name: 'api-ss' },
-                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: api-ss\n  namespace: itw\nspec:\n  serviceName: api\n  replicas: 4\n  selector:{matchLabels:{app:api}}\n  template:{metadata:{labels:{app:api}},spec:{containers:[{name:api,image:ghcr.io/acme/api:2.0.0}]}}`,
+                hasIngress: true,
+                ingress: {
+                    host: 'api.itw.example.com',
+                    class: 'nginx',
+                    status: '正常'
+                },
+                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: api-ss\n  namespace: itw\nspec:\n  serviceName: api\n  replicas: 4\n  selector:\n    matchLabels:\n      app: api\n  template:\n    metadata:\n      labels:\n        app: api\n    spec:\n      containers:\n      - name: api\n        image: ghcr.io/acme/api:2.0.0\n        ports:\n        - containerPort: 8080`,
                 podDetails: genPods('api-ss', 4, true)
             },
             {
                 name: 'kong-gateway',
-                ingress: {
-                    state: 'OK',
-                    five_xx: 0.002,
-                    host: 'gw.itw.example.com',
-                    more: 'Kong Gateway',
-                    yaml: `apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: kong-gateway-ingress\n  namespace: itw\n  annotations:\n    konghq.com/override: kong-config\nspec:\n  ingressClassName: kong\n  rules:\n  - host: gw.itw.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: kong-gateway-service\n            port:\n              number: 8000`
+                kind: 'Deployment',
+                namespace: 'itw',
+                replicas: { desired: 3, ready: 3, available: 3 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '150m', limit: '300m', total: '450m' },
+                    memory: { request: '512Mi', limit: '1Gi', total: '1.5Gi' }
                 },
+                image: 'ghcr.io/acme/kong:3.6',
+                age: '8d',
+                hasService: true,
                 service: {
-                    state: 'OK',
-                    endpoints: 3,
-                    kind: 'NodePort',
-                    addr: '10.43.8.21:32080',
-                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: kong-gateway-service\n  namespace: itw\nspec:\n  selector:\n    app: kong\n  ports:\n  - port: 8000\n    targetPort: 8000\n    nodePort: 32080\n    protocol: TCP\n  type: NodePort`
+                    name: 'kong-gateway-service',
+                    type: 'NodePort',
+                    clusterIP: '10.43.8.21',
+                    port: '8000:8000/TCP (NodePort: 32080)'
                 },
-                pods: { state: 'OK', ready: '3/3', cpu: 0.29, mem: 0.37 },
-                controller: { kind: 'Deployment', name: 'kong-gateway' },
-                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: kong-gateway\n  namespace: itw\nspec:\n  replicas: 3\n  selector:{matchLabels:{app:kong}}\n  template:{metadata:{labels:{app:kong}},spec:{containers:[{name:kong,image:ghcr.io/acme/kong:3.6} ]}}`,
+                hasIngress: true,
+                ingress: {
+                    host: 'gw.itw.example.com',
+                    class: 'kong',
+                    status: '正常'
+                },
+                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: kong-gateway\n  namespace: itw\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: kong\n  template:\n    metadata:\n      labels:\n        app: kong\n    spec:\n      containers:\n      - name: kong\n        image: ghcr.io/acme/kong:3.6\n        ports:\n        - containerPort: 8000`,
                 podDetails: genPods('kong-gateway', 3)
             },
             {
                 name: 'internal-db',
-                ingress: { state: '—', five_xx: 0, host: '—', more: '無對外路由' },
-                service: {
-                    state: 'OK',
-                    endpoints: 1,
-                    kind: 'ClusterIP',
-                    addr: '10.43.2.22:5432',
-                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: internal-db-service\n  namespace: itw\nspec:\n  selector:\n    app: db\n  ports:\n  - port: 5432\n    targetPort: 5432\n    protocol: TCP\n  type: ClusterIP\n  clusterIP: None`
+                kind: 'StatefulSet',
+                namespace: 'itw',
+                replicas: { desired: 1, ready: 1, available: 1 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '100m', limit: '200m', total: '100m' },
+                    memory: { request: '256Mi', limit: '512Mi', total: '256Mi' }
                 },
-                pods: { state: 'OK', ready: '1/1', cpu: 0.21, mem: 0.36 },
-                controller: { kind: 'StatefulSet', name: 'internal-db' },
-                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: internal-db\n  namespace: itw\nspec:{serviceName: db, replicas: 1, selector:{matchLabels:{app:db}}, template:{metadata:{labels:{app:db}},spec:{containers:[{name:db,image:postgres:15}]}}}`,
+                image: 'postgres:15',
+                age: '25d',
+                hasService: true,
+                service: {
+                    name: 'internal-db-service',
+                    type: 'ClusterIP',
+                    clusterIP: 'None (Headless)',
+                    port: '5432:5432/TCP'
+                },
+                hasIngress: false,
+                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: internal-db\n  namespace: itw\nspec:\n  serviceName: db\n  replicas: 1\n  selector:\n    matchLabels:\n      app: db\n  template:\n    metadata:\n      labels:\n        app: db\n    spec:\n      containers:\n      - name: db\n        image: postgres:15\n        ports:\n        - containerPort: 5432`,
                 podDetails: genPods('internal-db', 1, true)
             },
             {
                 name: 'log-agent',
-                ingress: { state: '—', five_xx: 0, host: '—', more: '無對外路由' },
-                service: {
-                    state: 'OK',
-                    endpoints: 5,
-                    kind: 'ClusterIP',
-                    addr: '—',
-                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: log-agent-service\n  namespace: itw\nspec:\n  selector:\n    app: log-agent\n  ports:\n  - port: 9200\n    targetPort: 9200\n    protocol: TCP\n  type: ClusterIP`
+                kind: 'DaemonSet',
+                namespace: 'itw',
+                replicas: { desired: 5, ready: 5, available: 5 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '50m', limit: '100m', total: '250m' },
+                    memory: { request: '128Mi', limit: '256Mi', total: '640Mi' }
                 },
-                pods: { state: 'OK', ready: '5/5', cpu: 0.12, mem: 0.29 },
-                controller: { kind: 'DaemonSet', name: 'log-agent' },
-                yaml: `apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: log-agent\n  namespace: itw\nspec:{selector:{matchLabels:{app:log-agent}},template:{metadata:{labels:{app:log-agent}},spec:{containers:[{name:agent,image:ghcr.io/acme/agent:1.0.0}]}}}`,
+                image: 'ghcr.io/acme/agent:1.0.0',
+                age: '30d',
+                hasService: true,
+                service: {
+                    name: 'log-agent-service',
+                    type: 'ClusterIP',
+                    clusterIP: '10.43.5.30',
+                    port: '9200:9200/TCP'
+                },
+                hasIngress: false,
+                yaml: `apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: log-agent\n  namespace: itw\nspec:\n  selector:\n    matchLabels:\n      app: log-agent\n  template:\n    metadata:\n      labels:\n        app: log-agent\n    spec:\n      containers:\n      - name: agent\n        image: ghcr.io/acme/agent:1.0.0\n        ports:\n        - containerPort: 9200`,
                 podDetails: genPods('log-agent', 5)
             },
             {
-                name: 'batch-sync',
-                ingress: { state: '—', five_xx: 0, host: '—', more: '內部' },
-                service: {
-                    state: 'OK',
-                    endpoints: 1,
-                    kind: 'ClusterIP',
-                    addr: '—',
-                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: batch-sync-service\n  namespace: itw\nspec:\n  selector:\n    app: sync\n  ports:\n  - port: 8080\n    targetPort: 8080\n    protocol: TCP\n  type: ClusterIP`
+                name: 'data-sync-job',
+                kind: 'Job',
+                namespace: 'itw',
+                replicas: { desired: 1, ready: 1, available: 1 },
+                status: 'Completed',
+                resources: {
+                    cpu: { request: '100m', limit: '200m', total: '100m' },
+                    memory: { request: '256Mi', limit: '512Mi', total: '256Mi' }
                 },
-                pods: { state: 'OK', ready: 'Succeeded 1/1', cpu: 0.18, mem: 0.22 },
-                controller: { kind: 'Job', name: 'data-sync-job' },
-                yaml: `apiVersion: batch/v1\nkind: Job\nmetadata:{name:data-sync-job,namespace:itw}\nspec:{completions:1,template:{spec:{restartPolicy:Never,containers:[{name:sync,image:ghcr.io/acme/sync:0.3.1}]}}}`,
+                image: 'ghcr.io/acme/sync:0.3.1',
+                age: '2h',
+                hasIngress: false,
+                hasService: false,
+                yaml: `apiVersion: batch/v1\nkind: Job\nmetadata:\n  name: data-sync-job\n  namespace: itw\nspec:\n  completions: 1\n  template:\n    spec:\n      restartPolicy: Never\n      containers:\n      - name: sync\n        image: ghcr.io/acme/sync:0.3.1`,
                 podDetails: [{ name: 'data-sync-job-xyz', phase: 'Succeeded', ready: '1/1', ip: '10.42.11.2', node: 'node-a', restarts: 0, cpu: '85m', mem: '90Mi' }]
             }
         ];
@@ -670,48 +740,59 @@
 
         function podCountLabel(s) { return s.controller.kind === 'Job' ? s.pods.ready : `Ready Pods ${s.pods.ready}`; }
 
-        function rowActions(s, idx) {
+        function rowActions(w, idx) {
             const btns = [];
-            if (canRestart(s.controller.kind)) {
-                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="restartCtrl(${idx})">重啟</button>`);
+            if (canRestart(w.kind)) {
+                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="restartWorkload(${idx})">重啟</button>`);
             }
-            if (canScale(s.controller.kind)) {
-                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="scaleDeployment(${idx})">調整副本數</button>`);
+            if (canScale(w.kind)) {
+                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="scaleWorkload(${idx})">調整副本數</button>`);
             }
-            btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openDrawer(${idx})'>詳情</button>`);
+            btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openWorkloadDrawer(${idx})'>詳情</button>`);
             return btns.join(' ');
         }
 
-        function rowOf(s, idx) {
+        function rowOf(w, idx) {
+            const statusIcon = w.status === 'OK' ? '🟢' : w.status === 'Completed' ? '✅' : '🟡';
+            const replicasText = w.kind === 'Job' ? (w.status === 'Completed' ? 'Completed' : 'Running') : `${w.replicas.ready}/${w.replicas.desired}`;
+
             return `
         <tr class="hover:bg-slate-50 align-top">
           <td class="px-4 py-3">
-            <div class="font-medium">${s.name}</div>
-            <div class="text-xs text-slate-500">ns: itw</div>
+            <div class="font-medium">${w.name}</div>
+            <div class="text-xs text-slate-500 space-y-1">
+              <div>ns: ${w.namespace}</div>
+              <div>image: <span class="font-mono">${w.image}</span></div>
+              <div>age: ${w.age}</div>
+            </div>
           </td>
           <td class="px-4 py-3">
-            <div class="flex flex-col gap-1">
-              ${stateBadge(s.ingress.state === '—' ? undefined : s.ingress.state)}
-              <div class="text-xs text-slate-600">${s.ingress.more}</div>
-              <div class="text-xs text-slate-600">host: <span class="font-mono">${s.ingress.host}</span></div>
-              ${s.ingress.state !== '—' ? `<div class="text-[11px] text-slate-500">5xx 比例 ${(s.ingress.five_xx * 100).toFixed(1)}%</div>` : ''}
-              ${s.ingress.state !== '—' ? `<div class="mt-1"><button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openIngressDrawer(${idx})'>詳情</button></div>` : ''}
+            <div class="flex items-center gap-2">
+              ${controllerChip(w.kind)}
             </div>
           </td>
           <td class="px-4 py-3">
             <div class="flex flex-col gap-1">
-              ${stateBadge(s.service.state)}
-              <div class="text-xs text-slate-600">${s.service.kind || ''} ${s.service.addr ? ('· ' + s.service.addr) : ''}</div>
-              <div class="text-xs text-slate-600">endpoints: ${s.service.endpoints}</div>
-              <div class="mt-1"><button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openServiceDrawer(${idx})'>詳情</button></div>
+              <div class="text-sm font-medium">${replicasText}</div>
+              ${w.kind !== 'Job' ? `<div class="text-xs text-slate-500">desired: ${w.replicas.desired}</div>` : ''}
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="text-xs text-slate-600 space-y-1">
+              <div><strong>CPU:</strong> ${w.resources.cpu.total}</div>
+              <div class="text-slate-500">req: ${w.resources.cpu.request}</div>
+              <div><strong>Memory:</strong> ${w.resources.memory.total}</div>
+              <div class="text-slate-500">req: ${w.resources.memory.request}</div>
             </div>
           </td>
           <td class="px-4 py-3">
             <div class="flex flex-col gap-1">
-              ${stateBadge(s.pods.state)}
-              <div class="text-xs text-slate-600">${podCountLabel(s)} · CPU ${(s.pods.cpu * 100 | 0)}% · MEM ${(s.pods.mem * 100 | 0)}%</div>
-              <div class="flex items-center gap-2 mt-1">${controllerChip(s.controller.kind)}<span class="text-xs font-mono text-slate-600">${s.controller.name}</span></div>
-              <div class="mt-2 flex flex-wrap gap-1">${rowActions(s, idx)}</div>
+              <span class="chip" style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0">${statusIcon} ${w.status}</span>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-wrap gap-1">
+              ${rowActions(w, idx)}
             </div>
           </td>
         </tr>`;
@@ -719,7 +800,7 @@
 
         function renderHealthTable(items) {
             const tbody = document.getElementById('healthRows');
-            tbody.innerHTML = items.map((s, i) => rowOf(s, i)).join('');
+            tbody.innerHTML = items.map((w, i) => rowOf(w, i)).join('');
         }
 
         function fillPodsTable(pods) {
@@ -738,79 +819,73 @@
         </tr>`).join('');
         }
 
-        function openDrawer(idx) {
-            const s = svcHealth[idx];
+        function openWorkloadDrawer(idx) {
+            const w = workloads[idx];
             const drawer = document.getElementById('drawer');
-            document.getElementById('drawerTitle').textContent = s.name;
-            document.getElementById('dKind').textContent = 'Pod';
-            document.getElementById('dNamespace').textContent = 'itw';
-            document.getElementById('dControllerBadge').outerHTML = controllerChip(s.controller.kind);
-            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">/</span> <span class="font-mono">${s.controller.name}</span>`;
-            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.yaml || '# 無示例 YAML')}</code>`;
-            // Show pods section for Pod details
+            document.getElementById('drawerTitle').textContent = w.name;
+            document.getElementById('dKind').textContent = w.kind;
+            document.getElementById('dNamespace').textContent = w.namespace;
+            document.getElementById('dControllerBadge').outerHTML = controllerChip(w.kind);
+            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">replicas:</span> <span class="font-mono">${w.replicas.ready}/${w.replicas.desired}</span>`;
+
+            // Show/Hide Service section
+            if (w.hasService) {
+                document.getElementById('serviceSection').style.display = 'block';
+                document.getElementById('serviceName').textContent = w.service.name;
+                document.getElementById('serviceType').textContent = w.service.type;
+                document.getElementById('serviceClusterIP').textContent = w.service.clusterIP;
+                document.getElementById('servicePort').textContent = w.service.port;
+            } else {
+                document.getElementById('serviceSection').style.display = 'none';
+            }
+
+            // Show/Hide Ingress section
+            if (w.hasIngress) {
+                document.getElementById('ingressSection').style.display = 'block';
+                document.getElementById('ingressHost').textContent = w.ingress.host;
+                document.getElementById('ingressClass').textContent = w.ingress.class;
+                document.getElementById('ingressStatus').textContent = w.ingress.status;
+            } else {
+                document.getElementById('ingressSection').style.display = 'none';
+            }
+
+            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(w.yaml || '# 無示例 YAML')}</code>`;
+            // Show pods section for workload details
             document.getElementById('podsSection').style.display = 'block';
-            fillPodsTable(s.podDetails);
+            fillPodsTable(w.podDetails);
             drawer.classList.remove('translate-x-full');
         }
 
-        function openIngressDrawer(idx) {
-            const s = svcHealth[idx];
-            const drawer = document.getElementById('drawer');
-            document.getElementById('drawerTitle').textContent = `${s.name} - Ingress`;
-            document.getElementById('dKind').textContent = 'Ingress';
-            document.getElementById('dNamespace').textContent = 'itw';
-            document.getElementById('dControllerBadge').innerHTML = '<span class="chip chip-muted"><i class="material-icons-outlined">public</i>Ingress</span>';
-            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">host:</span> <span class="font-mono">${s.ingress.host}</span>`;
-            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.ingress.yaml || '# 無 Ingress YAML')}</code>`;
-            // Hide pods section for Ingress
-            document.getElementById('podsSection').style.display = 'none';
-            drawer.classList.remove('translate-x-full');
+        function restartWorkload(idx) {
+            const w = workloads[idx];
+            if (!canRestart(w.kind)) { alert('此資源不支援滾動重啟'); return; }
+            if (!confirm(`確定要滾動重啟 ${w.kind} / ${w.name} 嗎？`)) return;
+            alert(`已觸發：kubectl rollout restart ${w.kind.toLowerCase()} ${w.name} -n ${w.namespace}`);
         }
 
-        function openServiceDrawer(idx) {
-            const s = svcHealth[idx];
-            const drawer = document.getElementById('drawer');
-            document.getElementById('drawerTitle').textContent = `${s.name} - Service`;
-            document.getElementById('dKind').textContent = 'Service';
-            document.getElementById('dNamespace').textContent = 'itw';
-            document.getElementById('dControllerBadge').innerHTML = `<span class="chip chip-muted"><i class="material-icons-outlined">hub</i>${s.service.kind}</span>`;
-            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">addr:</span> <span class="font-mono">${s.service.addr || '—'}</span>`;
-            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.service.yaml || '# 無 Service YAML')}</code>`;
-            // Hide pods section for Service
-            document.getElementById('podsSection').style.display = 'none';
-            drawer.classList.remove('translate-x-full');
-        }
-
-        function restartCtrl(idx) {
-            const s = svcHealth[idx];
-            const kind = s.controller.kind;
-            if (!canRestart(kind)) { alert('此資源不支援滾動重啟'); return; }
-            if (!confirm(`確定要滾動重啟 ${kind} / ${s.controller.name} 嗎？`)) return;
-            // Demo: 不改資料，只提示
-            alert(`已觸發：kubectl rollout restart ${kind.toLowerCase()} ${s.controller.name} -n itw`);
-        }
-
-        function scaleDeployment(idx) {
-            const s = svcHealth[idx];
-            if (!canScale(s.controller.kind)) { alert('只有 Deployment 支援調整副本數'); return; }
-            const cur = parseInt((s.pods.ready.split('/')[1] || s.podDetails.length), 10) || s.podDetails.length;
-            const val = prompt(`調整 ${s.controller.name} 的副本數 (目前: ${cur})`, cur);
+        function scaleWorkload(idx) {
+            const w = workloads[idx];
+            if (!canScale(w.kind)) { alert('只有 Deployment 支援調整副本數'); return; }
+            const cur = w.replicas.desired;
+            const val = prompt(`調整 ${w.name} 的副本數 (目前: ${cur})`, cur);
             if (val === null) return;
             const n = Number(val);
             if (!Number.isInteger(n) || n < 0 || n > 50) { alert('請輸入 0~50 的整數'); return; }
-            if (!confirm(`確認將 ${s.controller.name} 副本數調整為 ${n} ?`)) return;
+            if (!confirm(`確認將 ${w.name} 副本數調整為 ${n} ?`)) return;
             // Demo: 更新本地資料
-            s.pods.ready = `${Math.min(n, n)}\/${n}`;
-            s.service.endpoints = n;
-            s.yaml = s.yaml.replace(/replicas:\s*\d+/, 'replicas: ' + n);
-            s.podDetails = genPods(s.controller.name, n);
-            renderHealthTable(svcHealth);
-            // 若抽屜正打開且是這個服務，順便更新
-            if (document.getElementById('drawerTitle').textContent === s.name) {
-                document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.yaml)}</code>`;
-                fillPodsTable(s.podDetails);
+            w.replicas.desired = n;
+            w.replicas.ready = Math.min(n, n);
+            w.replicas.available = Math.min(n, n);
+            w.yaml = w.yaml.replace(/replicas:\s*\d+/, 'replicas: ' + n);
+            w.podDetails = genPods(w.name, n);
+            renderHealthTable(workloads);
+            // 若抽屜正打開且是這個工作負載，順便更新
+            if (document.getElementById('drawerTitle').textContent === w.name) {
+                document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">replicas:</span> <span class="font-mono">${w.replicas.ready}/${w.replicas.desired}</span>`;
+                document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(w.yaml)}</code>`;
+                fillPodsTable(w.podDetails);
             }
-            alert(`已模擬：kubectl scale deployment ${s.controller.name} -n itw --replicas=${n}`);
+            alert(`已模擬：kubectl scale ${w.kind.toLowerCase()} ${w.name} -n ${w.namespace} --replicas=${n}`);
         }
 
         function escapeHtml(str) { return str.replace(/[&<>\"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c])); }
@@ -819,7 +894,7 @@
             document.getElementById('drawer').classList.add('translate-x-full');
         });
 
-        renderHealthTable(svcHealth);
+        renderHealthTable(workloads);
 
         async function loadK8sEvents() {
             const tbody = document.getElementById('eventsRows');
