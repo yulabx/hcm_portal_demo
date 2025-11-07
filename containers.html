@@ -794,7 +794,7 @@
             document.getElementById('drawerTitle').textContent = w.name;
             document.getElementById('dKind').textContent = w.kind;
             document.getElementById('dNamespace').textContent = w.namespace;
-            document.getElementById('dControllerBadge').outerHTML = controllerChip(w.kind);
+            document.getElementById('dControllerBadge').innerHTML = controllerChip(w.kind).replace('<span class="chip', '<span id="dControllerBadge" class="chip');
             document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">replicas:</span> <span class="font-mono">${w.replicas.ready}/${w.replicas.desired}</span>`;
 
             document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(w.yaml || '# 無示例 YAML')}</code>`;
