@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>混合雲管理系統 - 虛擬主機管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>混合雲管理系統 - 服務健康一覽（itw, Pod明細 + Scale）</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
     <script>
@@ -38,6 +38,62 @@
     <style>
         body {
             font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .375rem;
+            padding: .125rem .5rem;
+            border-radius: .5rem;
+            font-size: .75rem;
+            font-weight: 600
+        }
+
+        .chip i {
+            font-size: 1rem
+        }
+
+        .chip-ctl-Deployment {
+            color: #4338ca;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe
+        }
+
+        .chip-ctl-StatefulSet {
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe
+        }
+
+        .chip-ctl-DaemonSet {
+            color: #065f46;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0
+        }
+
+        .chip-ctl-Job {
+            color: #92400e;
+            background: #fffbeb;
+            border: 1px solid #fde68a
+        }
+
+        .chip-ctl-CronJob {
+            color: #7e22ce;
+            background: #faf5ff;
+            border: 1px solid #e9d5ff
+        }
+
+        .chip-ctl-ReplicaSet {
+            color: #0f172a;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0
+        }
+
+        .chip-muted {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0
         }
     </style>
 </head>
@@ -196,6 +252,7 @@
                 </div>
             </nav>
         </aside>
+
         <main class="flex-1 flex flex-col">
             <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
                 <div class="relative w-full max-w-md">
@@ -230,13 +287,6 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-2xl font-bold">容器管理</h2>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <button id="createFromYaml"
-                            class="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 flex items-center">
-                            <span class="material-icons-outlined mr-2">code</span>
-                            從 YAML 建立
-                        </button>
                     </div>
                 </div>
 
@@ -348,1506 +398,444 @@
                                     namespace 的資源狀況</p>
                                 <p>• <strong>資源指標：</strong>CPU/Memory 為配額請求值，PVC 為存儲配額使用情況</p>
                                 <p>• <strong>緊急操作：</strong>支援 Replica 調整、Pod 重啟等臨時性操作</p>
-                                <p>• <strong>權限控制：</strong>所有操作都會記錄，請謹慎使用管理功能</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Segmented Tabs -->
-                <div class="mb-4">
-                    <div class="inline-flex rounded-xl bg-white shadow ring-1 ring-slate-200 overflow-hidden">
-                        <button data-tab="workloads"
-                            class="tab-btn px-4 py-2 text-sm font-medium bg-brand-50 text-brand-700">工作負載</button>
-                        <button data-tab="pods"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Pod</button>
-                        <button data-tab="services"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">服務</button>
-                        <button data-tab="ingress"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">入口</button>
-                        <button data-tab="configmaps"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">ConfigMap</button>
-                        <button data-tab="secrets"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Secret</button>
-                        <button data-tab="storage"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">儲存</button>
-                        <button data-tab="quota"
-                            class="tab-btn px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">配額</button>
-                    </div>
-                </div>
 
-                <!-- 工具列 -->
-                <section class="mb-4 bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
-                    <div class="flex flex-wrap items-center gap-3">
-                        <div class="relative">
-                            <span
-                                class="material-icons-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400">search</span>
-                            <input id="q" type="text" placeholder="名稱 / label=key:value / image:tag"
-                                class="pl-9 w-64 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400">
-                        </div>
-                        <select id="status"
-                            class="w-40 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400">
-                            <option value="">狀態（全部）</option>
-                            <option>Running</option>
-                            <option>Pending</option>
-                            <option>CrashLoopBackOff</option>
-                            <option>Failed</option>
-                        </select>
-                        <select id="kind"
-                            class="w-44 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400">
-                            <option value="">類型（全部）</option>
-                            <option>Deployment</option>
-                            <option>StatefulSet</option>
-                            <option>DaemonSet</option>
-                            <option>Job</option>
-                            <option>CronJob</option>
-                        </select>
-
-                        <div class="ml-auto flex items-center gap-2">
-                            <button id="autoRefresh"
-                                class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">
-                                <span class="material-icons-outlined align-[-3px] text-base">autorenew</span> 更新</span>
-                            </button>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 表格卡片（工作負載） -->
-                <section id="tab-workloads" class="tab-panel">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                            <div class="text-sm text-slate-600">共 <span id="countWorkloads">3</span> 筆工作負載</div>
+                <!-- 服務健康矩陣（Namespace: itw） -->
+                <section id="service-health" class="mb-6 mt-4">
+                    <div
+                        class="bg-white dark:bg-surface-dark rounded-xl shadow ring-1 ring-slate-200 dark:ring-border-dark overflow-hidden">
+                        <div
+                            class="px-4 py-3 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-base font-semibold text-slate-800 dark:text-text-dark">服務健康一覽（namespace:
+                                    <span class="font-mono">itw</span>）
+                                </h3>
+                                <span class="text-xs text-slate-500 dark:text-muted-dark">Ingress → Service →
+                                    Pods（含控制器與 Pod 明細、Deployment 專用副本調整）</span>
+                            </div>
                             <div class="flex items-center gap-2">
-                                <button class="px-2 py-1 rounded-md border text-sm hover:bg-slate-50">重啟</button>
-                                <button class="px-2 py-1 rounded-md border text-sm hover:bg-slate-50">滾動更新</button>
-                                <button class="px-2 py-1 rounded-md border text-sm hover:bg-slate-50">刪除</button>
+                                <button id="healthRefresh"
+                                    class="px-2 py-1 rounded-md border border-slate-200 dark:border-border-dark text-sm hover:bg-slate-50 dark:hover:bg-surface-dark/60">
+                                    <span class="material-icons-outlined align-[-3px] text-base">autorenew</span> 重新整理
+                                </button>
                             </div>
                         </div>
-                        <div class="overflow-auto scroll-area">
+
+                        <div class="overflow-auto">
                             <table class="min-w-full text-sm">
-                                <thead class="bg-slate-50 text-slate-600">
+                                <thead class="bg-slate-50 dark:bg-surface-dark/60 text-slate-600 dark:text-muted-dark">
                                     <tr>
-                                        <th class="px-4 py-2 text-left w-8"></th>
-                                        <th class="px-4 py-2 text-left">名稱</th>
-                                        <th class="px-4 py-2 text-left">類型</th>
-                                        <th class="px-4 py-2 text-left">就緒度</th>
-                                        <th class="px-4 py-2 text-left">狀態</th>
-                                        <th class="px-4 py-2 text-left">映像</th>
-                                        <th class="px-4 py-2 text-left">更新策略</th>
-                                        <th class="px-4 py-2 text-left">Age</th>
-                                        <th class="px-4 py-2 text-left">操作</th>
+                                        <th class="px-4 py-2 text-left w-48">服務</th>
+                                        <th class="px-4 py-2 text-left w-[30%]">Ingress / API Gateway</th>
+                                        <th class="px-4 py-2 text-left w-[30%]">Service / Endpoints</th>
+                                        <th class="px-4 py-2 text-left w-[30%]">Pods / HPA</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <!-- Row 1 -->
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <button class="expander rounded-md border px-2 py-1 text-xs"
-                                                aria-expanded="false">展開</button>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="Deployment" data-name="web-deploy">web-deploy</a>
-                                        </td>
-                                        <td class="px-4 py-2">Deployment</td>
-                                        <td class="px-4 py-2">3/3</td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Available</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="font-mono text-xs">ghcr.io/acme/web:1.2.3</div>
-                                        </td>
-                                        <td class="px-4 py-2">RollingUpdate</td>
-                                        <td class="px-4 py-2">2d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50"
-                                                    onclick="viewYaml('Deployment', 'web-deploy')">YAML</button>
-                                                <div class="relative">
-                                                    <button
-                                                        class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 flex items-center gap-1"
-                                                        onclick="showOperationMenu(this, 'web-deploy')">
-                                                        操作
-                                                        <span class="material-icons-outlined text-xs">expand_more</span>
-                                                    </button>
-                                                    <div
-                                                        class="operation-menu hidden absolute right-0 top-8 bg-white border rounded-lg shadow-lg z-10 min-w-48">
-                                                        <div class="p-2 border-b">
-                                                            <div class="text-xs text-slate-500 font-medium">觀察操作</div>
-                                                        </div>
-                                                        <div class="p-1">
-                                                            <button
-                                                                class="w-full text-left px-2 py-1 text-xs hover:bg-slate-50 rounded flex items-center gap-2"
-                                                                onclick="viewLogs('web-deploy')">
-                                                                <span
-                                                                    class="material-icons-outlined text-sm">article</span>
-                                                                查看日誌
-                                                            </button>
-                                                            <button
-                                                                class="w-full text-left px-2 py-1 text-xs hover:bg-slate-50 rounded flex items-center gap-2"
-                                                                onclick="viewEvents('web-deploy')">
-                                                                <span
-                                                                    class="material-icons-outlined text-sm">event</span>
-                                                                查看事件
-                                                            </button>
-                                                            <button
-                                                                class="w-full text-left px-2 py-1 text-xs hover:bg-slate-50 rounded flex items-center gap-2"
-                                                                onclick="viewMetrics('web-deploy')">
-                                                                <span
-                                                                    class="material-icons-outlined text-sm">monitoring</span>
-                                                                資源監控
-                                                            </button>
-                                                        </div>
-                                                        <div class="p-2 border-b">
-                                                            <div class="text-xs text-slate-500 font-medium">緊急操作 🔒
-                                                            </div>
-                                                        </div>
-                                                        <div class="p-1">
-                                                            <button
-                                                                class="w-full text-left px-2 py-1 text-xs hover:bg-yellow-50 rounded flex items-center gap-2 text-yellow-700"
-                                                                onclick="promptReplicaScale('web-deploy', 3)">
-                                                                <span
-                                                                    class="material-icons-outlined text-sm">tune</span>
-                                                                調整 Replicas (目前: 3)
-                                                            </button>
-                                                            <button
-                                                                class="w-full text-left px-2 py-1 text-xs hover:bg-orange-50 rounded flex items-center gap-2 text-orange-700"
-                                                                onclick="confirmRestart('web-deploy')">
-                                                                <span
-                                                                    class="material-icons-outlined text-sm">refresh</span>
-                                                                重啟部署
-                                                            </button>
-                                                            <button
-                                                                class="w-full text-left px-2 py-1 text-xs hover:bg-purple-50 rounded flex items-center gap-2 text-purple-700"
-                                                                onclick="showEnvEditor('web-deploy')">
-                                                                <span
-                                                                    class="material-icons-outlined text-sm">settings</span>
-                                                                臨時環境變數
-                                                            </button>
-                                                        </div>
-                                                        <div class="p-2 border-t">
-                                                            <div class="text-xs text-slate-400">⚠️ 操作將記錄並需要權限驗證</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hidden row-expand bg-slate-50/40">
-                                        <td colspan="9" class="px-6 py-4">
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <div>
-                                                    <div class="text-xs text-slate-500 mb-2">近期事件</div>
-                                                    <ul class="text-xs space-y-1">
-                                                        <li>[Normal] ScalingReplicaSet 由 2 → 3</li>
-                                                        <li>[Normal] Pulling image ghcr.io/acme/web:1.2.3</li>
-                                                        <li>[Normal] SuccessfulCreate pod/web-deploy-xxxxx</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="md:col-span-2">
-                                                    <div class="text-xs text-slate-500 mb-2">當前 Pod</div>
-                                                    <div class="overflow-auto border rounded-lg">
-                                                        <table class="min-w-full text-xs">
-                                                            <thead class="bg-white">
-                                                                <tr>
-                                                                    <th class="px-3 py-1 text-left">Pod</th>
-                                                                    <th class="px-3 py-1 text-left">狀態</th>
-                                                                    <th class="px-3 py-1 text-left">重啟</th>
-                                                                    <th class="px-3 py-1 text-left">節點</th>
-                                                                    <th class="px-3 py-1 text-left">操作</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="divide-y">
-                                                                <tr>
-                                                                    <td class="px-3 py-1">web-deploy-abc12</td>
-                                                                    <td class="px-3 py-1">Running</td>
-                                                                    <td class="px-3 py-1">0</td>
-                                                                    <td class="px-3 py-1">node-a</td>
-                                                                    <td class="px-3 py-1 space-x-2">
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Log</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Exec</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">重啟</button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="px-3 py-1">web-deploy-def34</td>
-                                                                    <td class="px-3 py-1">Running</td>
-                                                                    <td class="px-3 py-1">0</td>
-                                                                    <td class="px-3 py-1">node-b</td>
-                                                                    <td class="px-3 py-1 space-x-2">
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Log</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Exec</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">重啟</button>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td class="px-3 py-1">web-deploy-ghi56</td>
-                                                                    <td class="px-3 py-1">Running</td>
-                                                                    <td class="px-3 py-1">0</td>
-                                                                    <td class="px-3 py-1">node-c</td>
-                                                                    <td class="px-3 py-1 space-x-2">
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Log</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Exec</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">重啟</button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Row 2 -->
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <button class="expander rounded-md border px-2 py-1 text-xs"
-                                                aria-expanded="false">展開</button>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="StatefulSet" data-name="db-main">db-main</a>
-                                        </td>
-                                        <td class="px-4 py-2">StatefulSet</td>
-                                        <td class="px-4 py-2">1/1</td>
-                                        <td class="px-4 py-2"><span
-                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Available</span>
-                                        </td>
-                                        <td class="px-4 py-2">harbor.local/db:<span class="font-mono">12.1</span></td>
-                                        <td class="px-4 py-2">RollingUpdate</td>
-                                        <td class="px-4 py-2">5d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">重啟</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">縮放</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hidden row-expand bg-slate-50/40">
-                                        <td colspan="9" class="px-6 py-4">
-                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                                <div>
-                                                    <div class="text-xs text-slate-500 mb-2">近期事件</div>
-                                                    <ul class="text-xs space-y-1">
-                                                        <li>[Normal] SuccessfulCreate pod/db-main-0</li>
-                                                        <li>[Normal] Pulled harbor.local/db:12.1</li>
-                                                    </ul>
-                                                </div>
-                                                <div class="md:col-span-2">
-                                                    <div class="text-xs text-slate-500 mb-2">當前 Pod</div>
-                                                    <div class="overflow-auto border rounded-lg">
-                                                        <table class="min-w-full text-xs">
-                                                            <thead class="bg-white">
-                                                                <tr>
-                                                                    <th class="px-3 py-1 text-left">Pod</th>
-                                                                    <th class="px-3 py-1 text-left">狀態</th>
-                                                                    <th class="px-3 py-1 text-left">重啟</th>
-                                                                    <th class="px-3 py-1 text-left">節點</th>
-                                                                    <th class="px-3 py-1 text-left">操作</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody class="divide-y">
-                                                                <tr>
-                                                                    <td class="px-3 py-1">db-main-0</td>
-                                                                    <td class="px-3 py-1">Running</td>
-                                                                    <td class="px-3 py-1">0</td>
-                                                                    <td class="px-3 py-1">node-a</td>
-                                                                    <td class="px-3 py-1 space-x-2">
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Log</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">Exec</button>
-                                                                        <button
-                                                                            class="px-2 py-0.5 rounded border">重啟</button>
-                                                                    </td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    <!-- Row 3 -->
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <button class="expander rounded-md border px-2 py-1 text-xs"
-                                                aria-expanded="false">展開</button>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="CronJob" data-name="report-cron">report-cron</a>
-                                        </td>
-                                        <td class="px-4 py-2">CronJob</td>
-                                        <td class="px-4 py-2">-</td>
-                                        <td class="px-4 py-2"><span
-                                                class="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Scheduled</span>
-                                        </td>
-                                        <td class="px-4 py-2">registry/report:<span class="font-mono">0.9.1</span></td>
-                                        <td class="px-4 py-2">-</td>
-                                        <td class="px-4 py-2">12h</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">立即執行</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hidden row-expand bg-slate-50/40">
-                                        <td colspan="9" class="px-6 py-4">
-                                            <div class="text-xs text-slate-500 mb-2">最近觸發</div>
-                                            <ul class="text-xs list-disc pl-5 space-y-1">
-                                                <li>2025-10-02 00:00:03 成功</li>
-                                                <li>2025-10-01 00:00:03 成功</li>
-                                            </ul>
-                                        </td>
-                                    </tr>
+                                <tbody id="healthRows" class="divide-y divide-slate-100 dark:divide-border-dark">
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </section>
 
-                <!-- 其他分頁的占位（Pods/Services/Ingress/Config/Quota） -->
-                <section id="tab-pods" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
-                        Pod 清單（示意）。可複用「展開列＋右側抽屜」模式顯示即時 Log 與容器資源。
-                    </div>
-                </section>
-
-                <!-- 服務 (Services) 分頁 -->
-                <section id="tab-services" class="tab-panel hidden">
+                <!-- Kubernetes 事件紀錄 -->
+                <section class="mb-6">
                     <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                            <div class="text-sm text-slate-600">共 <span id="countServices">2</span> 個服務</div>
+                        <div class="px-4 py-3 border-b flex items-center justify-between">
+                            <h3 class="text-base font-semibold">Kubernetes 事件紀錄（namespace: itw）</h3>
+                            <button id="eventsRefresh" class="px-2 py-1 rounded border text-sm hover:bg-slate-50"><span
+                                    class="material-icons-outlined align-[-4px]">autorenew</span> 重新整理</button>
                         </div>
-                        <div class="overflow-auto scroll-area">
+                        <div class="overflow-auto">
                             <table class="min-w-full text-sm">
                                 <thead class="bg-slate-50 text-slate-600">
                                     <tr>
-                                        <th class="px-4 py-2 text-left w-8">
-                                            <input type="checkbox" class="rounded">
-                                        </th>
-                                        <th class="px-4 py-2 text-left">名稱</th>
-                                        <th class="px-4 py-2 text-left">類型</th>
-                                        <th class="px-4 py-2 text-left">叢集 IP</th>
-                                        <th class="px-4 py-2 text-left">外部 IP</th>
-                                        <th class="px-4 py-2 text-left">端口</th>
-                                        <th class="px-4 py-2 text-left">Age</th>
-                                        <th class="px-4 py-2 text-left">操作</th>
+                                        <th class="px-4 py-2 text-left w-40">時間</th>
+                                        <th class="px-4 py-2 text-left w-24">類型</th>
+                                        <th class="px-4 py-2 text-left w-56">物件</th>
+                                        <th class="px-4 py-2 text-left w-32">Reason</th>
+                                        <th class="px-4 py-2 text-left">Message</th>
+                                        <th class="px-4 py-2 text-left w-16">次數</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="Service" data-name="web-service">web-service</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">ClusterIP</span>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">10.43.241.156</td>
-                                        <td class="px-4 py-2 text-slate-400">-</td>
-                                        <td class="px-4 py-2 font-mono text-xs">80/TCP</td>
-                                        <td class="px-4 py-2">2d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="Service" data-name="db-service">db-service</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-50 text-green-700">NodePort</span>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">10.43.128.91</td>
-                                        <td class="px-4 py-2 font-mono text-xs">192.168.1.100</td>
-                                        <td class="px-4 py-2 font-mono text-xs">5432:30432/TCP</td>
-                                        <td class="px-4 py-2">5d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="eventsRows" class="divide-y divide-slate-100"></tbody>
                             </table>
                         </div>
                     </div>
                 </section>
-
-                <!-- 入口 (Ingress) 分頁 -->
-                <section id="tab-ingress" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                            <div class="text-sm text-slate-600">共 <span id="countIngress">1</span> 個入口</div>
-                        </div>
-                        <div class="overflow-auto scroll-area">
-                            <table class="min-w-full text-sm">
-                                <thead class="bg-slate-50 text-slate-600">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left w-8">
-                                            <input type="checkbox" class="rounded">
-                                        </th>
-                                        <th class="px-4 py-2 text-left">名稱</th>
-                                        <th class="px-4 py-2 text-left">主機</th>
-                                        <th class="px-4 py-2 text-left">IP 地址</th>
-                                        <th class="px-4 py-2 text-left">端口</th>
-                                        <th class="px-4 py-2 text-left">TLS</th>
-                                        <th class="px-4 py-2 text-left">Age</th>
-                                        <th class="px-4 py-2 text-left">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="Ingress" data-name="web-ingress">web-ingress</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1">
-                                                <div class="font-mono text-xs">api.example.com</div>
-                                                <div class="font-mono text-xs">web.example.com</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">192.168.1.100</td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1 font-mono text-xs">
-                                                <div>80, 443</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-50 text-green-700">
-                                                <span class="material-icons-outlined text-xs mr-1">security</span>已啟用
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-2">1d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- ConfigMap 分頁 -->
-                <section id="tab-configmaps" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                            <div class="text-sm text-slate-600">共 <span id="countConfigMaps">3</span> 個 ConfigMap</div>
-                        </div>
-                        <div class="overflow-auto scroll-area">
-                            <table class="min-w-full text-sm">
-                                <thead class="bg-slate-50 text-slate-600">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left w-8">
-                                            <input type="checkbox" class="rounded">
-                                        </th>
-                                        <th class="px-4 py-2 text-left">名稱</th>
-                                        <th class="px-4 py-2 text-left">資料項目</th>
-                                        <th class="px-4 py-2 text-left">大小</th>
-                                        <th class="px-4 py-2 text-left">Age</th>
-                                        <th class="px-4 py-2 text-left">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="ConfigMap" data-name="app-config">app-config</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1 text-xs">
-                                                <div class="font-mono">database.conf</div>
-                                                <div class="font-mono">app.properties</div>
-                                                <div class="text-slate-500">+2 more</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2 text-xs">2.3 KB</td>
-                                        <td class="px-4 py-2">3d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="ConfigMap" data-name="nginx-config">nginx-config</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1 text-xs">
-                                                <div class="font-mono">nginx.conf</div>
-                                                <div class="font-mono">default.conf</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2 text-xs">1.8 KB</td>
-                                        <td class="px-4 py-2">5d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="ConfigMap" data-name="log-config">log-config</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1 text-xs">
-                                                <div class="font-mono">logback.xml</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2 text-xs">956 B</td>
-                                        <td class="px-4 py-2">1d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Secret 分頁 -->
-                <section id="tab-secrets" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                            <div class="text-sm text-slate-600">共 <span id="countSecrets">2</span> 個 Secret</div>
-                        </div>
-                        <div class="overflow-auto scroll-area">
-                            <table class="min-w-full text-sm">
-                                <thead class="bg-slate-50 text-slate-600">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left w-8">
-                                            <input type="checkbox" class="rounded">
-                                        </th>
-                                        <th class="px-4 py-2 text-left">名稱</th>
-                                        <th class="px-4 py-2 text-left">類型</th>
-                                        <th class="px-4 py-2 text-left">資料項目</th>
-                                        <th class="px-4 py-2 text-left">Age</th>
-                                        <th class="px-4 py-2 text-left">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="Secret" data-name="db-credentials">db-credentials</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-50 text-purple-700">Opaque</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1 text-xs">
-                                                <div class="font-mono">username</div>
-                                                <div class="font-mono">password</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2">7d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="Secret" data-name="tls-cert">tls-cert</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-50 text-green-700">kubernetes.io/tls</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <div class="space-y-1 text-xs">
-                                                <div class="font-mono">tls.crt</div>
-                                                <div class="font-mono">tls.key</div>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-2">2d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 儲存 (PV/PVC) 分頁 -->
-                <section id="tab-storage" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
-                        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
-                            <div class="text-sm text-slate-600">共 <span id="countStorage">4</span> 個儲存資源</div>
-                        </div>
-                        <div class="overflow-auto scroll-area">
-                            <table class="min-w-full text-sm">
-                                <thead class="bg-slate-50 text-slate-600">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left w-8">
-                                            <input type="checkbox" class="rounded">
-                                        </th>
-                                        <th class="px-4 py-2 text-left">名稱</th>
-                                        <th class="px-4 py-2 text-left">類型</th>
-                                        <th class="px-4 py-2 text-left">狀態</th>
-                                        <th class="px-4 py-2 text-left">容量</th>
-                                        <th class="px-4 py-2 text-left">存取模式</th>
-                                        <th class="px-4 py-2 text-left">儲存類別</th>
-                                        <th class="px-4 py-2 text-left">Age</th>
-                                        <th class="px-4 py-2 text-left">操作</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-100">
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="PersistentVolumeClaim" data-name="db-storage">db-storage</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">PVC</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs">Bound</span>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">10Gi</td>
-                                        <td class="px-4 py-2 text-xs">RWO</td>
-                                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
-                                        <td class="px-4 py-2">5d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="PersistentVolume" data-name="pv-001">pv-001</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-indigo-50 text-indigo-700">PV</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs">Bound</span>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">10Gi</td>
-                                        <td class="px-4 py-2 text-xs">RWO</td>
-                                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
-                                        <td class="px-4 py-2">5d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="PersistentVolumeClaim" data-name="web-logs">web-logs</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">PVC</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs">Bound</span>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">5Gi</td>
-                                        <td class="px-4 py-2 text-xs">RWX</td>
-                                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
-                                        <td class="px-4 py-2">3d</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr class="hover:bg-slate-50">
-                                        <td class="px-4 py-2">
-                                            <input type="checkbox" class="rounded">
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <a href="#" class="text-brand-700 hover:underline open-drawer"
-                                                data-kind="PersistentVolumeClaim"
-                                                data-name="temp-storage">temp-storage</a>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">PVC</span>
-                                        </td>
-                                        <td class="px-4 py-2">
-                                            <span
-                                                class="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded text-xs">Pending</span>
-                                        </td>
-                                        <td class="px-4 py-2 font-mono text-xs">1Gi</td>
-                                        <td class="px-4 py-2 text-xs">RWO</td>
-                                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
-                                        <td class="px-4 py-2">1h</td>
-                                        <td class="px-4 py-2">
-                                            <div class="flex items-center gap-2">
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
-                                                <button
-                                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="tab-quota" class="tab-panel hidden">
-                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
-                        配額與限制（ResourceQuota / LimitRange）摘要（示意）。
-                    </div>
-                </section>
-
-                </footer>
+            </div>
         </main>
     </div>
 
+    <!-- 詳情抽屜（含控制器徽章 + YAML + Pods 狀態明細） -->
     <aside id="drawer"
-        class="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white shadow-2xl ring-1 ring-slate-200 translate-x-full transition-transform">
+        class="fixed top-0 right-0 h-full w-full md:w-[680px] bg-white shadow-2xl ring-1 ring-slate-200 translate-x-full transition-transform">
         <div class="flex items-center justify-between px-5 py-4 border-b">
             <div>
                 <div class="text-xs text-slate-500">資源詳情</div>
                 <div id="drawerTitle" class="text-lg font-semibold">-</div>
             </div>
-            <button id="closeDrawer" class="p-2 rounded-md hover:bg-slate-50">
-                <span class="material-icons-outlined">close</span>
-            </button>
+            <button id="closeDrawer" class="p-2 rounded-md hover:bg-slate-50"><span
+                    class="material-icons-outlined">close</span></button>
         </div>
-        <div class="h-[calc(100%-64px)] overflow-auto scroll-area p-5 space-y-6">
-            <!-- 概覽 -->
+        <div class="h-[calc(100%-64px)] overflow-auto p-5 space-y-6">
             <section>
                 <h3 class="text-sm font-medium text-slate-700 mb-3">概覽</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                    <div><span class="text-slate-500">Kind：</span><span id="dKind" class="font-medium">-</span></div>
-                    <div><span class="text-slate-500">專案：</span><span
-                            class="font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded">itw</span></div>
+                    <div><span class="text-slate-500">Kind：</span><span id="dKind" class="font-medium">Pod</span></div>
                     <div><span class="text-slate-500">Namespace：</span><span id="dNamespace"
-                            class="font-medium font-mono bg-gray-50 text-gray-700 px-2 py-0.5 rounded">itw</span>
-                    </div>
-                    <div><span class="text-slate-500">Label：</span><span class="font-mono text-xs">app=web,
-                            tier=frontend</span></div>
-                    <div><span class="text-slate-500">策略：</span><span class="font-medium">RollingUpdate</span></div>
-                </div>
-            </section>
-            <!-- 指標（示意靜態條） -->
-            <section>
-                <h3 class="text-sm font-medium text-slate-700 mb-3">度量（最近 15 分鐘）</h3>
-                <div class="space-y-2 text-sm">
-                    <div>CPU 使用 <div class="w-full h-2 bg-slate-100 rounded">
-                            <div class="h-2 bg-brand-500 rounded" style="width: 45%"></div>
-                        </div>
-                    </div>
-                    <div>記憶體 使用 <div class="w-full h-2 bg-slate-100 rounded">
-                            <div class="h-2 bg-brand-500 rounded" style="width: 32%"></div>
-                        </div>
+                            class="font-medium font-mono bg-gray-50 text-gray-700 px-2 py-0.5 rounded">itw</span></div>
+                    <div class="sm:col-span-2 flex items-center gap-2">
+                        <span class="text-slate-500">控制器：</span>
+                        <span id="dControllerBadge" class="chip chip-muted"><i
+                                class="material-icons-outlined">help_outline</i> Unknown</span>
+                        <span id="dControllerName" class="font-mono text-slate-600"></span>
                     </div>
                 </div>
             </section>
-            <!-- YAML（示例） -->
+
+            <section id="podsSection">
+                <h3 class="text-sm font-medium text-slate-700 mb-3">Pods 狀態明細</h3>
+                <div class="overflow-auto">
+                    <table class="min-w-full text-xs" id="podsTable">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-3 py-2 text-left w-56">Pod 名稱</th>
+                                <th class="px-3 py-2 text-left w-20">Phase</th>
+                                <th class="px-3 py-2 text-left w-32">Ready(Container)</th>
+                                <th class="px-3 py-2 text-left w-24">Pod IP</th>
+                                <th class="px-3 py-2 text-left w-24">Node</th>
+                                <th class="px-3 py-2 text-left w-20">Restarts</th>
+                                <th class="px-3 py-2 text-left w-20">CPU</th>
+                                <th class="px-3 py-2 text-left w-24">Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody id="podsTbody" class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="px-3 py-2 text-slate-500" colspan="8">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <section>
                 <h3 class="text-sm font-medium text-slate-700 mb-3">YAML（唯讀）</h3>
-                <pre class="bg-slate-50 rounded-lg p-3 text-xs overflow-auto"><code>apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: web-deploy
-  labels:
-    app: web
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: web
-  template:
-    metadata:
-      labels:
-        app: web
-    spec:
-      containers:
-        - name: web
-          image: ghcr.io/acme/web:1.2.3
-          ports:
-            - containerPort: 8080
-</code></pre>
-            </section>
-            <!-- 事件 -->
-            <section>
-                <h3 class="text-sm font-medium text-slate-700 mb-3">近期事件</h3>
-                <ul class="text-xs space-y-1">
-                    <li>[Normal] ScalingReplicaSet 由 2 → 3</li>
-                    <li>[Normal] Pulled ghcr.io/acme/web:1.2.3</li>
-                    <li>[Normal] SuccessfulCreate pod/web-deploy-xxxxx</li>
-                </ul>
+                <pre id="dYaml" class="bg-slate-50 rounded-lg p-3 text-xs overflow-auto"><code># 選擇一個項目查看詳情</code></pre>
             </section>
         </div>
     </aside>
 
-    <!-- YAML 編輯器模態框 -->
-    <div id="yamlModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-3/4 flex flex-col">
-            <div class="flex items-center justify-between px-6 py-4 border-b">
-                <div>
-                    <h3 class="text-lg font-semibold">從 YAML 建立 Kubernetes 資源</h3>
-                    <p class="text-sm text-slate-500">支援建立任何類型的 Kubernetes 資源 - 工作負載、服務、配置等</p>
-                </div>
-                <button id="closeYamlModal" class="p-2 rounded-md hover:bg-slate-50">
-                    <span class="material-icons-outlined">close</span>
-                </button>
-            </div>
-            <div class="flex-1 p-6 flex flex-col">
-                <div class="flex items-center gap-2 mb-4">
-                    <select id="yamlResourceType"
-                        class="rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 text-sm">
-                        <option value="">選擇資源類型（可選）</option>
-                        <option value="Deployment">Deployment</option>
-                        <option value="StatefulSet">StatefulSet</option>
-                        <option value="Service">Service</option>
-                        <option value="Ingress">Ingress</option>
-                        <option value="ConfigMap">ConfigMap</option>
-                        <option value="Secret">Secret</option>
-                        <option value="PersistentVolumeClaim">PersistentVolumeClaim</option>
-                        <option value="PersistentVolume">PersistentVolume</option>
-                    </select>
-                    <button id="loadSampleYaml"
-                        class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">
-                        載入範例
-                    </button>
-                </div>
-                <textarea id="yamlEditor"
-                    class="flex-1 w-full rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 font-mono text-sm resize-none"
-                    placeholder="在此貼上您的 YAML 配置...
-
-支援的資源類型：
-• 工作負載：Deployment, StatefulSet, DaemonSet, Job, CronJob
-• 網路：Service, Ingress
-• 配置：ConfigMap, Secret
-• 儲存：PersistentVolume, PersistentVolumeClaim
-• 以及任何其他 Kubernetes 資源
-
-範例：
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: my-config
-  namespace: itw
-data:
-  key1: value1
-  key2: value2"></textarea>
-            </div>
-            <div class="px-6 py-4 border-t flex items-center justify-between">
-                <div class="text-sm text-slate-500">
-                    提示：確保 YAML 格式正確，並設定正確的 namespace
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="validateYaml"
-                        class="px-4 py-2 rounded-md border border-slate-200 text-sm hover:bg-slate-50">
-                        驗證 YAML
-                    </button>
-                    <button id="applyYaml"
-                        class="px-4 py-2 rounded-md bg-green-600 text-white text-sm hover:bg-green-700">
-                        套用資源
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            100: '#e0e7ff',
-                            200: '#c7d2fe',
-                            300: '#a5b4fc',
-                            400: '#818cf8',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            700: '#4338ca',
-                            800: '#3730a3',
-                            900: '#312e81'
-                        }
-                    }
-                }
+        // ===== Demo: seed data =====
+        const svcHealth = [
+            {
+                name: 'web-frontend',
+                ingress: {
+                    state: 'OK',
+                    five_xx: 0.003,
+                    host: 'portal.itw.example.com',
+                    more: 'AWS ALB',
+                    yaml: `apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: web-frontend-ingress\n  namespace: itw\n  annotations:\n    kubernetes.io/ingress.class: "aws-load-balancer-controller"\nspec:\n  rules:\n  - host: portal.itw.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: web-frontend-service\n            port:\n              number: 8080`
+                },
+                service: {
+                    state: 'OK',
+                    endpoints: 6,
+                    kind: 'ClusterIP',
+                    addr: '10.43.2.10:8080',
+                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: web-frontend-service\n  namespace: itw\nspec:\n  selector:\n    app: web\n  ports:\n  - port: 8080\n    targetPort: 8080\n    protocol: TCP\n  type: ClusterIP`
+                },
+                pods: { state: 'OK', ready: '6/6', cpu: 0.41, mem: 0.52 },
+                controller: { kind: 'Deployment', name: 'web-deploy' },
+                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web-deploy\n  namespace: itw\nspec:\n  replicas: 6\n  selector:{matchLabels:{app:web}}\n  template:{metadata:{labels:{app:web}},spec:{containers:[{name:web,image:ghcr.io/acme/web:1.2.3,ports:[{containerPort:8080}]}]}}`,
+                podDetails: genPods('web-frontend', 6)
+            },
+            {
+                name: 'api-service',
+                ingress: {
+                    state: 'OK',
+                    five_xx: 0.008,
+                    host: 'api.itw.example.com',
+                    more: 'NGINX Ingress',
+                    yaml: `apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: api-service-ingress\n  namespace: itw\n  annotations:\n    kubernetes.io/ingress.class: "nginx"\n    nginx.ingress.kubernetes.io/rewrite-target: /\nspec:\n  rules:\n  - host: api.itw.example.com\n    http:\n      paths:\n      - path: /api\n        pathType: Prefix\n        backend:\n          service:\n            name: api-service\n            port:\n              number: 80`
+                },
+                service: {
+                    state: 'OK',
+                    endpoints: 4,
+                    kind: 'ClusterIP',
+                    addr: '10.43.3.20:80',
+                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: api-service\n  namespace: itw\nspec:\n  selector:\n    app: api\n  ports:\n  - port: 80\n    targetPort: 8080\n    protocol: TCP\n  type: ClusterIP`
+                },
+                pods: { state: 'OK', ready: '4/4', cpu: 0.33, mem: 0.44 },
+                controller: { kind: 'StatefulSet', name: 'api-ss' },
+                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: api-ss\n  namespace: itw\nspec:\n  serviceName: api\n  replicas: 4\n  selector:{matchLabels:{app:api}}\n  template:{metadata:{labels:{app:api}},spec:{containers:[{name:api,image:ghcr.io/acme/api:2.0.0}]}}`,
+                podDetails: genPods('api-ss', 4, true)
+            },
+            {
+                name: 'kong-gateway',
+                ingress: {
+                    state: 'OK',
+                    five_xx: 0.002,
+                    host: 'gw.itw.example.com',
+                    more: 'Kong Gateway',
+                    yaml: `apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: kong-gateway-ingress\n  namespace: itw\n  annotations:\n    konghq.com/override: kong-config\nspec:\n  ingressClassName: kong\n  rules:\n  - host: gw.itw.example.com\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: kong-gateway-service\n            port:\n              number: 8000`
+                },
+                service: {
+                    state: 'OK',
+                    endpoints: 3,
+                    kind: 'NodePort',
+                    addr: '10.43.8.21:32080',
+                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: kong-gateway-service\n  namespace: itw\nspec:\n  selector:\n    app: kong\n  ports:\n  - port: 8000\n    targetPort: 8000\n    nodePort: 32080\n    protocol: TCP\n  type: NodePort`
+                },
+                pods: { state: 'OK', ready: '3/3', cpu: 0.29, mem: 0.37 },
+                controller: { kind: 'Deployment', name: 'kong-gateway' },
+                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: kong-gateway\n  namespace: itw\nspec:\n  replicas: 3\n  selector:{matchLabels:{app:kong}}\n  template:{metadata:{labels:{app:kong}},spec:{containers:[{name:kong,image:ghcr.io/acme/kong:3.6} ]}}`,
+                podDetails: genPods('kong-gateway', 3)
+            },
+            {
+                name: 'internal-db',
+                ingress: { state: '—', five_xx: 0, host: '—', more: '無對外路由' },
+                service: {
+                    state: 'OK',
+                    endpoints: 1,
+                    kind: 'ClusterIP',
+                    addr: '10.43.2.22:5432',
+                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: internal-db-service\n  namespace: itw\nspec:\n  selector:\n    app: db\n  ports:\n  - port: 5432\n    targetPort: 5432\n    protocol: TCP\n  type: ClusterIP\n  clusterIP: None`
+                },
+                pods: { state: 'OK', ready: '1/1', cpu: 0.21, mem: 0.36 },
+                controller: { kind: 'StatefulSet', name: 'internal-db' },
+                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: internal-db\n  namespace: itw\nspec:{serviceName: db, replicas: 1, selector:{matchLabels:{app:db}}, template:{metadata:{labels:{app:db}},spec:{containers:[{name:db,image:postgres:15}]}}}`,
+                podDetails: genPods('internal-db', 1, true)
+            },
+            {
+                name: 'log-agent',
+                ingress: { state: '—', five_xx: 0, host: '—', more: '無對外路由' },
+                service: {
+                    state: 'OK',
+                    endpoints: 5,
+                    kind: 'ClusterIP',
+                    addr: '—',
+                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: log-agent-service\n  namespace: itw\nspec:\n  selector:\n    app: log-agent\n  ports:\n  - port: 9200\n    targetPort: 9200\n    protocol: TCP\n  type: ClusterIP`
+                },
+                pods: { state: 'OK', ready: '5/5', cpu: 0.12, mem: 0.29 },
+                controller: { kind: 'DaemonSet', name: 'log-agent' },
+                yaml: `apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: log-agent\n  namespace: itw\nspec:{selector:{matchLabels:{app:log-agent}},template:{metadata:{labels:{app:log-agent}},spec:{containers:[{name:agent,image:ghcr.io/acme/agent:1.0.0}]}}}`,
+                podDetails: genPods('log-agent', 5)
+            },
+            {
+                name: 'batch-sync',
+                ingress: { state: '—', five_xx: 0, host: '—', more: '內部' },
+                service: {
+                    state: 'OK',
+                    endpoints: 1,
+                    kind: 'ClusterIP',
+                    addr: '—',
+                    yaml: `apiVersion: v1\nkind: Service\nmetadata:\n  name: batch-sync-service\n  namespace: itw\nspec:\n  selector:\n    app: sync\n  ports:\n  - port: 8080\n    targetPort: 8080\n    protocol: TCP\n  type: ClusterIP`
+                },
+                pods: { state: 'OK', ready: 'Succeeded 1/1', cpu: 0.18, mem: 0.22 },
+                controller: { kind: 'Job', name: 'data-sync-job' },
+                yaml: `apiVersion: batch/v1\nkind: Job\nmetadata:{name:data-sync-job,namespace:itw}\nspec:{completions:1,template:{spec:{restartPolicy:Never,containers:[{name:sync,image:ghcr.io/acme/sync:0.3.1}]}}}`,
+                podDetails: [{ name: 'data-sync-job-xyz', phase: 'Succeeded', ready: '1/1', ip: '10.42.11.2', node: 'node-a', restarts: 0, cpu: '85m', mem: '90Mi' }]
             }
+        ];
+
+        function genPods(prefix, n, ordinal) { // ordinal: for StatefulSet
+            const arr = [];
+            for (let i = 0; i < n; i++) {
+                const name = ordinal ? `${prefix}-${i}` : `${prefix}-${Math.random().toString(36).slice(2, 5)}`;
+                arr.push({ name, phase: 'Running', ready: '1/1', ip: `10.42.${(i % 10) + 3}.${(i % 50) + 10}`, node: `node-${'abcde'[i % 5]}`, restarts: 0, cpu: `${60 + i * 3}m`, mem: `${100 + i * 5}Mi` });
+            }
+            return arr;
         }
-    </script>
-    <script>
-        // 簡易分頁切換
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', e => {
-                const tab = btn.getAttribute('data-tab');
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('bg-brand-50', 'text-brand-700'));
-                btn.classList.add('bg-brand-50', 'text-brand-700');
-                document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
-                document.querySelector('#tab-' + tab).classList.remove('hidden');
-            });
-        });
 
-        // 展開列
-        document.querySelectorAll('.expander').forEach((btn, idx) => {
-            btn.addEventListener('click', () => {
-                const row = btn.closest('tr');
-                const next = row.nextElementSibling;
-                const expanded = next.classList.contains('hidden');
-                document.querySelectorAll('tr.row-expand').forEach(n => n.classList.add('hidden'));
-                document.querySelectorAll('.expander').forEach(b => b.setAttribute('aria-expanded', 'false'));
-                if (expanded) {
-                    next.classList.remove('hidden');
-                    btn.setAttribute('aria-expanded', 'true');
-                }
-            });
-        });
+        const stateBadge = (state) => state === 'OK'
+            ? '<span class="chip" style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0">🟢 正常</span>'
+            : state === 'WARN' ? '<span class="chip" style="color:#92400e;background:#fffbeb;border:1px solid #fde68a">🟡 輕微異常</span>'
+                : state === 'BAD' ? '<span class="chip" style="color:#b91c1c;background:#fef2f2;border:1px solid #fecaca">🔴 故障</span>'
+                    : '<span class="chip chip-muted">—</span>';
 
-        // 右側抽屜
-        const drawer = document.getElementById('drawer');
-        const title = document.getElementById('drawerTitle');
-        const dKind = document.getElementById('dKind');
-        document.querySelectorAll('.open-drawer').forEach(a => {
-            a.addEventListener('click', (e) => {
-                e.preventDefault();
-                title.textContent = a.dataset.name;
-                dKind.textContent = a.dataset.kind;
-                drawer.classList.remove('translate-x-full');
-            })
-        });
+        function controllerChip(kind) {
+            const map = { Deployment: 'chip-ctl-Deployment', StatefulSet: 'chip-ctl-StatefulSet', DaemonSet: 'chip-ctl-DaemonSet', Job: 'chip-ctl-Job', CronJob: 'chip-ctl-CronJob', ReplicaSet: 'chip-ctl-ReplicaSet' };
+            const icon = { Deployment: 'hub', StatefulSet: 'dns', DaemonSet: 'device_hub', Job: 'schedule', CronJob: 'event_repeat', ReplicaSet: 'polyline' }[kind] || 'help_outline';
+            const cls = map[kind] || 'chip-muted';
+            return `<span class="chip ${cls}"><i class="material-icons-outlined">${icon}</i>${kind}</span>`;
+        }
+
+        function canRestart(kind) { return kind === 'Deployment' || kind === 'StatefulSet' || kind === 'DaemonSet'; }
+        function canScale(kind) { return kind === 'Deployment'; }
+
+        function podCountLabel(s) { return s.controller.kind === 'Job' ? s.pods.ready : `Ready Pods ${s.pods.ready}`; }
+
+        function rowActions(s, idx) {
+            const btns = [];
+            if (canRestart(s.controller.kind)) {
+                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="restartCtrl(${idx})">重啟</button>`);
+            }
+            if (canScale(s.controller.kind)) {
+                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="scaleDeployment(${idx})">調整副本數</button>`);
+            }
+            btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openDrawer(${idx})'>詳情</button>`);
+            return btns.join(' ');
+        }
+
+        function rowOf(s, idx) {
+            return `
+        <tr class="hover:bg-slate-50 align-top">
+          <td class="px-4 py-3">
+            <div class="font-medium">${s.name}</div>
+            <div class="text-xs text-slate-500">ns: itw</div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-col gap-1">
+              ${stateBadge(s.ingress.state === '—' ? undefined : s.ingress.state)}
+              <div class="text-xs text-slate-600">${s.ingress.more}</div>
+              <div class="text-xs text-slate-600">host: <span class="font-mono">${s.ingress.host}</span></div>
+              ${s.ingress.state !== '—' ? `<div class="text-[11px] text-slate-500">5xx 比例 ${(s.ingress.five_xx * 100).toFixed(1)}%</div>` : ''}
+              ${s.ingress.state !== '—' ? `<div class="mt-1"><button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openIngressDrawer(${idx})'>詳情</button></div>` : ''}
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-col gap-1">
+              ${stateBadge(s.service.state)}
+              <div class="text-xs text-slate-600">${s.service.kind || ''} ${s.service.addr ? ('· ' + s.service.addr) : ''}</div>
+              <div class="text-xs text-slate-600">endpoints: ${s.service.endpoints}</div>
+              <div class="mt-1"><button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openServiceDrawer(${idx})'>詳情</button></div>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-col gap-1">
+              ${stateBadge(s.pods.state)}
+              <div class="text-xs text-slate-600">${podCountLabel(s)} · CPU ${(s.pods.cpu * 100 | 0)}% · MEM ${(s.pods.mem * 100 | 0)}%</div>
+              <div class="flex items-center gap-2 mt-1">${controllerChip(s.controller.kind)}<span class="text-xs font-mono text-slate-600">${s.controller.name}</span></div>
+              <div class="mt-2 flex flex-wrap gap-1">${rowActions(s, idx)}</div>
+            </div>
+          </td>
+        </tr>`;
+        }
+
+        function renderHealthTable(items) {
+            const tbody = document.getElementById('healthRows');
+            tbody.innerHTML = items.map((s, i) => rowOf(s, i)).join('');
+        }
+
+        function fillPodsTable(pods) {
+            const tbody = document.getElementById('podsTbody');
+            if (!pods || pods.length === 0) { tbody.innerHTML = '<tr><td class="px-3 py-2 text-slate-500" colspan="8">—</td></tr>'; return; }
+            tbody.innerHTML = pods.map(p => `
+        <tr>
+          <td class="px-3 py-2 font-mono">${p.name}</td>
+          <td class="px-3 py-2">${p.phase}</td>
+          <td class="px-3 py-2">${p.ready}</td>
+          <td class="px-3 py-2 font-mono">${p.ip}</td>
+          <td class="px-3 py-2 font-mono">${p.node}</td>
+          <td class="px-3 py-2">${p.restarts}</td>
+          <td class="px-3 py-2 font-mono">${p.cpu}</td>
+          <td class="px-3 py-2 font-mono">${p.mem}</td>
+        </tr>`).join('');
+        }
+
+        function openDrawer(idx) {
+            const s = svcHealth[idx];
+            const drawer = document.getElementById('drawer');
+            document.getElementById('drawerTitle').textContent = s.name;
+            document.getElementById('dKind').textContent = 'Pod';
+            document.getElementById('dNamespace').textContent = 'itw';
+            document.getElementById('dControllerBadge').outerHTML = controllerChip(s.controller.kind);
+            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">/</span> <span class="font-mono">${s.controller.name}</span>`;
+            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.yaml || '# 無示例 YAML')}</code>`;
+            // Show pods section for Pod details
+            document.getElementById('podsSection').style.display = 'block';
+            fillPodsTable(s.podDetails);
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function openIngressDrawer(idx) {
+            const s = svcHealth[idx];
+            const drawer = document.getElementById('drawer');
+            document.getElementById('drawerTitle').textContent = `${s.name} - Ingress`;
+            document.getElementById('dKind').textContent = 'Ingress';
+            document.getElementById('dNamespace').textContent = 'itw';
+            document.getElementById('dControllerBadge').innerHTML = '<span class="chip chip-muted"><i class="material-icons-outlined">public</i>Ingress</span>';
+            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">host:</span> <span class="font-mono">${s.ingress.host}</span>`;
+            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.ingress.yaml || '# 無 Ingress YAML')}</code>`;
+            // Hide pods section for Ingress
+            document.getElementById('podsSection').style.display = 'none';
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function openServiceDrawer(idx) {
+            const s = svcHealth[idx];
+            const drawer = document.getElementById('drawer');
+            document.getElementById('drawerTitle').textContent = `${s.name} - Service`;
+            document.getElementById('dKind').textContent = 'Service';
+            document.getElementById('dNamespace').textContent = 'itw';
+            document.getElementById('dControllerBadge').innerHTML = `<span class="chip chip-muted"><i class="material-icons-outlined">hub</i>${s.service.kind}</span>`;
+            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">addr:</span> <span class="font-mono">${s.service.addr || '—'}</span>`;
+            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.service.yaml || '# 無 Service YAML')}</code>`;
+            // Hide pods section for Service
+            document.getElementById('podsSection').style.display = 'none';
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function restartCtrl(idx) {
+            const s = svcHealth[idx];
+            const kind = s.controller.kind;
+            if (!canRestart(kind)) { alert('此資源不支援滾動重啟'); return; }
+            if (!confirm(`確定要滾動重啟 ${kind} / ${s.controller.name} 嗎？`)) return;
+            // Demo: 不改資料，只提示
+            alert(`已觸發：kubectl rollout restart ${kind.toLowerCase()} ${s.controller.name} -n itw`);
+        }
+
+        function scaleDeployment(idx) {
+            const s = svcHealth[idx];
+            if (!canScale(s.controller.kind)) { alert('只有 Deployment 支援調整副本數'); return; }
+            const cur = parseInt((s.pods.ready.split('/')[1] || s.podDetails.length), 10) || s.podDetails.length;
+            const val = prompt(`調整 ${s.controller.name} 的副本數 (目前: ${cur})`, cur);
+            if (val === null) return;
+            const n = Number(val);
+            if (!Number.isInteger(n) || n < 0 || n > 50) { alert('請輸入 0~50 的整數'); return; }
+            if (!confirm(`確認將 ${s.controller.name} 副本數調整為 ${n} ?`)) return;
+            // Demo: 更新本地資料
+            s.pods.ready = `${Math.min(n, n)}\/${n}`;
+            s.service.endpoints = n;
+            s.yaml = s.yaml.replace(/replicas:\s*\d+/, 'replicas: ' + n);
+            s.podDetails = genPods(s.controller.name, n);
+            renderHealthTable(svcHealth);
+            // 若抽屜正打開且是這個服務，順便更新
+            if (document.getElementById('drawerTitle').textContent === s.name) {
+                document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(s.yaml)}</code>`;
+                fillPodsTable(s.podDetails);
+            }
+            alert(`已模擬：kubectl scale deployment ${s.controller.name} -n itw --replicas=${n}`);
+        }
+
+        function escapeHtml(str) { return str.replace(/[&<>\"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c])); }
+
         document.getElementById('closeDrawer').addEventListener('click', () => {
-            drawer.classList.add('translate-x-full');
+            document.getElementById('drawer').classList.add('translate-x-full');
         });
 
-        // 自動更新（示意）
-        const autoBtn = document.getElementById('autoRefresh');
-        const autoState = document.getElementById('autoState');
-        let enabled = false;
-        autoBtn.addEventListener('click', () => {
-            enabled = !enabled;
-            autoState.textContent = enabled ? '開' : '關';
-        });
+        renderHealthTable(svcHealth);
 
-        // YAML 編輯器功能
-        const yamlModal = document.getElementById('yamlModal');
-        const yamlEditor = document.getElementById('yamlEditor');
-        const yamlResourceType = document.getElementById('yamlResourceType');
-        const closeYamlModal = document.getElementById('closeYamlModal');
-        const loadSampleYaml = document.getElementById('loadSampleYaml');
-        const validateYaml = document.getElementById('validateYaml');
-        const applyYaml = document.getElementById('applyYaml');
-
-        // YAML 範例模板
-        const yamlSamples = {
-            'Deployment': `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: my-app
-  namespace: itw
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: my-app
-  template:
-    metadata:
-      labels:
-        app: my-app
-    spec:
-      containers:
-      - name: my-app
-        image: nginx:latest
-        ports:
-        - containerPort: 80`,
-            'Service': `apiVersion: v1
-kind: Service
-metadata:
-  name: my-service
-  namespace: itw
-spec:
-  selector:
-    app: my-app
-  ports:
-  - port: 80
-    targetPort: 80
-  type: ClusterIP`,
-            'ConfigMap': `apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: my-config
-  namespace: itw
-data:
-  app.properties: |
-    database.host=localhost
-    database.port=5432
-  config.yaml: |
-    debug: true
-    logLevel: info`,
-            'Secret': `apiVersion: v1
-kind: Secret
-metadata:
-  name: my-secret
-  namespace: itw
-type: Opaque
-data:
-  username: dXNlcm5hbWU=  # base64 encoded
-  password: cGFzc3dvcmQ=  # base64 encoded`,
-            'PersistentVolumeClaim': `apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: my-storage
-  namespace: itw
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: microk8s-hostpath`
-        };
-
-        // 開啟 YAML 編輯器（只針對頂部按鈕）
-        const createFromYamlBtn = document.getElementById('createFromYaml');
-        if (createFromYamlBtn) {
-            createFromYamlBtn.addEventListener('click', () => {
-                yamlModal.classList.remove('hidden');
-                yamlEditor.focus();
-            });
+        async function loadK8sEvents() {
+            const tbody = document.getElementById('eventsRows');
+            tbody.innerHTML = "<tr><td colspan='6' class='px-4 py-3 text-slate-500'>載入中...</td></tr>";
+            tbody.innerHTML = `
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-3">2025-11-07 14:22</td><td>Warning</td><td>pod/web-deploy-xxxxx</td><td>FailedScheduling</td><td>0/5 nodes are available: not enough memory.</td><td>3</td>
+        </tr>
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-3">2025-11-07 10:05</td><td>Normal</td><td>deployment/web-deploy</td><td>ScalingReplicaSet</td><td>Scaled up replica set web-deploy-55b44d7d6f to 6</td><td>1</td>
+        </tr>`;
         }
-
-        // 關閉模態框
-        closeYamlModal.addEventListener('click', () => {
-            yamlModal.classList.add('hidden');
-        });
-
-        // 點擊模態框外部關閉
-        yamlModal.addEventListener('click', (e) => {
-            if (e.target === yamlModal) {
-                yamlModal.classList.add('hidden');
-            }
-        });
-
-        // 載入範例 YAML
-        loadSampleYaml.addEventListener('click', () => {
-            const selectedType = yamlResourceType.value;
-            if (selectedType && yamlSamples[selectedType]) {
-                yamlEditor.value = yamlSamples[selectedType];
-            } else {
-                yamlEditor.value = yamlSamples['ConfigMap']; // 預設範例
-            }
-        });
-
-        // 驗證 YAML
-        validateYaml.addEventListener('click', () => {
-            const yamlContent = yamlEditor.value.trim();
-            if (!yamlContent) {
-                alert('請輸入 YAML 內容');
-                return;
-            }
-
-            try {
-                // 簡單的 YAML 語法檢查
-                if (!yamlContent.includes('apiVersion:') || !yamlContent.includes('kind:')) {
-                    throw new Error('YAML 必須包含 apiVersion 和 kind 欄位');
-                }
-
-                if (!yamlContent.includes('namespace: itw')) {
-                    if (confirm('YAML 中未指定 namespace: itw，是否自動添加？')) {
-                        const lines = yamlContent.split('\n');
-                        const metadataIndex = lines.findIndex(line => line.includes('metadata:'));
-                        if (metadataIndex !== -1) {
-                            lines.splice(metadataIndex + 1, 0, '  namespace: itw');
-                            yamlEditor.value = lines.join('\n');
-                        }
-                    }
-                }
-
-                alert('YAML 語法驗證通過！');
-            } catch (error) {
-                alert('YAML 語法錯誤：' + error.message);
-            }
-        });
-
-        // 套用 YAML
-        applyYaml.addEventListener('click', () => {
-            const yamlContent = yamlEditor.value.trim();
-            if (!yamlContent) {
-                alert('請輸入 YAML 內容');
-                return;
-            }
-
-            if (confirm('確定要套用此 YAML 配置嗎？')) {
-                // 這裡應該調用 API 來套用 YAML
-                console.log('套用 YAML:', yamlContent);
-                alert('YAML 已提交套用！（這是示意功能）');
-                yamlModal.classList.add('hidden');
-                yamlEditor.value = '';
-                yamlResourceType.value = '';
-            }
-        });
-
-        // ====== 新增的容器管理功能 ======
-
-        // 顯示操作選單
-        window.showOperationMenu = function (button, resourceName) {
-            // 關閉其他已開啟的選單
-            document.querySelectorAll('.operation-menu').forEach(menu => {
-                if (menu !== button.nextElementSibling) {
-                    menu.classList.add('hidden');
-                }
-            });
-
-            // 切換當前選單
-            const menu = button.nextElementSibling;
-            menu.classList.toggle('hidden');
-
-            // 點擊其他地方關閉選單
-            if (!menu.classList.contains('hidden')) {
-                setTimeout(() => {
-                    document.addEventListener('click', function closeMenu(e) {
-                        if (!button.contains(e.target) && !menu.contains(e.target)) {
-                            menu.classList.add('hidden');
-                            document.removeEventListener('click', closeMenu);
-                        }
-                    });
-                }, 0);
-            }
-        };
-
-        // 查看 YAML 配置
-        window.viewYaml = function (kind, name) {
-            alert(`查看 ${kind}/${name} 的 YAML 配置\n（實際會顯示完整的 YAML 內容）`);
-        };
-
-        // 查看日誌
-        window.viewLogs = function (name) {
-            alert(`查看 ${name} 的容器日誌\n（實際會開啟日誌檢視器）`);
-        };
-
-        // 查看事件
-        window.viewEvents = function (name) {
-            alert(`查看 ${name} 的相關事件\n（實際會顯示 Kubernetes 事件列表）`);
-        };
-
-        // 查看資源監控
-        window.viewMetrics = function (name) {
-            alert(`查看 ${name} 的資源使用情況\n（實際會顯示 CPU/Memory 圖表）`);
-        };
-
-        // 調整 Replica 數量
-        window.promptReplicaScale = function (name, currentReplicas) {
-            const newReplicas = prompt(`調整 ${name} 的 Replica 數量\n目前: ${currentReplicas}`, currentReplicas);
-            if (newReplicas !== null && newReplicas !== '' && !isNaN(newReplicas)) {
-                const replicas = parseInt(newReplicas);
-                if (replicas >= 0 && replicas <= 10) {
-                    if (confirm(`確定將 ${name} 的 Replica 從 ${currentReplicas} 調整為 ${replicas} 嗎？\n\n⚠️ 此操作會立即生效並記錄操作日誌`)) {
-                        // 實際會調用 API
-                        console.log(`Scaling ${name} to ${replicas} replicas`);
-                        logOperation('SCALE', name, `調整 Replica: ${currentReplicas} → ${replicas}`);
-                        alert(`${name} 已調整為 ${replicas} 個 Replica`);
-                    }
-                } else {
-                    alert('Replica 數量必須在 0-10 之間');
-                }
-            }
-        };
-
-        // 確認重啟部署
-        window.confirmRestart = function (name) {
-            if (confirm(`確定要重啟 ${name} 嗎？\n\n⚠️ 此操作會觸發滾動更新並記錄操作日誌`)) {
-                // 實際會調用 API
-                console.log(`Restarting deployment ${name}`);
-                logOperation('RESTART', name, '觸發部署重啟');
-                alert(`${name} 重啟已觸發`);
-            }
-        };
-
-        // 顯示環境變數編輯器
-        window.showEnvEditor = function (name) {
-            const envVars = prompt(`臨時修改 ${name} 的環境變數\n格式: KEY1=value1,KEY2=value2\n\n⚠️ 此為臨時修改，正式變更請透過 CI/CD`, '');
-            if (envVars !== null && envVars.trim() !== '') {
-                if (confirm(`確定要為 ${name} 設定以下環境變數嗎？\n${envVars}\n\n⚠️ 此操作會記錄操作日誌`)) {
-                    // 實際會調用 API
-                    console.log(`Setting env vars for ${name}:`, envVars);
-                    logOperation('ENV_UPDATE', name, `臨時環境變數: ${envVars}`);
-                    alert(`${name} 的環境變數已更新`);
-                }
-            }
-        };
-
-        // 記錄操作日誌
-        function logOperation(action, resource, details) {
-            const timestamp = new Date().toLocaleString('zh-TW');
-            const user = 'admin'; // 實際會從認證系統取得
-            const logEntry = {
-                timestamp,
-                user,
-                action,
-                resource,
-                details,
-                cluster: document.getElementById('nsSelect').value
-            };
-
-            console.log('Operation Log:', logEntry);
-            // 實際會發送到後端記錄系統
-        }
+        loadK8sEvents();
+        document.getElementById('eventsRefresh').addEventListener('click', loadK8sEvents);
+        document.getElementById('healthRefresh').addEventListener('click', () => renderHealthTable(svcHealth));
     </script>
-
-
-    <script>
-        (function () {
-            const nsSelect = document.getElementById('nsSelect');
-            const nsName = document.getElementById('nsName');
-            const dNamespace = document.getElementById('dNamespace');
-            const currentProject = document.getElementById('currentProject');
-            const currentNamespace = document.getElementById('currentNamespace');
-
-            // 強制清除舊的儲存值，確保使用 itw
-            window.localStorage.setItem('activeNamespace', 'itw');
-
-            // Load saved namespace (if any)
-            const saved = window.localStorage.getItem('activeNamespace') || 'itw';
-            if (saved && nsSelect) {
-                for (const opt of nsSelect.options) {
-                    if (opt.value === saved) { nsSelect.value = saved; break; }
-                }
-                updateProjectInfo(saved);
-            }
-
-            function updateProjectInfo(namespace) {
-                // 假設專案代號等於 namespace
-                const projectName = namespace;
-
-                if (nsName) nsName.textContent = namespace;
-                if (dNamespace) dNamespace.textContent = namespace;
-                if (currentProject) currentProject.textContent = projectName;
-                if (currentNamespace) currentNamespace.textContent = namespace;
-            } function applyNS(v) {
-                updateProjectInfo(v);
-                try { window.localStorage.setItem('activeNamespace', v); } catch (e) { }
-                // TODO: 若你有 API，可在此觸發重新載入：fetch(`/api/k8s/${v}/workloads?...`)
-            }
-
-            if (nsSelect) {
-                nsSelect.addEventListener('change', (e) => {
-                    applyNS(e.target.value);
-                });
-            }
-
-            // 角色權限說明
-            window.showRoleInfo = function () {
-                const roleInfo = `容器管理權限分級說明
-
-👀 觀察者 (Viewer)
-├─ 查看所有容器資源狀態
-├─ 檢視日誌和事件
-├─ 查看監控指標
-└─ ❌ 無法進行任何修改操作
-
-🔧 操作者 (Operator) - 當前角色
-├─ 觀察者的所有權限
-├─ 調整 Replica 數量 (0-10)
-├─ 重啟 Pod/Deployment
-├─ 臨時修改環境變數
-└─ ⚠️ 所有操作會記錄審計日誌
-
-👑 管理者 (Administrator)
-├─ 操作者的所有權限
-├─ 建立/刪除資源
-├─ 修改 YAML 配置
-├─ 管理權限分配
-└─ 存取所有環境
-
-📋 權限申請：
-如需提升權限，請聯繫系統管理員並說明用途`;
-
-                alert(roleInfo);
-            };
-
-            // 權限檢查函數
-            window.checkPermission = function (action) {
-                const userRole = document.getElementById('userRole').textContent;
-                const permissions = {
-                    'viewer': ['view'],
-                    '觀察者': ['view'],
-                    'operator': ['view', 'scale', 'restart', 'env'],
-                    '操作者': ['view', 'scale', 'restart', 'env'],
-                    'administrator': ['view', 'scale', 'restart', 'env', 'create', 'delete', 'yaml'],
-                    '管理者': ['view', 'scale', 'restart', 'env', 'create', 'delete', 'yaml']
-                };
-
-                const userPermissions = permissions[userRole] || permissions['viewer'];
-                return userPermissions.includes(action);
-            };
-
-            // 修改操作函數以包含權限檢查
-            const originalPromptReplicaScale = window.promptReplicaScale;
-            window.promptReplicaScale = function (name, currentReplicas) {
-                if (!checkPermission('scale')) {
-                    alert('權限不足：您需要操作者或管理者權限才能調整 Replica 數量');
-                    return;
-                }
-                originalPromptReplicaScale(name, currentReplicas);
-            };
-
-            const originalConfirmRestart = window.confirmRestart;
-            window.confirmRestart = function (name) {
-                if (!checkPermission('restart')) {
-                    alert('權限不足：您需要操作者或管理者權限才能重啟部署');
-                    return;
-                }
-                originalConfirmRestart(name);
-            };
-
-            const originalShowEnvEditor = window.showEnvEditor;
-            window.showEnvEditor = function (name) {
-                if (!checkPermission('env')) {
-                    alert('權限不足：您需要操作者或管理者權限才能修改環境變數');
-                    return;
-                }
-                originalShowEnvEditor(name);
-            };
-        })();
-    </script>
-
 </body>
 
 </html>
