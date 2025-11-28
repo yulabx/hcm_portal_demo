@@ -310,12 +310,35 @@
 
       <div class="border-t border-dashed border-border-light dark:border-border-dark my-4"></div>
 
-      <!-- Subnet 需求（僅 Harvester / AWS 需要） -->
-      <div class="subnet-section">
-        <div class="flex items-center justify-between mb-2">
-          <div class="font-semibold">Subnet 需求</div>
-        </div>
-        <div class="subnets space-y-3"></div>
+      <!-- 網路設定（僅 Harvester / AWS 需要） -->
+      <div class="network-section">
+        <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md">
+          <legend class="text-base font-medium text-text-light dark:text-text-dark px-2">網路設定</legend>
+
+          <!-- VPC 層（僅 AWS） -->
+          <div class="vpc-row hidden mb-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium">VPC 預期網段大小</label>
+                <select name="vpcSize"
+                  class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary">
+                  <option value="/24">/24（~254 hosts）</option>
+                  <option value="/22">/22（~1,022 hosts）</option>
+                  <option value="/20">/20（~4,094 hosts）</option>
+                  <option value="/18">/18（~16,382 hosts）</option>
+                  <option value="/16" selected>/16（~65,534 hosts）</option>
+                </select>
+              </div>
+            </div>
+            <div class="border-t border-dashed border-border-light dark:border-border-dark my-4"></div>
+          </div>
+
+          <!-- Subnet 層 -->
+          <div class="flex items-center justify-between mb-2">
+            <div class="font-semibold text-sm">Subnet 需求</div>
+          </div>
+          <div class="subnets space-y-3"></div>
+        </fieldset>
       </div>
     </div>
   </template>
@@ -396,17 +419,22 @@
 
     function updateClusterUI(clusterEl) {
       const provider = clusterEl.querySelector('.provider').value;
-      const subnetSection = clusterEl.querySelector('.subnet-section');
+      const networkSection = clusterEl.querySelector('.network-section');
+      const vpcRow = clusterEl.querySelector('.vpc-row');
       const addSubnetBtn = clusterEl.querySelector('.add-subnet');
 
       const isK8s = provider === 'k8s';
+      const isAws = provider === 'aws';
 
-      // K8s：隱藏 Subnet 區塊與按鈕
-      subnetSection.style.display = isK8s ? 'none' : '';
+      // K8s：隱藏整個網路設定區塊與按鈕
+      networkSection.style.display = isK8s ? 'none' : '';
       addSubnetBtn.style.display = isK8s ? 'none' : '';
 
+      // AWS：顯示 VPC 列；Harvester：隱藏 VPC 列
+      vpcRow.classList.toggle('hidden', !isAws);
+
       // 若切到 K8s，清空既有 subnet；切回其它 provider，若沒有則補一筆
-      const subnetsContainer = subnetSection.querySelector('.subnets');
+      const subnetsContainer = networkSection.querySelector('.subnets');
       if (isK8s) {
         subnetsContainer.innerHTML = '';
       } else {
@@ -463,6 +491,12 @@
         const memory = Number(cluster.querySelector('[name="memory-quota"]').value) || null;
         const storage = Number(cluster.querySelector('[name="storage-quota"]').value) || null;
 
+        // AWS 才蒐集 VPC 網段大小
+        let vpcSize = null;
+        if (provider === 'aws') {
+          vpcSize = cluster.querySelector('[name=vpcSize]').value;
+        }
+
         // 非 k8s 才蒐集 subnets
         const subnets = provider === 'k8s' ? [] : [...cluster.querySelectorAll('.subnets .rounded-md')].map(row => ({
           name: row.querySelector('[name=subnetName]').value.trim(),
@@ -470,7 +504,7 @@
           purpose: row.querySelector('[name=purpose]').value.trim()
         }));
 
-        return { provider, quota: { cpu, memory, storage }, subnets };
+        return { provider, quota: { cpu, memory, storage }, vpcSize, subnets };
       });
 
       return { project, clusters };
@@ -486,6 +520,7 @@
         if (c.quota.cpu == null || c.quota.memory == null || c.quota.storage == null) {
           errors.push(`叢集 #${idx + 1}：CPU/Memory/Storage 配額皆需填寫`);
         }
+
         // 非 k8s 需至少一筆 Subnet，且名稱必填
         if (c.provider !== 'k8s') {
           if (!c.subnets.length) errors.push(`叢集 #${idx + 1}：至少需要一筆 Subnet 需求`);
