@@ -376,7 +376,11 @@
                                                 class="text-left text-muted-light dark:text-muted-dark bg-red-50/50 dark:bg-red-900/10">
                                                 <tr>
                                                     <th class="px-3 py-2 font-medium">主機名稱</th>
-                                                    <th class="px-3 py-2 font-medium">主機規格</th>
+                                                    <th class="px-3 py-2 font-medium text-center">主機規格</th>
+                                                    <th class="px-3 py-2 font-medium text-center">儲存空間</th>
+                                                    <th class="px-3 py-2 font-medium">映像檔</th>
+                                                    <th class="px-3 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-3 py-2 font-medium text-center">Memory</th>
                                                     <th class="px-3 py-2 font-medium">狀態</th>
                                                 </tr>
                                             </thead>
@@ -386,7 +390,35 @@
                                                         <a class="text-primary hover:underline"
                                                             href="vm-detail.html">itw-har01-vm-db01</a>
                                                     </td>
-                                                    <td class="px-3 py-2">4 vCPU / 8 GB</td>
+                                                    <td class="px-3 py-2 text-center">4 vCPU / 8 GB</td>
+                                                    <td class="px-3 py-2 text-center">100 GB</td>
+                                                    <td class="px-3 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-3 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 65%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">65%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.6 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-3 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 72%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">72%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.8 / 8 GB</span>
+                                                        </div>
+                                                    </td>
                                                     <td class="px-3 py-2">
                                                         <span
                                                             class="px-2 py-1 text-xs rounded-full bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 inline-flex items-center gap-1">
