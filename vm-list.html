@@ -39,6 +39,44 @@
         body {
             font-family: 'Noto Sans TC', sans-serif;
         }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-content {
+            visibility: hidden;
+            position: absolute;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
     </style>
 </head>
 
@@ -232,9 +270,9 @@
                                 <th class="px-6 py-3 text-center" scope="col">主機規格</th>
                                 <th class="px-6 py-3 text-center" scope="col">儲存空間</th>
                                 <th class="px-6 py-3" scope="col">映像檔</th>
-                                <th class="px-6 py-3" scope="col">
-                                    <span class="sr-only">操作</span>
-                                </th>
+                                <th class="px-6 py-3 text-center" scope="col">CPU</th>
+                                <th class="px-6 py-3 text-center" scope="col">Memory</th>
+                                <th class="px-6 py-3" scope="col">狀態</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -245,10 +283,36 @@
                                         href="vm-detail.html">itw-har01-vm-db01</a>
                                 </td>
                                 <td class="px-6 py-4">Harvester</td>
-                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4">itw-智慧便民</td>
                                 <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
                                 <td class="px-6 py-4 text-center">100 GB</td>
                                 <td class="px-6 py-4">Ubuntu 24.04</td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: 65%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">65%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 2.6 / 4 vCPU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 72%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">72%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 5.8 / 8 GB</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                </td>
                             </tr>
                             <tr
                                 class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -257,10 +321,36 @@
                                         href="#">itw-har01-vm-eiwap01</a>
                                 </td>
                                 <td class="px-6 py-4">Harvester</td>
-                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4">itw-智慧便民</td>
                                 <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
                                 <td class="px-6 py-4 text-center">100 GB</td>
                                 <td class="px-6 py-4">Ubuntu 24.04</td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: 45%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">45%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 1.8 / 4 vCPU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 58%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">58%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 4.6 / 8 GB</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                </td>
                             </tr>
                             <tr
                                 class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -269,10 +359,36 @@
                                         href="#">itw-har01-vm-eixap01</a>
                                 </td>
                                 <td class="px-6 py-4">Harvester</td>
-                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4">itw-智慧便民</td>
                                 <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
                                 <td class="px-6 py-4 text-center">100 GB</td>
                                 <td class="px-6 py-4">Ubuntu 24.04</td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: 52%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">52%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 2.1 / 4 vCPU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 68%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">68%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 5.4 / 8 GB</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                </td>
                             </tr>
                             <tr
                                 class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -281,10 +397,36 @@
                                         href="#">itw-aws01-vm-eixap01</a>
                                 </td>
                                 <td class="px-6 py-4">AWS</td>
-                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4">itw-智慧便民</td>
                                 <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
                                 <td class="px-6 py-4 text-center">100 GB</td>
                                 <td class="px-6 py-4">Ubuntu 24.04</td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: 38%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">38%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 1.5 / 4 vCPU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 55%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">55%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 4.4 / 8 GB</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                </td>
                             </tr>
                             <tr
                                 class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -293,10 +435,36 @@
                                         href="#">itw-aws01-vm-eiwap01</a>
                                 </td>
                                 <td class="px-6 py-4">AWS</td>
-                                <td class="px-6 py-4">智慧便民</td>
+                                <td class="px-6 py-4">itw-智慧便民</td>
                                 <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
                                 <td class="px-6 py-4 text-center">100 GB</td>
                                 <td class="px-6 py-4">Ubuntu 24.04</td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-blue-500 h-2 rounded-full" style="width: 42%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">42%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 1.7 / 4 vCPU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-green-500 h-2 rounded-full" style="width: 62%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">62%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 5.0 / 8 GB</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                </td>
                             </tr>
                             <tr
                                 class="bg-surface-light dark:bg-surface-dark border-b dark:border-border-dark hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -304,10 +472,36 @@
                                     <a class="font-medium text-primary hover:underline" href="#">ita-har01-vm-ap01</a>
                                 </td>
                                 <td class="px-6 py-4">Harvester</td>
-                                <td class="px-6 py-4">稅務好幫手</td>
+                                <td class="px-6 py-4">ita-稅務好幫手</td>
                                 <td class="px-6 py-4 text-center">4 vCPU / 8 GB</td>
                                 <td class="px-6 py-4 text-center">100 GB</td>
                                 <td class="px-6 py-4">Ubuntu 24.04</td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 85%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">85%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 3.4 / 4 vCPU</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="tooltip-container">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                <div class="bg-yellow-500 h-2 rounded-full" style="width: 78%"></div>
+                                            </div>
+                                            <span class="text-xs whitespace-nowrap">78%</span>
+                                        </div>
+                                        <span class="tooltip-content">已使用 6.2 / 8 GB</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        class="px-2 py-1 text-xs rounded-full bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200">已停止</span>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
