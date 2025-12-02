@@ -356,6 +356,14 @@
               placeholder="DMZ / APP / DB" />
           </div>
         </div>
+        <div class="subnet-type-row hidden">
+          <label class="block text-sm font-medium">子網路類型</label>
+          <select name="subnetType"
+            class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary">
+            <option value="private">私網（Private）</option>
+            <option value="public">公網（Public）</option>
+          </select>
+        </div>
         <div>
           <label class="block text-sm font-medium">預期網段大小</label>
           <select name="size"
@@ -410,10 +418,20 @@
     function addSubnet(container, prefill) {
       const row = subnetTpl.content.firstElementChild.cloneNode(true);
       container.appendChild(row);
+
+      // 取得所屬叢集的 provider，判斷是否顯示子網路類型
+      const clusterEl = container.closest('.cluster-item') || container.closest('.border.border-border-light.rounded-lg.p-4');
+      if (clusterEl) {
+        const provider = clusterEl.querySelector('.provider').value;
+        const isAws = provider === 'aws';
+        row.querySelector('.subnet-type-row').classList.toggle('hidden', !isAws);
+      }
+
       if (prefill) {
         row.querySelector('[name=subnetName]').value = prefill.subnetName || '';
         row.querySelector('[name=size]').value = prefill.size || '/24';
         row.querySelector('[name=purpose]').value = prefill.purpose || '';
+        if (prefill.subnetType) row.querySelector('[name=subnetType]').value = prefill.subnetType;
       }
     }
 
@@ -432,6 +450,11 @@
 
       // AWS：顯示 VPC 列；Harvester：隱藏 VPC 列
       vpcRow.classList.toggle('hidden', !isAws);
+
+      // AWS：顯示子網路類型；非 AWS：隱藏子網路類型
+      clusterEl.querySelectorAll('.subnet-type-row').forEach(row => {
+        row.classList.toggle('hidden', !isAws);
+      });
 
       // 若切到 K8s，清空既有 subnet；切回其它 provider，若沒有則補一筆
       const subnetsContainer = networkSection.querySelector('.subnets');
@@ -498,11 +521,18 @@
         }
 
         // 非 k8s 才蒐集 subnets
-        const subnets = provider === 'k8s' ? [] : [...cluster.querySelectorAll('.subnets .rounded-md')].map(row => ({
-          name: row.querySelector('[name=subnetName]').value.trim(),
-          size: row.querySelector('[name=size]').value,
-          purpose: row.querySelector('[name=purpose]').value.trim()
-        }));
+        const subnets = provider === 'k8s' ? [] : [...cluster.querySelectorAll('.subnets .rounded-md')].map(row => {
+          const subnet = {
+            name: row.querySelector('[name=subnetName]').value.trim(),
+            size: row.querySelector('[name=size]').value,
+            purpose: row.querySelector('[name=purpose]').value.trim()
+          };
+          // AWS 才蒐集子網路類型
+          if (provider === 'aws') {
+            subnet.type = row.querySelector('[name=subnetType]').value;
+          }
+          return subnet;
+        });
 
         return { provider, quota: { cpu, memory, storage }, vpcSize, subnets };
       });
