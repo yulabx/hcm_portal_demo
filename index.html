@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <title>版本清單</title>
+  <style>
+    body { font-family: sans-serif; }
+    ul { line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <h1>文件版本</h1>
+  <ul id="version-list">載入中…</ul>
+
+  <script>
+    fetch('./versions.json')
+      .then(res => {
+        if (!res.ok) throw new Error('讀取失敗');
+        return res.json();
+      })
+      .then(versions => {
+        const ul = document.getElementById('version-list');
+        ul.innerHTML = '';
+        versions.forEach(v => {
+          const li = document.createElement('li');
+          li.innerHTML = `<a href="${v}/">${v}</a>`;
+          ul.appendChild(li);
+        });
+      })
+      .catch(err => {
+        document.getElementById('version-list').innerText =
+          '無法載入版本清單';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
