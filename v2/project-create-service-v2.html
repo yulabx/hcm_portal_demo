@@ -1,0 +1,793 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>混合雲管理系統 - 專案申請</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA',
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#1F2937",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#374151",
+                        "text-light": "#111827",
+                        "text-dark": "#F9FAFB",
+                        "muted-light": "#6B7280",
+                        "muted-dark": "#9CA3AF",
+                        "border-light": "#E5E7EB",
+                        "border-dark": "#4B5563",
+                    },
+                    fontFamily: { sans: ["Noto Sans TC", "sans-serif"] },
+                    borderRadius: { DEFAULT: "0.5rem" },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif
+        }
+
+        .env-card {
+            transition: all 0.2s ease;
+        }
+
+        .env-card:has(input:checked) {
+            border-color: #4338CA;
+            background-color: rgba(67, 56, 202, 0.05);
+        }
+
+        .env-card:has(input:checked) .env-header {
+            background-color: rgba(67, 56, 202, 0.1);
+        }
+
+        .env-details {
+            display: none;
+        }
+
+        .env-card:has(input:checked) .env-details {
+            display: block;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex min-h-screen">
+        <!-- Sidebar -->
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="#">
+                    <span class="material-icons-outlined mr-3">home</span><span>首頁</span>
+                </a>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md bg-primary/10 text-primary dark:bg-primary/20" href="#">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span><span>簽核作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="execute-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span><span>申請執行</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        服務管理
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="cluster.html">
+                        <span class="material-icons-outlined mr-3">storage</span><span>服務總覽</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">group</span><span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">group</span><span>專案成員</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-list.html">
+                        <span class="material-icons-outlined mr-3">dvr</span><span>虛擬機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">security</span><span>虛擬防火牆服務</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="containers.html">
+                        <span class="material-icons-outlined mr-3">apps</span><span>容器管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        作業執行追蹤
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">play_circle_outline</span><span>執行作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">hourglass_empty</span><span>執行狀態追蹤</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">history</span><span>執行紀錄查詢</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">vpn_key</span><span>全域角色管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span><span>專案角色管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        帳號管理
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">find_in_page</span><span>帳號查詢</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span><span>帳號權限變更</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">timeline</span><span>軌跡</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        統計</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">bar_chart</span><span>資源統計</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        稽核管理
+                    </h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">policy</span><span>稽核管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main -->
+        <main class="flex-1 flex flex-col">
+            <!-- Header -->
+            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="relative w-full max-w-md">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+                        placeholder="功能快速搜尋" type="text" />
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button
+                        class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                        e</div>
+                </div>
+            </header>
+
+            <!-- Content -->
+            <div class="flex-1 p-8 overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-6">專案申請</h2>
+
+                <!-- Project Card -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold mb-2">專案資訊</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium" for="prj">專案代號 (PRJ)</label>
+                                <input id="prj" type="text" placeholder="例如：itw"
+                                    class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                <p class="mt-1 text-xs text-muted-light dark:text-muted-dark">此代號將作為各環境資源的命名前綴</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-text-light dark:text-text-dark"
+                                    for="project-name">專案名稱</label>
+                                <input
+                                    class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800 focus:border-primary focus:ring-primary shadow-sm"
+                                    id="project-name" name="project-name" placeholder="請輸入專案名稱" type="text" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium" for="owner">專案負責人</label>
+                                <input id="owner" type="text" value="Anya" disabled
+                                    class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
+                            <label class="block text-sm font-medium text-text-light dark:text-text-dark"
+                                for="project-description">專案描述</label>
+                            <textarea
+                                class="mt-1 block w-full rounded-md border-border-light dark:border-border-dark bg-background-light dark:bg-gray-800 focus:border-primary focus:ring-primary shadow-sm"
+                                id="project-description" name="project-description" placeholder="請輸入專案詳細描述"
+                                rows="4"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 虛擬主機服務 -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-icons-outlined text-primary">dvr</span>
+                        <h3 class="text-lg font-semibold">虛擬主機服務</h3>
+                        <span class="text-xs text-muted-light dark:text-muted-dark">勾選要啟用的環境</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Harvester VM -->
+                        <div class="env-card border-2 border-border-light dark:border-border-dark rounded-lg overflow-hidden"
+                            data-env="harvester-vm">
+                            <label
+                                class="env-header flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <input type="checkbox" name="env-harvester-vm"
+                                    class="w-5 h-5 rounded text-primary focus:ring-primary" />
+                                <span class="material-icons-outlined text-orange-500">dns</span>
+                                <div class="flex-1">
+                                    <div class="font-medium">Harvester (私有雲)</div>
+                                    <div class="text-xs text-muted-light dark:text-muted-dark">
+                                        將建立 Namespace: <code
+                                            class="prj-preview bg-gray-100 dark:bg-gray-700 px-1 rounded">{{prj}}</code>
+                                    </div>
+                                </div>
+                            </label>
+                            <div class="env-details p-4 border-t border-border-light dark:border-border-dark">
+                                <!-- 資源配額 -->
+                                <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md">
+                                    <legend class="text-sm font-medium px-2">資源配額</legend>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium">處理器配額 (Cores)</label>
+                                            <input type="number" name="harvester-vm-cpu" placeholder="例如: 4"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">記憶體配額 (GB)</label>
+                                            <input type="number" name="harvester-vm-memory" placeholder="例如: 16"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">儲存配額 (GB)</label>
+                                            <input type="number" name="harvester-vm-storage" placeholder="例如: 100"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <!-- 網路設定 -->
+                                <fieldset
+                                    class="border border-border-light dark:border-border-dark p-4 rounded-md mt-4">
+                                    <legend class="text-sm font-medium px-2">網路設定</legend>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm text-muted-light dark:text-muted-dark">Subnet 需求</span>
+                                        <button type="button"
+                                            class="add-subnet text-sm px-3 py-1 rounded-md border border-primary text-primary hover:bg-primary/10">＋
+                                            新增 Subnet</button>
+                                    </div>
+                                    <div class="subnets space-y-3"></div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <!-- AWS VM -->
+                        <div class="env-card border-2 border-border-light dark:border-border-dark rounded-lg overflow-hidden"
+                            data-env="aws-vm">
+                            <label
+                                class="env-header flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <input type="checkbox" name="env-aws-vm"
+                                    class="w-5 h-5 rounded text-primary focus:ring-primary" />
+                                <span class="material-icons-outlined text-yellow-500">cloud</span>
+                                <div class="flex-1">
+                                    <div class="font-medium">AWS (公有雲)</div>
+                                    <div class="text-xs text-muted-light dark:text-muted-dark">
+                                        將建立 VPC: <code
+                                            class="prj-preview bg-gray-100 dark:bg-gray-700 px-1 rounded">{{prj}}-vpc</code>
+                                    </div>
+                                </div>
+                            </label>
+                            <div class="env-details p-4 border-t border-border-light dark:border-border-dark">
+                                <!-- 資源配額 -->
+                                <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md">
+                                    <legend class="text-sm font-medium px-2">資源配額</legend>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium">處理器配額 (Cores)</label>
+                                            <input type="number" name="aws-vm-cpu" placeholder="例如: 4"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">記憶體配額 (GB)</label>
+                                            <input type="number" name="aws-vm-memory" placeholder="例如: 16"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">儲存配額 (GB)</label>
+                                            <input type="number" name="aws-vm-storage" placeholder="例如: 100"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+                                <!-- VPC 與網路設定 -->
+                                <fieldset
+                                    class="border border-border-light dark:border-border-dark p-4 rounded-md mt-4">
+                                    <legend class="text-sm font-medium px-2">VPC 網路設定</legend>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div>
+                                            <label class="block text-sm font-medium">VPC 網段大小</label>
+                                            <select name="aws-vm-vpc-size"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary">
+                                                <option value="/24">/24（~254 hosts）</option>
+                                                <option value="/22">/22（~1,022 hosts）</option>
+                                                <option value="/20">/20（~4,094 hosts）</option>
+                                                <option value="/18">/18（~16,382 hosts）</option>
+                                                <option value="/16" selected>/16（~65,534 hosts）</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="border-t border-dashed border-border-light dark:border-border-dark my-4">
+                                    </div>
+                                    <div class="flex items-center justify-between mb-3">
+                                        <span class="text-sm text-muted-light dark:text-muted-dark">Subnet 需求</span>
+                                        <button type="button"
+                                            class="add-subnet text-sm px-3 py-1 rounded-md border border-primary text-primary hover:bg-primary/10">＋
+                                            新增 Subnet</button>
+                                    </div>
+                                    <div class="subnets space-y-3"></div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 容器服務 -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-icons-outlined text-primary">apps</span>
+                        <h3 class="text-lg font-semibold">容器服務</h3>
+                        <span class="text-xs text-muted-light dark:text-muted-dark">勾選要啟用的 K8s 環境</span>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- Harvester K8s -->
+                        <div class="env-card border-2 border-border-light dark:border-border-dark rounded-lg overflow-hidden"
+                            data-env="harvester-k8s">
+                            <label
+                                class="env-header flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <input type="checkbox" name="env-harvester-k8s"
+                                    class="w-5 h-5 rounded text-primary focus:ring-primary" />
+                                <span class="material-icons-outlined text-blue-500">hub</span>
+                                <div class="flex-1">
+                                    <div class="font-medium">Harvester K8s (私有雲)</div>
+                                    <div class="text-xs text-muted-light dark:text-muted-dark">
+                                        將建立 Namespace: <code
+                                            class="prj-preview bg-gray-100 dark:bg-gray-700 px-1 rounded">{{prj}}</code>
+                                    </div>
+                                </div>
+                            </label>
+                            <div class="env-details p-4 border-t border-border-light dark:border-border-dark">
+                                <!-- 資源配額 -->
+                                <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md">
+                                    <legend class="text-sm font-medium px-2">資源配額</legend>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium">處理器配額 (Cores)</label>
+                                            <input type="number" name="harvester-k8s-cpu" placeholder="例如: 4"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">記憶體配額 (GB)</label>
+                                            <input type="number" name="harvester-k8s-memory" placeholder="例如: 16"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">儲存配額 (GB)</label>
+                                            <input type="number" name="harvester-k8s-storage" placeholder="例如: 50"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+
+                        <!-- AWS EKS -->
+                        <div class="env-card border-2 border-border-light dark:border-border-dark rounded-lg overflow-hidden"
+                            data-env="aws-eks">
+                            <label
+                                class="env-header flex items-center gap-3 p-4 cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <input type="checkbox" name="env-aws-eks"
+                                    class="w-5 h-5 rounded text-primary focus:ring-primary" />
+                                <span class="material-icons-outlined text-yellow-500">cloud_circle</span>
+                                <div class="flex-1">
+                                    <div class="font-medium">AWS EKS (公有雲)</div>
+                                    <div class="text-xs text-muted-light dark:text-muted-dark">
+                                        將建立 Namespace: <code
+                                            class="prj-preview bg-gray-100 dark:bg-gray-700 px-1 rounded">{{prj}}</code>
+                                    </div>
+                                </div>
+                            </label>
+                            <div class="env-details p-4 border-t border-border-light dark:border-border-dark">
+                                <!-- 資源配額 -->
+                                <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md">
+                                    <legend class="text-sm font-medium px-2">資源配額</legend>
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div>
+                                            <label class="block text-sm font-medium">處理器配額 (Cores)</label>
+                                            <input type="number" name="aws-eks-cpu" placeholder="例如: 4"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">記憶體配額 (GB)</label>
+                                            <input type="number" name="aws-eks-memory" placeholder="例如: 16"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium">儲存配額 (GB)</label>
+                                            <input type="number" name="aws-eks-storage" placeholder="例如: 50"
+                                                class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions Card (Submit only) -->
+                <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6">
+                    <div class="flex justify-end">
+                        <button id="submit"
+                            class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+                            <span class="material-icons-outlined mr-2">send</span>送出申請
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <footer
+                class="text-center p-4 text-sm text-muted-light dark:text-muted-dark border-t border-border-light dark:border-border-dark">
+                版權所有 © 混合雲管理系統 2025
+            </footer>
+        </main>
+    </div>
+
+    <!-- Subnet Template (Harvester) -->
+    <template id="subnet-template-harvester">
+        <div
+            class="subnet-item rounded-md p-4 border border-border-light dark:border-border-dark bg-white/60 dark:bg-gray-700/60">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div>
+                    <label class="block text-sm font-medium">名稱</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <span
+                            class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-600 text-gray-500 dark:text-gray-300 text-sm prj-prefix">{{prj}}-subnet-</span>
+                        <input type="text" name="subnetName"
+                            class="flex-1 rounded-none rounded-r-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary"
+                            placeholder="DMZ / APP / DB" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">預期網段大小</label>
+                    <select name="subnetSize"
+                        class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary">
+                        <option value="/28">/28（~14 hosts）</option>
+                        <option value="/27">/27（~30 hosts）</option>
+                        <option value="/26">/26（~62 hosts）</option>
+                        <option value="/25">/25（~126 hosts）</option>
+                        <option value="/24" selected>/24（~254 hosts）</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="button"
+                        class="remove-subnet px-3 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 text-sm">刪除</button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <label class="block text-sm font-medium">用途描述（選填）</label>
+                <input type="text" name="subnetPurpose"
+                    class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary"
+                    placeholder="例如：對外 Web、內部 API、資料庫專用" />
+            </div>
+        </div>
+    </template>
+
+    <!-- Subnet Template (AWS) -->
+    <template id="subnet-template-aws">
+        <div
+            class="subnet-item rounded-md p-4 border border-border-light dark:border-border-dark bg-white/60 dark:bg-gray-700/60">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+                <div>
+                    <label class="block text-sm font-medium">名稱</label>
+                    <div class="mt-1 flex rounded-md shadow-sm">
+                        <span
+                            class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-border-light dark:border-border-dark bg-gray-50 dark:bg-gray-600 text-gray-500 dark:text-gray-300 text-sm prj-prefix">{{prj}}-subnet-</span>
+                        <input type="text" name="subnetName"
+                            class="flex-1 rounded-none rounded-r-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary"
+                            placeholder="DMZ / APP / DB" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">子網路類型</label>
+                    <select name="subnetType"
+                        class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary">
+                        <option value="private">私網（Private）</option>
+                        <option value="public">公網（Public）</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">預期網段大小</label>
+                    <select name="subnetSize"
+                        class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary">
+                        <option value="/28">/28（~14 hosts）</option>
+                        <option value="/27">/27（~30 hosts）</option>
+                        <option value="/26">/26（~62 hosts）</option>
+                        <option value="/25">/25（~126 hosts）</option>
+                        <option value="/24" selected>/24（~254 hosts）</option>
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="button"
+                        class="remove-subnet px-3 py-2 rounded-md bg-red-600 text-white hover:bg-red-700 text-sm">刪除</button>
+                </div>
+            </div>
+            <div class="mt-3">
+                <label class="block text-sm font-medium">用途描述（選填）</label>
+                <input type="text" name="subnetPurpose"
+                    class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary"
+                    placeholder="例如：對外 Web、內部 API、資料庫專用" />
+            </div>
+        </div>
+    </template>
+
+    <script>
+        const prjInput = document.getElementById('prj');
+        const subnetTplHarvester = document.getElementById('subnet-template-harvester');
+        const subnetTplAws = document.getElementById('subnet-template-aws');
+
+        // 環境配置
+        const envConfig = {
+            'harvester-vm': { type: 'vm', subnetTpl: subnetTplHarvester, resourceName: (prj) => prj },
+            'aws-vm': { type: 'vm', subnetTpl: subnetTplAws, resourceName: (prj) => `${prj}-vpc` },
+            'harvester-k8s': { type: 'container', resourceName: (prj) => prj },
+            'aws-eks': { type: 'container', resourceName: (prj) => prj }
+        };
+
+        // 更新專案代號預覽
+        function updatePrjPreview() {
+            const prj = prjInput.value.trim() || '{{prj}}';
+            document.querySelectorAll('.prj-preview').forEach(el => {
+                const envCard = el.closest('.env-card');
+                if (envCard) {
+                    const env = envCard.dataset.env;
+                    const config = envConfig[env];
+                    if (config) {
+                        el.textContent = config.resourceName(prj);
+                    }
+                }
+            });
+            // 更新 Subnet 前綴
+            document.querySelectorAll('.prj-prefix').forEach(el => {
+                el.textContent = `${prj}-subnet-`;
+            });
+        }
+
+        prjInput.addEventListener('input', updatePrjPreview);
+
+        // 新增 Subnet
+        function addSubnet(container, isAws = false) {
+            const tpl = isAws ? subnetTplAws : subnetTplHarvester;
+            const row = tpl.content.firstElementChild.cloneNode(true);
+            container.appendChild(row);
+            updatePrjPreview();
+        }
+
+        // 監聽 checkbox 變化，初始化 subnet
+        document.querySelectorAll('.env-card input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const envCard = this.closest('.env-card');
+                const env = envCard.dataset.env;
+                const config = envConfig[env];
+
+                if (config.type === 'vm') {
+                    const subnetsContainer = envCard.querySelector('.subnets');
+                    if (this.checked && subnetsContainer.children.length === 0) {
+                        // 勾選時自動新增一筆 Subnet
+                        addSubnet(subnetsContainer, env.includes('aws'));
+                    }
+                }
+            });
+        });
+
+        // 新增/刪除 Subnet 事件代理
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('add-subnet')) {
+                const envCard = e.target.closest('.env-card');
+                const subnetsContainer = envCard.querySelector('.subnets');
+                const isAws = envCard.dataset.env.includes('aws');
+                addSubnet(subnetsContainer, isAws);
+            }
+
+            if (e.target.classList.contains('remove-subnet')) {
+                const subnetItem = e.target.closest('.subnet-item');
+                const subnetsContainer = subnetItem.parentElement;
+                if (subnetsContainer.querySelectorAll('.subnet-item').length > 1) {
+                    subnetItem.remove();
+                } else {
+                    alert('至少需保留一筆 Subnet 需求。');
+                }
+            }
+        });
+
+        // 送出
+        document.getElementById('submit').addEventListener('click', () => {
+            const data = collectForm();
+            const errors = validate(data);
+            if (errors.length) {
+                alert(errors.join('\n'));
+                return;
+            }
+            alert('（Demo）資料已通過驗證並送出！');
+            console.log(data);
+        });
+
+        function collectForm() {
+            const project = {
+                prj: prjInput.value.trim(),
+                name: document.getElementById('project-name').value.trim(),
+                owner: document.getElementById('owner').value.trim(),
+                description: document.getElementById('project-description').value.trim()
+            };
+
+            const environments = {};
+
+            document.querySelectorAll('.env-card').forEach(card => {
+                const env = card.dataset.env;
+                const checkbox = card.querySelector('input[type="checkbox"]');
+                const config = envConfig[env];
+
+                if (!checkbox.checked) {
+                    environments[env] = { enabled: false };
+                    return;
+                }
+
+                const envData = {
+                    enabled: true,
+                    resourceName: config.resourceName(project.prj),
+                    quota: {
+                        cpu: Number(card.querySelector(`[name="${env}-cpu"]`)?.value) || null,
+                        memory: Number(card.querySelector(`[name="${env}-memory"]`)?.value) || null,
+                        storage: Number(card.querySelector(`[name="${env}-storage"]`)?.value) || null
+                    }
+                };
+
+                // VM 類型蒐集網路設定
+                if (config.type === 'vm') {
+                    // AWS 額外蒐集 VPC 大小
+                    if (env === 'aws-vm') {
+                        envData.vpcSize = card.querySelector('[name="aws-vm-vpc-size"]')?.value;
+                    }
+
+                    // 蒐集 Subnets
+                    envData.subnets = [...card.querySelectorAll('.subnet-item')].map(row => {
+                        const subnet = {
+                            name: row.querySelector('[name="subnetName"]')?.value.trim(),
+                            size: row.querySelector('[name="subnetSize"]')?.value,
+                            purpose: row.querySelector('[name="subnetPurpose"]')?.value.trim()
+                        };
+                        // AWS 才有子網路類型
+                        const typeSelect = row.querySelector('[name="subnetType"]');
+                        if (typeSelect) {
+                            subnet.type = typeSelect.value;
+                        }
+                        return subnet;
+                    });
+                }
+
+                environments[env] = envData;
+            });
+
+            return { project, environments };
+        }
+
+        function validate(data) {
+            const errors = [];
+
+            if (!data.project.prj) errors.push('專案代號必填');
+            if (!data.project.name) errors.push('專案名稱必填');
+
+            // 檢查是否至少勾選一個環境
+            const enabledEnvs = Object.entries(data.environments).filter(([_, v]) => v.enabled);
+            if (enabledEnvs.length === 0) {
+                errors.push('至少需勾選一個環境');
+            }
+
+            // 檢查各個啟用的環境
+            enabledEnvs.forEach(([env, envData]) => {
+                const envLabel = {
+                    'harvester-vm': 'Harvester 虛擬主機',
+                    'aws-vm': 'AWS 虛擬主機',
+                    'harvester-k8s': 'Harvester K8s',
+                    'aws-eks': 'AWS EKS'
+                }[env];
+
+                // 配額檢查
+                if (!envData.quota.cpu || !envData.quota.memory || !envData.quota.storage) {
+                    errors.push(`${envLabel}：CPU/Memory/Storage 配額皆需填寫`);
+                }
+
+                // VM 類型檢查 Subnet
+                if (envConfig[env].type === 'vm') {
+                    if (!envData.subnets || envData.subnets.length === 0) {
+                        errors.push(`${envLabel}：至少需要一筆 Subnet 需求`);
+                    } else {
+                        envData.subnets.forEach((sub, idx) => {
+                            if (!sub.name) {
+                                errors.push(`${envLabel} Subnet #${idx + 1}：名稱必填`);
+                            }
+                        });
+                    }
+                }
+            });
+
+            return errors;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>混合雲管理系統 - 專案簽核預覽</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4338CA',
+            "background-light": "#F3F4F6",
+            "background-dark": "#1F2937",
+            "surface-light": "#FFFFFF",
+            "surface-dark": "#374151",
+            "text-light": "#111827",
+            "text-dark": "#F9FAFB",
+            "muted-light": "#6B7280",
+            "muted-dark": "#9CA3AF",
+            "border-light": "#E5E7EB",
+            "border-dark": "#4B5563",
+          },
+          fontFamily: { sans: ["Noto Sans TC", "sans-serif"] },
+          borderRadius: { DEFAULT: "0.5rem" },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="flex min-h-screen">
+    <!-- Sidebar (kept the same) -->
+    <aside
+      class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+      <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+        <div class="flex items-center">
+          <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+          <h1 class="text-lg font-bold">混合雲管理系統</h1>
+        </div>
+        <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+          <span class="material-icons-outlined">menu_open</span>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+        <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+          href="#">
+          <span class="material-icons-outlined mr-3">home</span><span>首頁</span>
+        </a>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">申請中心
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="project-create-all.html">
+            <span class="material-icons-outlined mr-3">post_add</span>
+            <span>專案申請</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="project-cluster-create-all.html">
+            <span class="material-icons-outlined mr-3">manage_accounts</span>
+            <span>專案叢集申請</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="approval-list.html">
+            <span class="material-icons-outlined mr-3">approval</span><span>簽核作業</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="execute-list.html">
+            <span class="material-icons-outlined mr-3">approval</span><span>申請執行</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">資源池管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="vm-resource-pool.html">
+            <span class="material-icons-outlined mr-3">dns</span><span>虛擬主機總覽</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="container-resource-pool.html">
+            <span class="material-icons-outlined mr-3">view_in_ar</span><span>容器總覽</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">專案管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="project-list.html">
+            <span class="material-icons-outlined mr-3">group</span><span>專案清單</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">group</span><span>專案成員</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">專案資源
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="vm-list.html">
+            <span class="material-icons-outlined mr-3">dvr</span><span>虛擬機管理</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">security</span><span>虛擬防火牆服務</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="containers.html">
+            <span class="material-icons-outlined mr-3">apps</span><span>容器管理</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">作業執行追蹤
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">play_circle_outline</span><span>執行作業</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">hourglass_empty</span><span>執行狀態追蹤</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">history</span><span>執行紀錄查詢</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">角色管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">vpn_key</span><span>全域角色管理</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">admin_panel_settings</span><span>專案角色管理</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">帳號管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">find_in_page</span><span>帳號查詢</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">manage_accounts</span><span>帳號權限變更</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">timeline</span><span>軌跡</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">統計</h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">bar_chart</span><span>資源統計</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">稽核管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">policy</span><span>稽核管理</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col">
+      <!-- Header (kept) -->
+      <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+        <div class="relative w-full max-w-md">
+          <span
+            class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+          <input
+            class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+            placeholder="功能快速搜尋" type="text" />
+        </div>
+        <div class="flex items-center space-x-4">
+          <button
+            class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-icons-outlined">notifications</span>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+          </button>
+          <div class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">e</div>
+        </div>
+      </header>
+
+      <!-- Content: replaced with read-only preview and approval actions -->
+      <div class="flex-1 p-8 overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-6">專案簽核預覽</h2>
+        <!-- Apply ID -->
+        <div class="max-w-6xl mx-auto mb-4">
+          <div class="text-sm text-muted-light dark:text-muted-dark">申請編號</div>
+          <div class="text-lg font-semibold text-primary">apply-c-clu-20251009-00001</div>
+        </div>
+
+        <!-- Project Info (read-only) -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto space-y-6">
+          <div>
+            <h3 class="text-lg font-semibold mb-2">專案資訊</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium">專案代號 (PRJ)</label>
+                <p id="pv-prj" class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">itw</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium">專案名稱</label>
+                <p class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">智慧便民</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium">專案負責人</label>
+                <p id="pv-owner" class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">Anya</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
+              <label class="block text-sm font-medium">專案描述</label>
+              <p id="pv-desc" class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">
+                請於此處顯示專案描述（可由後端提供或從前一頁帶入）。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clusters Preview -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <h3 class="text-lg font-semibold">專案資源池申請（預覽）</h3>
+              <span class="text-xs text-muted-light dark:text-muted-dark">唯讀預覽</span>
+            </div>
+          </div>
+
+          <div id="pv-clusters" class="space-y-4">
+            <!-- Example cluster block -->
+            <div
+              class="border border-border-light dark:border-border-dark rounded-lg p-4 bg-background-light dark:bg-gray-800">
+              <div class="flex items-center justify-between">
+                <div class="font-semibold flex items-center gap-2">
+                  <span class="material-icons-outlined text-primary">dvr</span>
+                  <span>虛擬機資源池</span>
+                  <span
+                    class="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">Harvester
+                    (私有雲)</span>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+                <div>
+                  <label class="block text-sm font-medium">運行環境</label>
+                  <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">Harvester (私有雲)</p>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium">資源池名稱</label>
+                  <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">itw-harvester-app</p>
+                </div>
+              </div>
+              <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md mt-3">
+                <legend class="text-base font-medium px-2">資源配額</legend>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                  <div>
+                    <label class="block text-sm font-medium">處理器配額 (Cores)</label>
+                    <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">4</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium">記憶體配額 (GB)</label>
+                    <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">16</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium">儲存配額 (GB)</label>
+                    <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">100</p>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="border-t border-dashed border-border-light dark:border-border-dark my-4"></div>
+              <div class="font-semibold mb-2">Subnet 需求</div>
+              <div class="space-y-2 text-sm">
+                <div
+                  class="rounded-md p-3 border border-border-light dark:border-border-dark bg-white/60 dark:bg-gray-700/60">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="md:col-span-2">
+                      <div class="text-muted-light dark:text-muted-dark">名稱</div>
+                      <div>itw-har01-subnet-db</div>
+                    </div>
+                    <div>
+                      <div class="text-muted-light dark:text-muted-dark">預期網段大小</div>
+                      <div>/24（~254 hosts）</div>
+                    </div>
+                    <div class="md:col-span-3">
+                      <div class="text-muted-light dark:text-muted-dark">用途描述</div>
+                      <div>資料庫</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- end example -->
+          </div>
+        </div>
+
+        <!-- Approval Actions -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="text-sm text-muted-light dark:text-muted-dark">
+              請確認以上內容無誤後執行簽核。
+            </div>
+            <div class="flex gap-3 justify-end">
+              <button id="btn-reject"
+                class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center">
+                <span class="material-icons-outlined mr-2">close</span>退回
+              </button>
+              <button id="btn-approve"
+                class="bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 flex items-center">
+                <span class="material-icons-outlined mr-2">check_circle</span>核准
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer
+        class="text-center p-4 text-sm text-muted-light dark:text-muted-dark border-t border-border-light dark:border-border-dark">
+        版權所有 © 混合雲管理系統 2025
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Demo handlers for approval actions
+    document.addEventListener('DOMContentLoaded', () => {
+      const approve = document.getElementById('btn-approve');
+      const reject = document.getElementById('btn-reject');
+      approve?.addEventListener('click', () => {
+        alert('（Demo）此申請已核准');
+        // TODO: fetch('/api/approvals/{id}/approve', { method: 'POST' })
+      });
+      reject?.addEventListener('click', () => {
+        const reason = prompt('請填寫退回原因：');
+        if (reason !== null) {
+          alert('（Demo）已退回：' + (reason || '未填寫原因'));
+          // TODO: fetch('/api/approvals/{id}/reject', { method: 'POST', body: JSON.stringify({ reason }) })
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

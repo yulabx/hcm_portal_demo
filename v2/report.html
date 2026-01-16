@@ -1,0 +1,592 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>雲地混合架構月報</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* 1. SETUP - LIGHT THEME (Professional & Clean) */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            display: grid;
+            gap: 30px;
+            grid-template-columns: 1fr;
+            margin: 0;
+            min-height: 10vh;
+            padding: 40px 0;
+            place-items: center;
+            font-family: 'Inter', 'Noto Sans TC', sans-serif;
+            color: #334155;
+        }
+
+        /* 2. SLIDE CONTAINER */
+        .slide-container {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            height: 720px;
+            justify-content: center;
+            overflow: hidden;
+            padding: 60px;
+            position: relative;
+            width: 1280px;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 72px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        h2 {
+            font-size: 48px;
+            font-weight: 700;
+            color: #0284c7;
+            margin: 0 0 30px 0;
+        }
+
+        .slide-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 40px;
+            border-left: 8px solid #0284c7;
+            padding-left: 24px;
+        }
+
+        h3 {
+            font-size: 26px;
+            font-weight: 600;
+            color: #334155;
+            margin: 0 0 12px 0;
+        }
+
+        p,
+        li,
+        td {
+            font-size: 20px;
+            line-height: 1.6;
+            color: #475569;
+        }
+
+        .subtitle {
+            font-size: 32px;
+            font-weight: 500;
+            color: #64748b;
+            margin-top: 20px;
+        }
+
+        /* Layouts */
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: center;
+            width: 100%;
+        }
+
+        /* Full Background Image (Cover) */
+        .full-bg-image {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .full-bg-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+            z-index: 1;
+        }
+
+        .full-bg-image .content-overlay {
+            position: relative;
+            z-index: 2;
+            padding-left: 40px;
+            max-width: 850px;
+        }
+
+        /* Comparison Layout (Plan vs Actual) */
+        .comparison-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            height: 100%;
+            align-items: center;
+        }
+
+        .plan-box,
+        .actual-box {
+            padding: 30px;
+            border-radius: 12px;
+            height: 100%;
+        }
+
+        .plan-box {
+            background: #f8fafc;
+            border: 1px dashed #94a3b8;
+        }
+
+        .actual-box {
+            background: #f0fdf4;
+            border: 1px solid #86efac;
+        }
+
+        .actual-box h3 {
+            color: #15803d;
+        }
+
+        /* Two Column */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            height: 100%;
+        }
+
+        .image-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid #cbd5e1;
+            height: 400px;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        /* Bleed Image (For Showcase) */
+        .slide-container.bleed-image-layout {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            padding: 0;
+            gap: 0;
+            align-items: start;
+        }
+
+        .bleed-text-side {
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100%;
+            background: #ffffff;
+        }
+
+        .image-container {
+            height: 100%;
+            width: 100%;
+        }
+
+        .bleed-image-side {
+            width: 100%;
+            height: 720px;
+            object-fit: cover;
+        }
+
+        /* Specific styling for the SDN slide */
+        .sdn-value-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .sdn-value-section h3 i {
+            margin-right: 10px;
+            color: #0284c7;
+        }
+
+        .sdn-value-section .motivation-box {
+            background: #f1f5f9;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 5px solid #64748b;
+        }
+
+        .sdn-value-section .value-box {
+            background: #fff7ed;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 5px solid #c2410c;
+        }
+
+        /* Status Tags */
+        .status-tag {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tag-done {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .tag-active {
+            background: #fff7ed;
+            color: #c2410c;
+            border: 1px solid #fed7aa;
+        }
+
+        .tag-pending {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Icons in lists */
+        ul li {
+            position: relative;
+            padding-left: 30px;
+            margin-bottom: 12px;
+            list-style: none;
+        }
+
+        ul li::before {
+            content: "\f00c";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #0284c7;
+            position: absolute;
+            left: 0;
+            top: 4px;
+            font-size: 16px;
+        }
+
+        /* Icons for Showcase List */
+        .showcase-list li::before {
+            content: "\f058";
+            /* Check-circle icon for showcase list */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #15803d;
+            position: absolute;
+            left: 0;
+            top: 4px;
+            font-size: 16px;
+        }
+
+        /* Custom style for the architecture list in the new slide */
+        .arch-list li::before {
+            content: "\f013";
+            /* Gear icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #0284c7;
+            position: absolute;
+            left: 0;
+            top: 4px;
+            font-size: 16px;
+        }
+
+        /* Custom style for the Milestones list */
+        .milestone-list li::before {
+            content: "\f133";
+            /* Calendar icon */
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            color: #15803d;
+            position: absolute;
+            left: 0;
+            top: 4px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Slide 1: Cover Slide -->
+    <div class="slide-container full-bg-image" id="slide1"
+        style="background-image: url('http://googleusercontent.com/image_collection/image_retrieval/7319452078199615649');">
+        <div class="content-overlay">
+            <h1>雲地混合架構<br>12月進度月報</h1>
+            <p class="subtitle">專案隔離驗證成果 & AWS 整合啟動</p>
+            <div style="margin-top: 40px; display: flex; gap: 15px;">
+                <span class="status-tag tag-done">地端 SDN Ready</span>
+                <span class="status-tag tag-active">AWS 整合 Start</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Project Context/Recap - Focus on Accomplishments -->
+    <div class="slide-container" id="slide2">
+        <h2 class="slide-title" style="border-left: 8px solid #c2410c;">專案進度回顧：已完成的基礎建設 (前情提要)</h2>
+        <div class="content-area">
+            <div class="two-column" style="grid-template-columns: 1.5fr 1fr; gap: 40px; text-align: left;">
+                <div>
+                    <h3 style="color: #15803d;"><i class="fa-solid fa-list-check"></i> 已達成關鍵里程碑 (Milestones Achieved)
+                    </h3>
+                    <ul style="padding: 0; margin-top: 20px; list-style: none;" class="milestone-list">
+                        <li style="position: relative; padding-left: 35px; margin-bottom: 20px;">
+                            <span style="font-size: 24px; font-weight: 600; color: #1e293b;">雲地基底框架建置：</span>
+                            <span style="color: #475569;">完成 Harvester VM 環境與 K8s 容器平台基礎建置，為混合雲打底。</span>
+                        </li>
+                        <li style="position: relative; padding-left: 35px; margin-bottom: 20px;">
+                            <span style="font-size: 24px; font-weight: 600; color: #1e293b;">單一登入與權限整合：</span>
+                            <span style="color: #475569;">實現單一登入 (SSO) 雛形，並完成用戶權限模型的初步整合。</span>
+                        </li>
+                        <li style="position: relative; padding-left: 35px; margin-bottom: 20px;">
+                            <span style="font-size: 24px; font-weight: 600; color: #1e293b;">地端虛擬化平台準備：</span>
+                            <span style="color: #475569;">完成 Harvester 基礎安裝與網路規劃，確保 VM/容器連通性。</span>
+                        </li>
+                        <li style="position: relative; padding-left: 35px; margin-bottom: 20px;">
+                            <span style="font-size: 24px; font-weight: 600; color: #1e293b;">統一資源標籤 (Project ID)：</span>
+                            <span style="color: #475569;">導入 Project ID Tag 模型，確保雲地資源可依專案歸屬統一納管。</span>
+                        </li>
+                        <li style="position: relative; padding-left: 35px; margin-bottom: 20px;">
+                            <span style="font-size: 24px; font-weight: 600; color: #1e293b;">專案與叢集管理：</span>
+                            <span style="color: #475569;">完成專案管理基礎功能及 Harvester/容器管理介面 (本期網站功能)。</span>
+                        </li>
+                    </ul>
+                </div>
+                <div style="background: #e9f5ff; padding: 30px; border-radius: 12px; border-left: 5px solid #0284c7;">
+                    <h3 style="color: #0284c7;"><i class="fa-solid fa-bullseye"></i> 專案核心目標 (Core Goal)</h3>
+                    <p style="font-size: 24px; font-weight: 500; color: #1e293b; line-height: 1.5;">
+                        <strong style="font-size: 32px; color: #0f172a;">單一專案識別 (Project ID)</strong>
+                        <br>
+                        建立一個 **Project-as-a-Service** 模型，透過統一標籤 (Tag)，讓所有雲端與地端資源都歸屬於單一專案，實現**雲地體驗一致化**。
+                    </p>
+                    <div style="margin-top: 20px; text-align: center;">
+                        <span class="status-tag" style="background: #bfdbfe; color: #1d4ed8;">雲地一致化是關鍵</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Slide 3: Overall Architecture Diagram -->
+    <div class="slide-container" id="slide3">
+        <h2 class="slide-title">雲地混合架構：整體概覽 (Project-Centric)</h2>
+        <div class="content-area">
+            <div class="two-column" style="grid-template-columns: 2fr 1fr; gap: 40px;">
+                <div class="image-wrapper" style="height: 500px; background: #e9f5ff; border: 2px solid #0284c7;">
+                    <!-- Full Architecture Diagram -->
+                    <!-- 這裡就是您的架構圖！使用的檔名是 image_4abe02.png -->
+                    <img src="image_4abe02.png" alt="雲地混合架構整體概覽圖">
+                </div>
+                <div>
+                    <h3 style="color: #0284c7;">核心理念：統一控制面</h3>
+                    <ul style="padding: 0; margin-top: 20px;" class="arch-list">
+                        <li><strong style="color: #1e293b;">單一專案識別 (Project ID):</strong> 橫跨地端與雲端資源。</li>
+                        <li><strong style="color: #1e293b;">資源抽象化:</strong> K8s Namespace, Harvester VM, AWS VPC 統一納管。
+                        </li>
+                        <li><strong style="color: #1e293b;">目標:</strong> 為用戶提供無感知的混合雲體驗。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: UPDATED: Executive Status Alignment (Narrative Summary Only) -->
+    <div class="slide-container" id="slide4">
+        <h2 class="slide-title">本月度執行摘要與狀態對齊 (Executive Summary)</h2>
+        <div class="content-area" style="text-align: center;">
+            <h3 style="color: #0284c7; font-size: 36px; margin-bottom: 30px;">本月度重點對齊 (Executive Summary)</h3>
+            <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 50px;">
+                <div
+                    style="padding: 20px 40px; border-radius: 12px; background: #e9f8ed; border: 2px solid #86efac; box-shadow: 0 4px 12px rgba(21, 128, 61, 0.1);">
+                    <p style="font-size: 28px; font-weight: 600; color: #15803d; margin: 0;">已完成：地端 SDN 網路隔離與網站介面</p>
+                </div>
+                <div
+                    style="padding: 20px 40px; border-radius: 12px; background: #fff7ed; border: 2px solid #fed7aa; box-shadow: 0 4px 12px rgba(194, 65, 12, 0.1);">
+                    <p style="font-size: 28px; font-weight: 600; color: #c2410c; margin: 0;">下一步：AWS 整合 (P0)</p>
+                </div>
+            </div>
+            <p
+                style="font-size: 30px; color: #1e293b; font-weight: 500; line-height: 1.5; background: #f1f5f9; padding: 40px; border-radius: 16px; border-left: 8px solid #0284c7; box-shadow: 0 8px 20px rgba(0,0,0,0.05);">
+                本期核心交付為 **地端 SDN 網路隔離** 啟用成功，滿足隔離驗證需求，並上線容器管理介面。<br>
+                <strong style="color: #0284c7;">下月將全力推動 AWS 雲地整合的架構設計與資源創建，</strong><br>
+                <strong style="color: #c2410c;"><i class="fa-solid fa-triangle-exclamation"></i> 主要支援需求：AWS IAM Role
+                    權限須於下週到位，此為首要 blocker。</strong>
+            </p>
+        </div>
+    </div>
+
+    <!-- Slide 5: Architecture Recap -->
+    <div class="slide-container" id="slide5">
+        <h2 class="slide-title">架構現況對齊：專案隔離模型 (Project as a Service)</h2>
+        <div class="content-area">
+            <div style="max-width: 900px; margin: 0 auto; text-align: center;">
+                <h3 style="color: #0284c7;">核心模型：Project as a Service</h3>
+                <p style="font-size: 24px;">在確定整體概覽後，本月聚焦在實作「專案即服務」的模型，確保隔離驗證的成功。</p>
+                <ul style="padding: 0; margin-top: 40px; display: flex; justify-content: center; gap: 40px;">
+                    <li><strong>地端 (Harvester v1.6 + SDN):</strong> <span class="status-tag tag-done">Ready</span> </li>
+                    <li><strong>容器 (Kubernetes):</strong> <span class="status-tag tag-done">Ready</span> (Namespace)
+                    </li>
+                    <li><strong>雲端 (AWS):</strong> <span class="status-tag tag-active">In Progress</span> (VPC)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Current Month Progress Only (Detailed Done List) -->
+    <div class="slide-container" id="slide6">
+        <h2 class="slide-title">本期已完成項目細項 (Detailed Achievements)</h2>
+        <div class="content-area" style="max-width: 900px; margin: 0 auto;">
+            <div style="background: #f0fdf4; border: 2px solid #86efac; padding: 40px; border-radius: 12px;">
+                <h3 style="color: #15803d; margin-bottom: 25px;"><i class="fa-solid fa-list-check"></i> 本月實際交付項目</h3>
+                <ul style="margin-top: 0; padding: 0;">
+                    <li style="color: #475569;"><strong style="color: #15803d;">網站功能：</strong> 容器管理介面 (UI) 已上線，支援重啟與 Log
+                        檢視。</li>
+                    <li style="color: #475569;"><strong style="color: #15803d;">地端升級：：</strong> Harvester 成功升級至 v1.6，為
+                        SDN 整合打下穩定基礎。</li>
+                    <li style="color: #475569;"><strong style="color: #15803d;">網路隔離：：</strong> 外掛 Kube-OVN 啟用
+                        SDN，實現雲端等級的網路隔離能力。</li>
+                </ul>
+            </div>
+            <p style="text-align: center; margin-top: 30px; font-size: 20px; color: #64748b;">* 這些交付項目已完成內測，功能穩定性良好。</p>
+        </div>
+    </div>
+
+    <!-- Slide 7: Harvester v1.6 Value Prop (Emphasizing SDN) -->
+    <div class="slide-container" id="slide7">
+        <h2 class="slide-title">本月亮點：SDN 帶來的雲端等級隔離</h2>
+        <div class="content-area">
+            <div class="sdn-value-section">
+                <div class="motivation-box">
+                    <h3 style="color: #475569;"><i class="fa-solid fa-road-lock"></i> 升級動機：外掛 Kube-OVN</h3>
+                    <ul style="padding: 0;">
+                        <li><strong>升級內容：：</strong> Harvester 升級至 v1.6，成功外掛 Kube-OVN 實驗性功能。</li>
+                        <li><strong>核心優勢：：</strong> 開始支援軟體定義網路（SDN），將網路管理權收回軟體層。</li>
+                    </ul>
+                </div>
+                <div class="value-box">
+                    <h3 style="color: #c2410c;"><i class="fa-solid fa-lightbulb"></i> 核心商業價值 (網路更靈活)</h3>
+                    <ul style="padding: 0;">
+                        <li><strong>VPC-Like 隔離：：</strong> 在地端實現與 AWS 同等級的網路隔離能力。</li>
+                        <li><strong>擴充彈性：：</strong> 突破傳統 L2 VLAN 對實體 L3 交換機的依賴，網路配置更靈活。</li>
+                        <li><strong>未來擴充：：</strong> 內建 NAT 與路由功能，為未來多租戶自動化鋪路。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: SHOWCASE - 網站功能 (Container Management UI) -->
+    <div class="slide-container bleed-image-layout" id="slide8">
+        <div class="content-container bleed-text-side">
+            <h2 class="slide-title" style="border: none; padding: 0; margin-bottom: 20px;">關鍵成果展示：統一管理介面</h2>
+            <h3 style="color: #0284c7; font-size: 28px;">Single Pane of Glass (容器管理功能)</h3>
+            <p>這項成果直接解決了用戶端複雜操作的問題，將底層 K8s 與 VM 資源抽象化，專注於「專案 Workload」維運。</p>
+            <ul style="margin-top: 30px; padding: 0;" class="showcase-list">
+                <li><strong style="color: #1e293b;">專案資源隔離：：</strong> 用戶登入即自動篩選其所屬專案的資源，確保權限隔離。</li>
+                <li><strong style="color: #1e293b;">即時狀態追蹤：：</strong> 工作負載狀態、資源配額消耗一目瞭然。</li>
+                <li><strong style="color: #1e293b;">一鍵維運操作：：</strong> 支援 Log 檢視與 Pod/VM 重啟，無需 SSH 登入。</li>
+            </ul>
+        </div>
+        <div class="image-container">
+            <!-- 介面圖 (使用一個視覺上較為專業的 Dashboard 圖片) -->
+            <img class="bleed-image-side"
+                src="http://googleusercontent.com/image_collection/image_retrieval/2085627224791483431"
+                alt="Modern Dark UI Dashboard for Kubernetes">
+        </div>
+    </div>
+
+    <!-- Slide 9: AWS Plan -->
+    <div class="slide-container" id="slide9">
+        <h2 class="slide-title">AWS 雲端整合規劃 (最高優先級)</h2>
+        <div class="content-area">
+            <div class="two-column tiled">
+                <div>
+                    <h3 style="color: #c2410c;"><i class="fa-brands fa-aws"></i> 隔離實作：獨立 VPC</h3>
+                    <p><strong>原則：</strong> 一個專案 = 一個獨立 VPC。</p>
+                    <p>提供最嚴格的網路層 (L3) 隔離。將優先建立測試 VPC，驗證跨專案的網路阻斷策略。</p>
+                </div>
+                <div>
+                    <h3 style="color: #0284c7;"><i class="fa-solid fa-tags"></i> 資源識別：統一標籤</h3>
+                    <p><strong>原則：：</strong> 全面套用 <code>Tag: proj=xxx</code>。</p>
+                    <p>這是「雲地混合」的關鍵。透過一致的 Tag，將 AWS EC2 與地端資源視為同一資產管理。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Next Focus & Dependency Only -->
+    <div class="slide-container" id="slide10">
+        <h2 class="slide-title">下月焦點與支援需求 (Next Focus & Dependency)</h2>
+        <div class="content-area" style="text-align: center;">
+            <div
+                style="background: #fff7ed; border-color: #fed7aa; padding: 40px; border: 2px solid #fed7aa; border-radius: 12px; max-width: 800px; margin: 0 auto; box-shadow: 0 10px 30px rgba(194, 65, 12, 0.05);">
+                <h3 style="color: #c2410c; font-size: 32px; border-bottom: 2px solid #fed7aa; padding-bottom: 15px;"><i
+                        class="fa-solid fa-crosshairs"></i> 下月焦點 (Next Focus)</h3>
+                <ul style="margin-top: 30px; padding: 0; list-style: none; text-align: left;">
+                    <li style="color: #475569; position: relative; padding-left: 30px; margin-bottom: 20px;"><i
+                            class="fa-solid fa-cloud-arrow-up"
+                            style="position: absolute; left: 0; top: 4px; color: #c2410c;"></i> <strong
+                            style="color: #c2410c; font-size: 22px;">AWS 整合 (P0)：</strong> 建立第一個帶有 Project Tag 的標準化
+                        VPC，完成資源調度測試。</li>
+                    <li style="color: #475569; position: relative; padding-left: 30px; margin-bottom: 20px;"><i
+                            class="fa-solid fa-shield-halved"
+                            style="position: absolute; left: 0; top: 4px; color: #c2410c;"></i> <strong
+                            style="color: #c2410c; font-size: 22px;">網路驗證：</strong> 實作並測試 VPC 間的網路隔離策略 (Network
+                        ACL/Security Group) 以符合規範。</li>
+                </ul>
+            </div>
+
+            <div
+                style="margin-top: 40px; background: #fee2e2; padding: 25px; border-radius: 12px; border: 2px solid #f87171; max-width: 800px; margin-left: auto; margin-right: auto; text-align: left;">
+                <h3 style="color: #b91c1c; margin-bottom: 10px;"><i class="fa-solid fa-triangle-exclamation"></i> 關鍵支援需求
+                    (Blocker)</h3>
+                <p style="font-size: 22px; color: #b91c1c; margin: 0;"><strong>IAM 權限：</strong> 取得 AWS 雲端資源管理的必要 IAM
+                    Role 權限，此為下月首要風險點。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 11: Conclusion -->
+    <div class="slide-container" id="slide11">
+        <div class="qa-layout">
+            <div class="content-area">
+                <h2 style="font-size: 56px; color: #1e293b; margin-bottom: 20px;">結語與資源需求</h2>
+                <p style="font-size: 24px; max-width: 900px; margin: 0 auto; color: #475569;">
+                    本月已完成地端基礎建設升級 (SDN) 與容器化驗證。<br>
+                    下個月將全速推進 AWS 整合，請協助確認 <strong style="color: #c2410c;">AWS IAM Role</strong> 權限審批進度。
+                </p>
+                <div class="contact-box">
+                    <h3 style="margin: 0; color: #0284c7; font-size: 32px;">Q & A</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>專案申請（簡單模式）</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+
+<body class="bg-gray-100 p-8">
+
+    <div class="max-w-3xl mx-auto bg-white shadow rounded-lg p-6 space-y-8">
+
+        <!-- Title -->
+        <h1 class="text-2xl font-bold">專案申請（簡單模式）</h1>
+
+        <!-- 基本資訊 -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">專案基本資訊</h2>
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium">專案名稱</label>
+                    <input type="text" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：itw-project" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">專案描述（選填）</label>
+                    <textarea rows="3" class="mt-1 w-full rounded-md border-gray-300"
+                        placeholder="專案用途、需求描述"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- 運算資源選擇 -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">運算服務（可複選）</h2>
+
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" id="vm-toggle" class="h-4 w-4" checked>
+                <span>虛擬主機（VM）</span>
+            </label>
+
+            <label class="flex items-center space-x-2 mt-2">
+                <input type="checkbox" id="k8s-toggle" class="h-4 w-4">
+                <span>Kubernetes（容器）</span>
+            </label>
+        </section>
+
+        <hr>
+
+        <!-- VM 資源池 -->
+        <section id="vm-section">
+            <h2 class="text-lg font-semibold mb-3">VM 資源池（上限）</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium">CPU (vCPU)</label>
+                    <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：20">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Memory (GB)</label>
+                    <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：80">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Storage (GB)</label>
+                    <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：1000">
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <label class="block text-sm font-medium mb-2">網段需求（自動產生 Subnet）</label>
+                <select class="w-full rounded-md border-gray-300">
+                    <option>單一網段（最常用）</option>
+                    <option>三層架構（Web / App / DB）</option>
+                    <option>多區（3–6 個）</option>
+                    <option>7+（需審核）</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- K8s 資源池 -->
+        <section id="k8s-section" class="hidden">
+            <h2 class="text-lg font-semibold mb-3">Kubernetes 資源池（上限）</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium">CPU (vCPU)</label>
+                    <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：10">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Memory (GB)</label>
+                    <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：40">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Storage (GB)</label>
+                    <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：500">
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <p class="text-sm text-gray-500">
+                    ※ Kubernetes Namespace 為專案專屬，自動建立一個，不需設定名稱。
+                </p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- 進階設定 -->
+        <section>
+            <button id="adv-toggle" class="text-indigo-600 hover:underline text-sm">＋ 顯示進階設定</button>
+
+            <div id="advanced-area" class="hidden mt-4 space-y-4 border rounded-md p-4 bg-gray-50">
+                <h3 class="text-base font-semibold">進階設定（技術人員使用）</h3>
+
+                <div>
+                    <label class="block text-sm font-medium">VPC CIDR</label>
+                    <input type="text" class="mt-1 w-full rounded-md border-gray-300" value="10.10.0.0/16">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">Subnet（自動產生，可微調）</label>
+                    <textarea class="mt-1 w-full rounded-md border-gray-300" rows="3">
+web-subnet  10.10.1.0/26
+app-subnet  10.10.2.0/26
+db-subnet   10.10.3.0/26
+          </textarea>
+                </div>
+
+                <p class="text-xs text-gray-500">※ 一般使用者無需修改。</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- Submit -->
+        <div class="flex justify-end">
+            <button class="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700">
+                送出申請
+            </button>
+        </div>
+
+    </div>
+
+
+    <!-- JS：簡單模式切換 -->
+    <script>
+        document.getElementById('vm-toggle').addEventListener('change', (e) => {
+            document.getElementById('vm-section').style.display = e.target.checked ? '' : 'none';
+        });
+
+        document.getElementById('k8s-toggle').addEventListener('change', (e) => {
+            document.getElementById('k8s-section').classList.toggle('hidden', !e.target.checked);
+        });
+
+        document.getElementById('adv-toggle').addEventListener('click', () => {
+            const area = document.getElementById('advanced-area');
+            area.classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+
+</html>

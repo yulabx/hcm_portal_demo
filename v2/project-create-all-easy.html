@@ -1,0 +1,370 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="utf-8" />
+  <title>混合雲智能申請（V5）</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Noto Sans TC", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-100 text-slate-900">
+  <div class="max-w-6xl mx-auto p-6 space-y-6">
+
+    <!-- Header -->
+    <header>
+      <h1 class="text-2xl font-bold">混合雲智能申請（V5）</h1>
+      <p class="text-xs text-slate-500 mt-1">
+        平台 = 叢集（AWS / Harvester / 多組 K8s）。<br>
+        VM 類平台需選擇 WEB / APP / DB 等 subnet 分區；K8s 類平台只設定 CPU / 記憶體 / PV 空間，
+        Namespace 預設等於專案代號 (PRJ)，不需由使用者輸入。Bastion、公私網、防火牆由後續流程處理。
+      </p>
+    </header>
+
+    <!-- Step 0: Project info -->
+    <section class="bg-white rounded-lg shadow p-4 space-y-3">
+      <h2 class="text-sm font-semibold">Step 0．專案資訊</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+        <div>
+          <label class="block text-xs font-medium">專案代號 (PRJ)</label>
+          <input id="prj" class="mt-1 w-full rounded border-slate-300" placeholder="例如：itw" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium">專案名稱</label>
+          <input id="prj-name" class="mt-1 w-full rounded border-slate-300" placeholder="例如：客戶入口網站" />
+        </div>
+        <div>
+          <label class="block text-xs font-medium">負責人</label>
+          <div class="mt-2 text-xs text-slate-600">Anya（由登入帳號帶入）</div>
+        </div>
+      </div>
+
+      <div class="text-sm">
+        <label class="block text-xs font-medium">專案描述（選填）</label>
+        <textarea id="prj-desc" rows="2" class="mt-1 w-full rounded border-slate-300" placeholder="簡述此專案內容"></textarea>
+      </div>
+    </section>
+
+    <!-- Step 1: dynamic platforms -->
+    <section class="bg-white rounded-lg shadow p-4 space-y-3">
+      <h2 class="text-sm font-semibold">Step 1．選擇本專案會使用哪些平台（平台 = 叢集）</h2>
+      <p class="text-xs text-slate-500">
+        平台清單由後端 DB 動態提供。Harvester 預設只有一組，其餘 K8s 可有多組。<br>
+        勾選的平台會各產生一張叢集卡片。
+      </p>
+
+      <div id="platform-list" class="grid grid-cols-1 md:grid-cols-3 gap-2 text-sm">
+        <!-- JS 動態產生 -->
+      </div>
+
+      <button id="btn-build-clusters"
+        class="mt-2 bg-indigo-600 text-white text-xs px-3 py-2 rounded hover:bg-indigo-700">
+        依平台產生叢集卡片
+      </button>
+    </section>
+
+    <!-- Step 2: clusters detail -->
+    <section class="bg-white rounded-lg shadow p-4 space-y-3">
+      <h2 class="text-sm font-semibold">Step 2．設定每個叢集的服務組合與資源配額</h2>
+      <p class="text-xs text-slate-500 mb-1">
+        VM 類平台（AWS / Harvester）：選擇 WEB / APP / DB 等 subnet 分區，並設定 CPU / 記憶體 / VM 磁碟。<br>
+        K8s 類平台：設定 CPU / 記憶體 / PV 空間。Namespace 預設為專案代號 (PRJ)，不需使用者輸入。
+      </p>
+
+      <div id="cluster-list" class="space-y-3 text-sm"></div>
+    </section>
+
+    <!-- Step 3: preview -->
+    <section class="flex justify-end">
+      <button id="btn-preview" class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded">
+        預覽送出資料（JSON）
+      </button>
+    </section>
+
+    <!-- JSON output -->
+    <section class="bg-slate-900 text-emerald-100 text-xs rounded p-3">
+      <div class="flex justify-between items-center mb-1">
+        <span class="font-semibold">送往後端 API 的 JSON（示意）</span>
+        <span class="text-[10px] text-slate-400">可給 RD / 網管 / 資安對齊欄位</span>
+      </div>
+      <pre id="json-output" class="whitespace-pre-wrap text-[11px]"></pre>
+    </section>
+
+  </div>
+
+  <!-- Templates -->
+  <template id="platform-checkbox-template">
+    <label class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded px-3 py-2 cursor-pointer text-sm">
+      <input type="checkbox" class="plat-checkbox">
+      <span class="flex flex-col">
+        <span class="plat-name text-xs font-medium"></span>
+        <span class="plat-desc text-[10px] text-slate-500"></span>
+      </span>
+    </label>
+  </template>
+
+  <!-- VM cluster card -->
+  <template id="cluster-vm-template">
+    <div class="cluster border border-slate-200 bg-slate-50 rounded p-3 space-y-2">
+      <div>
+        <div class="cluster-title text-sm font-semibold"></div>
+        <div class="cluster-sub text-[10px] text-slate-500"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-2 text-xs">
+        <div>
+          <label class="block font-medium">服務組合（Subnet 分區）</label>
+          <select class="pattern mt-1 w-full rounded border-slate-300 text-xs">
+            <option value="app">單層：APP</option>
+            <option value="app-db" selected>兩層：APP + DB</option>
+            <option value="web-app-db">三層：WEB + APP + DB</option>
+            <option value="db-only">只有 DB</option>
+            <option value="custom">自訂</option>
+          </select>
+        </div>
+        <div>
+          <label class="block font-medium">CPU (cores)</label>
+          <input type="number" class="cpu mt-1 w-full rounded border-slate-300" value="4" min="1" />
+        </div>
+        <div>
+          <label class="block font-medium">Memory (GB)</label>
+          <input type="number" class="mem mt-1 w-full rounded border-slate-300" value="16" min="1" />
+        </div>
+        <div>
+          <label class="block font-medium">VM Storage (GB)</label>
+          <input type="number" class="sto mt-1 w-full rounded border-slate-300" value="200" min="1" />
+        </div>
+      </div>
+
+      <div class="custom-zones hidden border-t border-slate-200 pt-2 text-[11px]">
+        <div class="font-medium mb-1">自訂 Subnet 區域</div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-1">
+          <label><input type="checkbox" value="web" class="zone"> WEB</label>
+          <label><input type="checkbox" value="app" class="zone" checked> APP</label>
+          <label><input type="checkbox" value="db" class="zone"> DB</label>
+          <label><input type="checkbox" value="internal" class="zone"> INTERNAL</label>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <!-- K8s cluster card -->
+  <template id="cluster-k8s-template">
+    <div class="cluster border border-slate-200 bg-slate-50 rounded p-3 space-y-2">
+      <div>
+        <div class="cluster-title text-sm font-semibold"></div>
+        <div class="cluster-sub text-[10px] text-slate-500"></div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
+        <div>
+          <label class="block font-medium">CPU (cores)</label>
+          <input type="number" class="cpu mt-1 w-full rounded border-slate-300" value="2" min="1" />
+        </div>
+        <div>
+          <label class="block font-medium">Memory (GB)</label>
+          <input type="number" class="mem mt-1 w-full rounded border-slate-300" value="4" min="1" />
+        </div>
+        <div>
+          <label class="block font-medium">PV Storage (GB)</label>
+          <input type="number" class="sto mt-1 w-full rounded border-slate-300" value="50" min="1" />
+        </div>
+      </div>
+
+      <p class="text-[10px] text-slate-500">
+        說明：此 K8s 叢集會自動建立 Namespace，名稱預設等於專案代號 (PRJ)。<br>
+        Namespace 與實際部署在哪一個實體節點、NetworkPolicy 由平台與後端邏輯決定。
+      </p>
+    </div>
+  </template>
+
+  <script>
+    // 平台清單（實務上可改成 API 回來的資料）
+    // Harvester 預設只有一組
+    const platformDefs = [
+      { id: "aws-main", type: "vm-aws", name: "AWS", desc: "公有雲 VM / VPC" },
+      { id: "hv-main", type: "vm-harvester", name: "Harvester", desc: "機房 VM（唯一叢集）" },
+      { id: "k8s-1", type: "k8s", name: "K8s Cluster #1", desc: "容器平台（主要）" },
+      { id: "k8s-2", type: "k8s", name: "K8s Cluster #2", desc: "容器平台（備援）" }
+    ];
+
+    const platformList = document.getElementById("platform-list");
+    const platTpl = document.getElementById("platform-checkbox-template");
+    const clusterList = document.getElementById("cluster-list");
+    const vmTpl = document.getElementById("cluster-vm-template");
+    const k8sTpl = document.getElementById("cluster-k8s-template");
+    const jsonOutput = document.getElementById("json-output");
+
+    // 初始化平台 checkbox
+    function renderPlatformCheckboxes() {
+      platformList.innerHTML = "";
+      platformDefs.forEach(p => {
+        const node = platTpl.content.firstElementChild.cloneNode(true);
+        const cb = node.querySelector(".plat-checkbox");
+        node.dataset.platformId = p.id;
+        node.dataset.platformType = p.type;
+        node.dataset.platformName = p.name;
+
+        cb.value = p.id;
+        node.querySelector(".plat-name").textContent = p.name;
+        node.querySelector(".plat-desc").textContent = p.desc;
+
+        platformList.appendChild(node);
+      });
+    }
+
+    // 建立叢集卡片
+    function addClusterCard(platformId, type, name) {
+      let node;
+      if (type === "k8s") {
+        node = k8sTpl.content.firstElementChild.cloneNode(true);
+      } else {
+        node = vmTpl.content.firstElementChild.cloneNode(true);
+      }
+
+      node.dataset.providerId = platformId;
+      node.dataset.providerType = type;
+      node.dataset.providerName = name;
+
+      node.querySelector(".cluster-title").textContent = name;
+      node.querySelector(".cluster-sub").textContent = `Provider 類型：${type}`;
+
+      // VM 類：pattern 控制 custom 區塊
+      if (type !== "k8s") {
+        const patternSel = node.querySelector(".pattern");
+        const customWrap = node.querySelector(".custom-zones");
+        patternSel.addEventListener("change", () => {
+          if (patternSel.value === "custom") customWrap.classList.remove("hidden");
+          else customWrap.classList.add("hidden");
+        });
+      }
+
+      clusterList.appendChild(node);
+    }
+
+    // 點擊產生叢集卡片
+    document.getElementById("btn-build-clusters").addEventListener("click", () => {
+      clusterList.innerHTML = "";
+      const checkedIds = [...document.querySelectorAll(".plat-checkbox:checked")].map(cb => cb.value);
+      if (!checkedIds.length) {
+        alert("請至少勾選一個平台");
+        return;
+      }
+
+      checkedIds.forEach(id => {
+        const def = platformDefs.find(p => p.id === id);
+        if (def) addClusterCard(def.id, def.type, def.name);
+      });
+    });
+
+    // VM 類 cluster 的 zones
+    function computeVmZones(clusterEl) {
+      const pattern = clusterEl.querySelector(".pattern").value;
+      if (pattern === "app") return ["app"];
+      if (pattern === "app-db") return ["app", "db"];
+      if (pattern === "web-app-db") return ["web", "app", "db"];
+      if (pattern === "db-only") return ["db"];
+      if (pattern === "custom") {
+        return [...clusterEl.querySelectorAll(".zone:checked")].map(z => z.value);
+      }
+      return [];
+    }
+
+    // 收集 JSON model
+    function collectModel() {
+      const prj = document.getElementById("prj").value.trim();
+      const project = {
+        prj,
+        name: document.getElementById("prj-name").value.trim(),
+        description: document.getElementById("prj-desc").value.trim(),
+        owner: "Anya"
+      };
+
+      const clusters = [...clusterList.querySelectorAll(".cluster")].map(c => {
+        const providerType = c.dataset.providerType;
+        const providerId = c.dataset.providerId;
+        const providerName = c.dataset.providerName;
+
+        if (providerType === "k8s") {
+          return {
+            providerType: "k8s",
+            providerId,
+            providerName,
+            namespace: prj || "default-project",
+            resourceQuota: {
+              cpu: Number(c.querySelector(".cpu").value) || 0,
+              memory: Number(c.querySelector(".mem").value) || 0,
+              storage: Number(c.querySelector(".sto").value) || 0   // PV
+            }
+          };
+        } else {
+          return {
+            providerType,
+            providerId,
+            providerName,
+            quota: {
+              cpu: Number(c.querySelector(".cpu").value) || 0,
+              memory: Number(c.querySelector(".mem").value) || 0,
+              storage: Number(c.querySelector(".sto").value) || 0
+            },
+            zones: computeVmZones(c)
+          };
+        }
+      });
+
+      return { project, clusters };
+    }
+
+    document.getElementById("btn-preview").addEventListener("click", () => {
+      const model = collectModel();
+      const errs = [];
+
+      if (!model.project.prj) errs.push("專案代號 (PRJ) 必填");
+      if (!model.project.name) errs.push("專案名稱必填");
+      if (!model.clusters.length) errs.push("請先選擇平台並產生叢集卡片");
+
+      model.clusters.forEach((c, idx) => {
+        if (c.providerType === "k8s") {
+          if (!c.namespace) errs.push(`K8s 叢集 #${idx + 1} 的 Namespace 無法決定（請確認 PRJ 是否有填）`);
+          if (!c.resourceQuota.cpu || !c.resourceQuota.memory || !c.resourceQuota.storage) {
+            errs.push(`K8s 叢集 #${idx + 1} 的 CPU / Memory / PV Storage 不可為 0`);
+          }
+        } else {
+          if (!c.quota.cpu || !c.quota.memory || !c.quota.storage) {
+            errs.push(`VM 叢集 #${idx + 1} 的 CPU / Memory / Storage 不可為 0`);
+          }
+          if (!c.zones || !c.zones.length) {
+            errs.push(`VM 叢集 #${idx + 1} 至少需要一個 subnet 用途（例如 APP 或 DB）`);
+          }
+        }
+      });
+
+      if (errs.length) {
+        alert(errs.join("\n"));
+        return;
+      }
+
+      jsonOutput.textContent = JSON.stringify(model, null, 2);
+      alert("JSON 已更新，請往下查看。");
+    });
+
+    // 初始化平台清單 & 預設勾一些方便 demo
+    window.addEventListener("DOMContentLoaded", () => {
+      renderPlatformCheckboxes();
+      const preset = ["aws-main", "hv-main", "k8s-1"];
+      preset.forEach(id => {
+        const cb = [...document.querySelectorAll(".plat-checkbox")].find(c => c.value === id);
+        if (cb) cb.checked = true;
+      });
+      document.getElementById("btn-build-clusters").click();
+    });
+  </script>
+</body>
+
+</html>

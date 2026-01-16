@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>建立虛擬主機</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen flex items-start justify-center py-10">
+        <div class="w-full max-w-3xl bg-white shadow rounded-lg p-6 space-y-6">
+            <!-- 標題 -->
+            <header>
+                <h1 class="text-2xl font-bold">建立虛擬主機</h1>
+                <p class="text-sm text-gray-500 mt-1">
+                    VM 所在環境（雲端 / 地端）將由系統依專案策略與資源狀況自動決定，建立後可於列表中查看。
+                </p>
+            </header>
+
+            <!-- 所屬專案 -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-semibold">專案資訊</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">專案</label>
+                        <select class="mt-1 w-full rounded-md border-gray-300">
+                            <option>prj-itw</option>
+                            <option>prj-demo</option>
+                            <option>prj-internal</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">Namespace</label>
+                        <input type="text" class="mt-1 w-full rounded-md border-gray-300 bg-gray-100"
+                            value="prj-itw-namespace" disabled>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 基本設定 -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-semibold">基本設定</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">VM 名稱</label>
+                        <input type="text" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：itw-web-01">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">用途</label>
+                        <select class="mt-1 w-full rounded-md border-gray-300">
+                            <option>Web 前端服務</option>
+                            <option>應用程式服務 (App)</option>
+                            <option>資料庫 (DB)</option>
+                            <option>批次 / 排程作業</option>
+                            <option>測試 / 開發環境</option>
+                            <option>其他</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">說明（選填）</label>
+                    <textarea rows="3" class="mt-1 w-full rounded-md border-gray-300"
+                        placeholder="可補充此 VM 的用途、系統名稱等"></textarea>
+                </div>
+            </section>
+
+            <!-- 規格設定 -->
+            <section class="space-y-4">
+                <h2 class="text-lg font-semibold">資源規格</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">CPU (vCPU)</label>
+                        <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">記憶體 (GB)</label>
+                        <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：4">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">系統碟 (GB)</label>
+                        <input type="number" class="mt-1 w-full rounded-md border-gray-300" placeholder="例如：80">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">作業系統</label>
+                        <select class="mt-1 w-full rounded-md border-gray-300">
+                            <option>Ubuntu 22.04 LTS</option>
+                            <option>CentOS 7</option>
+                            <option>Rocky Linux 9</option>
+                            <option>Windows Server 2019</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">網路類型</label>
+                        <select class="mt-1 w-full rounded-md border-gray-300">
+                            <option>內部服務（僅內網存取）</option>
+                            <option>對外服務（需對外存取）</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 部署偏好（不是選 provider，只是 hint） -->
+            <section class="space-y-2">
+                <h2 class="text-lg font-semibold">部署偏好（選填）</h2>
+                <select class="w-full rounded-md border-gray-300">
+                    <option>自動（建議，由系統依專案策略決定）</option>
+                    <option>偏好地端（效能、內網優先）</option>
+                    <option>偏好雲端（對外與彈性優先）</option>
+                </select>
+                <p class="text-xs text-gray-500">
+                    ※ 實際部署位置仍會依專案雲端 / 地端比例、資源使用狀況與公司政策決定。
+                </p>
+            </section>
+
+            <!-- 提交 -->
+            <footer class="flex justify-end space-x-3 pt-4 border-t">
+                <button class="px-4 py-2 rounded-md border border-gray-300 text-gray-700">
+                    取消
+                </button>
+                <button class="px-6 py-2 rounded-md bg-indigo-600 text-white hover:bg-indigo-700">
+                    建立 VM
+                </button>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>

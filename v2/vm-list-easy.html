@@ -1,0 +1,222 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>虛擬主機列表</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+
+<body class="bg-gray-100">
+    <div class="min-h-screen px-4 py-8">
+        <div class="max-w-6xl mx-auto bg-white shadow rounded-lg p-6 space-y-6">
+
+            <!-- 標題 ＋ 篩選 -->
+            <header class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold">虛擬主機列表</h1>
+                    <p class="text-sm text-gray-500 mt-1">
+                        可查看每台 VM 的所在環境（雲端 / 地端）、IP、狀態等資訊。
+                    </p>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <input type="text" placeholder="搜尋名稱 / IP / 用途" class="rounded-md border-gray-300 text-sm w-56">
+                    <select class="rounded-md border-gray-300 text-sm">
+                        <option value="">全部環境</option>
+                        <option>Harvester（地端）</option>
+                        <option>AWS（雲端）</option>
+                    </select>
+                    <select class="rounded-md border-gray-300 text-sm">
+                        <option value="">全部狀態</option>
+                        <option>Running</option>
+                        <option>Stopped</option>
+                        <option>Error</option>
+                    </select>
+                </div>
+            </header>
+
+            <!-- VM 列表 -->
+            <section class="overflow-x-auto">
+                <table class="min-w-full text-sm border-t border-b">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">名稱</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">CPU</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">記憶體</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">狀態</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">所在環境</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">IP</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700">用途</th>
+                            <th class="px-3 py-2 text-left font-medium text-gray-700 text-right">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+                        <!-- 範例 1：地端 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 py-2 font-medium text-gray-800">itw-web-01</td>
+                            <td class="px-3 py-2">2 vCPU</td>
+                            <td class="px-3 py-2">4 GB</td>
+                            <td class="px-3 py-2">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
+                                    Running
+                                </span>
+                            </td>
+                            <td class="px-3 py-2">
+                                <div class="flex items-center space-x-1">
+                                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                    <span class="text-xs font-medium text-gray-700">Harvester（地端）</span>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2">10.10.3.21</td>
+                            <td class="px-3 py-2">Web 前端服務</td>
+                            <td class="px-3 py-2 text-right space-x-2">
+                                <button class="text-indigo-600 hover:underline text-xs"
+                                    onclick="showDetail('vm1')">檢視</button>
+                                <button class="text-red-600 hover:underline text-xs">關機</button>
+                            </td>
+                        </tr>
+
+                        <!-- 範例 2：雲端 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 py-2 font-medium text-gray-800">itw-api-01</td>
+                            <td class="px-3 py-2">4 vCPU</td>
+                            <td class="px-3 py-2">8 GB</td>
+                            <td class="px-3 py-2">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-green-100 text-green-700">
+                                    Running
+                                </span>
+                            </td>
+                            <td class="px-3 py-2">
+                                <div class="flex items-center space-x-1">
+                                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+                                    <span class="text-xs font-medium text-gray-700">AWS（雲端）</span>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2">172.31.5.20</td>
+                            <td class="px-3 py-2">API 服務</td>
+                            <td class="px-3 py-2 text-right space-x-2">
+                                <button class="text-indigo-600 hover:underline text-xs"
+                                    onclick="showDetail('vm2')">檢視</button>
+                                <button class="text-red-600 hover:underline text-xs">關機</button>
+                            </td>
+                        </tr>
+
+                        <!-- 範例 3：地端 DB -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 py-2 font-medium text-gray-800">itw-db-01</td>
+                            <td class="px-3 py-2">8 vCPU</td>
+                            <td class="px-3 py-2">32 GB</td>
+                            <td class="px-3 py-2">
+                                <span
+                                    class="inline-flex items-center px-2 py-0.5 rounded-full text-xs bg-yellow-100 text-yellow-700">
+                                    Stopped
+                                </span>
+                            </td>
+                            <td class="px-3 py-2">
+                                <div class="flex items-center space-x-1">
+                                    <span class="inline-block w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                    <span class="text-xs font-medium text-gray-700">Harvester（地端）</span>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2">10.10.40.5</td>
+                            <td class="px-3 py-2">資料庫</td>
+                            <td class="px-3 py-2 text-right space-x-2">
+                                <button class="text-indigo-600 hover:underline text-xs"
+                                    onclick="showDetail('vm3')">檢視</button>
+                                <button class="text-green-600 hover:underline text-xs">開機</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <!-- 詳細資訊區 -->
+            <section id="vm-detail" class="hidden border rounded-lg p-4 bg-gray-50">
+                <h2 class="text-lg font-semibold mb-3">虛擬主機詳細資訊</h2>
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                    <div>
+                        <dt class="font-medium text-gray-600">名稱</dt>
+                        <dd id="d-name" class="text-gray-900">-</dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-600">所在環境</dt>
+                        <dd id="d-env" class="text-gray-900">-</dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-600">CPU / 記憶體</dt>
+                        <dd id="d-spec" class="text-gray-900">-</dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-600">IP 位址</dt>
+                        <dd id="d-ip" class="text-gray-900">-</dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-600">狀態</dt>
+                        <dd id="d-status" class="text-gray-900">-</dd>
+                    </div>
+                    <div>
+                        <dt class="font-medium text-gray-600">用途</dt>
+                        <dd id="d-purpose" class="text-gray-900">-</dd>
+                    </div>
+                    <div class="md:col-span-2">
+                        <dt class="font-medium text-gray-600">說明</dt>
+                        <dd id="d-desc" class="text-gray-900">-</dd>
+                    </div>
+                </dl>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- Demo 用假資料：實作時改成後端帶資料即可 -->
+    <script>
+        const demoData = {
+            vm1: {
+                name: 'itw-web-01',
+                env: 'Harvester（地端）',
+                spec: '2 vCPU / 4 GB',
+                ip: '10.10.3.21',
+                status: 'Running',
+                purpose: 'Web 前端服務',
+                desc: '對外網站前端服務，走內網 LB。'
+            },
+            vm2: {
+                name: 'itw-api-01',
+                env: 'AWS（雲端）',
+                spec: '4 vCPU / 8 GB',
+                ip: '172.31.5.20',
+                status: 'Running',
+                purpose: 'API 服務',
+                desc: '提供外部 API，部署於 AWS 以利對外存取。'
+            },
+            vm3: {
+                name: 'itw-db-01',
+                env: 'Harvester（地端）',
+                spec: '8 vCPU / 32 GB',
+                ip: '10.10.40.5',
+                status: 'Stopped',
+                purpose: '資料庫',
+                desc: '內部資料庫，僅內網存取。'
+            }
+        };
+
+        function showDetail(id) {
+            const data = demoData[id];
+            if (!data) return;
+            document.getElementById('d-name').textContent = data.name;
+            document.getElementById('d-env').textContent = data.env;
+            document.getElementById('d-spec').textContent = data.spec;
+            document.getElementById('d-ip').textContent = data.ip;
+            document.getElementById('d-status').textContent = data.status;
+            document.getElementById('d-purpose').textContent = data.purpose;
+            document.getElementById('d-desc').textContent = data.desc;
+
+            document.getElementById('vm-detail').classList.remove('hidden');
+            document.getElementById('vm-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    </script>
+</body>
+
+</html>

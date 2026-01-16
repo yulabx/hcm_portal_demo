@@ -1,0 +1,554 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>工作模板 - 混合雲管理系統</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA', // indigo-700
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#1F2937", // gray-800
+                        "surface-light": "#FFFFFF", // white
+                        "surface-dark": "#374151", // gray-700
+                        "text-light": "#111827", // gray-900
+                        "text-dark": "#F9FAFB", // gray-50
+                        "muted-light": "#6B7280", // gray-500
+                        "muted-dark": "#9CA3AF", // gray-400
+                        "border-light": "#E5E7EB", // gray-200
+                        "border-dark": "#4B5563", // gray-600
+                    },
+                    fontFamily: {
+                        display: ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex h-screen">
+        <!-- 側邊欄 -->
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="index.html">
+                    <span class="material-icons-outlined mr-3">home</span>
+                    <span>首頁</span>
+                </a>
+
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-create-all.html">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-modify.html">
+                        <span class="material-icons-outlined mr-3">edit</span>
+                        <span>專案異動申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>簽核作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="execute-list.html">
+                        <span class="material-icons-outlined mr-3">play_circle</span>
+                        <span>申請單執行</span>
+                    </a>
+                </div>
+
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        資源池管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-resource-pool.html">
+                        <span class="material-icons-outlined mr-3">dns</span>
+                        <span>虛擬主機總覽</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="container-resource-pool.html">
+                        <span class="material-icons-outlined mr-3">view_in_ar</span>
+                        <span>容器總覽</span>
+                    </a>
+                </div>
+
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">folder</span>
+                        <span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-members.html">
+                        <span class="material-icons-outlined mr-3">groups</span>
+                        <span>專案成員</span>
+                    </a>
+                </div>
+
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-list.html">
+                        <span class="material-icons-outlined mr-3">computer</span>
+                        <span>虛擬機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="containers.html">
+                        <span class="material-icons-outlined mr-3">view_in_ar</span>
+                        <span>容器管理</span>
+                    </a>
+                </div>
+
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="role-management.html">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span>
+                        <span>角色管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- 主要內容區域 -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- 標題列 -->
+            <header
+                class="bg-surface-light dark:bg-surface-dark border-b border-border-light dark:border-border-dark px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-xl font-semibold">工作模板</h2>
+                        <div class="flex items-center space-x-2">
+                            <button
+                                class="p-1 rounded text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                                <span class="material-icons-outlined text-lg">refresh</span>
+                            </button>
+                            <button
+                                class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 flex items-center">
+                                <span class="material-icons-outlined text-sm mr-2">add</span>
+                                新增模板
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <input type="text" placeholder="搜尋模板..."
+                                class="pl-10 pr-4 py-2 border border-border-light dark:border-border-dark rounded-md bg-background-light dark:bg-background-dark">
+                            <span
+                                class="material-icons-outlined absolute left-3 top-2.5 text-muted-light dark:text-muted-dark text-sm">search</span>
+                        </div>
+                        <button
+                            class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                            <span class="material-icons-outlined">dark_mode</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 內容區域 -->
+            <div class="flex-1 overflow-y-auto p-6">
+                <!-- 統計卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg border border-border-light dark:border-border-dark">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-blue-100 dark:bg-blue-900 rounded-lg">
+                                <span class="material-icons-outlined text-blue-600 dark:text-blue-400">work</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-muted-light dark:text-muted-dark">總模板數</p>
+                                <p class="text-xl font-semibold">12</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg border border-border-light dark:border-border-dark">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-green-100 dark:bg-green-900 rounded-lg">
+                                <span
+                                    class="material-icons-outlined text-green-600 dark:text-green-400">check_circle</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-muted-light dark:text-muted-dark">執行成功</p>
+                                <p class="text-xl font-semibold">8</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg border border-border-light dark:border-border-dark">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
+                                <span
+                                    class="material-icons-outlined text-yellow-600 dark:text-yellow-400">schedule</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-muted-light dark:text-muted-dark">執行中</p>
+                                <p class="text-xl font-semibold">2</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-surface-light dark:bg-surface-dark p-4 rounded-lg border border-border-light dark:border-border-dark">
+                        <div class="flex items-center">
+                            <div class="p-2 bg-red-100 dark:bg-red-900 rounded-lg">
+                                <span class="material-icons-outlined text-red-600 dark:text-red-400">error</span>
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm text-muted-light dark:text-muted-dark">執行失敗</p>
+                                <p class="text-xl font-semibold">2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 模板列表 -->
+                <div
+                    class="bg-surface-light dark:bg-surface-dark rounded-lg border border-border-light dark:border-border-dark">
+                    <div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+                        <h3 class="text-lg font-medium">工作模板列表</h3>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50 dark:bg-gray-800">
+                                <tr>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        <input type="checkbox" class="rounded">
+                                    </th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        名稱</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        類型</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        清單</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        專案</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        狀態</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        最後執行時間</th>
+                                    <th
+                                        class="px-6 py-3 text-left text-xs font-medium text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                                        操作</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-border-light dark:divide-border-dark">
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox" class="rounded">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="material-icons-outlined text-green-500 mr-2">play_circle</span>
+                                            <span
+                                                class="font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">creation</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Default</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Default</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">正常</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-sm text-muted-light dark:text-muted-dark">
+                                        2024年9月13日 上午11:12</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex items-center space-x-2">
+                                            <button
+                                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                                <span class="material-icons-outlined text-sm">play_arrow</span>
+                                            </button>
+                                            <button
+                                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300">
+                                                <span class="material-icons-outlined text-sm">edit</span>
+                                            </button>
+                                            <button
+                                                class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                <span class="material-icons-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox" class="rounded">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="material-icons-outlined text-green-500 mr-2">play_circle</span>
+                                            <span
+                                                class="font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">Demo
+                                                Job Template</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Default</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Demo Inventory</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Demo Project</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">正常</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-sm text-muted-light dark:text-muted-dark">
+                                        2024年9月12日 下午3:42</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex items-center space-x-2">
+                                            <button
+                                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                                <span class="material-icons-outlined text-sm">play_arrow</span>
+                                            </button>
+                                            <button
+                                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300">
+                                                <span class="material-icons-outlined text-sm">edit</span>
+                                            </button>
+                                            <button
+                                                class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                <span class="material-icons-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox" class="rounded">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="material-icons-outlined text-green-500 mr-2">play_circle</span>
+                                            <span
+                                                class="font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">kubernetes</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Default</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">ansible</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">正常</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-sm text-muted-light dark:text-muted-dark">
+                                        2024年9月12日 下午5:42</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex items-center space-x-2">
+                                            <button
+                                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                                <span class="material-icons-outlined text-sm">play_arrow</span>
+                                            </button>
+                                            <button
+                                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300">
+                                                <span class="material-icons-outlined text-sm">edit</span>
+                                            </button>
+                                            <button
+                                                class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                <span class="material-icons-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox" class="rounded">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="material-icons-outlined text-green-500 mr-2">play_circle</span>
+                                            <span
+                                                class="font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">provision</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Default</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">create1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">正常</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-sm text-muted-light dark:text-muted-dark">
+                                        2024年9月12日 下午7:43</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex items-center space-x-2">
+                                            <button
+                                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                                <span class="material-icons-outlined text-sm">play_arrow</span>
+                                            </button>
+                                            <button
+                                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300">
+                                                <span class="material-icons-outlined text-sm">edit</span>
+                                            </button>
+                                            <button
+                                                class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                <span class="material-icons-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <input type="checkbox" class="rounded">
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <span class="material-icons-outlined text-green-500 mr-2">play_circle</span>
+                                            <span
+                                                class="font-medium text-blue-600 dark:text-blue-400 hover:underline cursor-pointer">vm_vm</span>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">Default</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">create1</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 rounded-full">正常</span>
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 whitespace-nowrap text-sm text-muted-light dark:text-muted-dark">
+                                        2024年9月18日 上午11:54</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <div class="flex items-center space-x-2">
+                                            <button
+                                                class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                                                <span class="material-icons-outlined text-sm">play_arrow</span>
+                                            </button>
+                                            <button
+                                                class="text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-300">
+                                                <span class="material-icons-outlined text-sm">edit</span>
+                                            </button>
+                                            <button
+                                                class="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300">
+                                                <span class="material-icons-outlined text-sm">delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 分頁 -->
+                    <div class="px-6 py-4 border-t border-border-light dark:border-border-dark">
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-muted-light dark:text-muted-dark">
+                                顯示第 1 到 5 筆，共 5 筆記錄
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button
+                                    class="px-3 py-1 text-sm border border-border-light dark:border-border-dark rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                                    disabled>
+                                    上一頁
+                                </button>
+                                <button class="px-3 py-1 text-sm bg-primary text-white rounded">1</button>
+                                <button
+                                    class="px-3 py-1 text-sm border border-border-light dark:border-border-dark rounded hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                                    disabled>
+                                    下一頁
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 深色模式切換
+        const darkModeToggle = document.querySelector('button[onclick*="dark_mode"]');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+            });
+        }
+
+        // 全選功能
+        const selectAllCheckbox = document.querySelector('thead input[type="checkbox"]');
+        const rowCheckboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+
+        if (selectAllCheckbox) {
+            selectAllCheckbox.addEventListener('change', (e) => {
+                rowCheckboxes.forEach(checkbox => {
+                    checkbox.checked = e.target.checked;
+                });
+            });
+        }
+
+        // 搜尋功能
+        const searchInput = document.querySelector('input[placeholder="搜尋模板..."]');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+
+                rows.forEach(row => {
+                    const templateName = row.querySelector('td:nth-child(2) span:last-child').textContent.toLowerCase();
+                    if (templateName.includes(searchTerm)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+
+</html>

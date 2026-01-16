@@ -1,0 +1,1218 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>混合雲管理系統 - 虛擬機管理</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA', // indigo-700
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#1F2937", // gray-800
+                        "surface-light": "#FFFFFF", // white
+                        "surface-dark": "#374151", // gray-700
+                        "text-light": "#111827", // gray-900
+                        "text-dark": "#F9FAFB", // gray-50
+                        "muted-light": "#6B7280", // gray-500
+                        "muted-dark": "#9CA3AF", // gray-400
+                        "border-light": "#E5E7EB", // gray-200
+                        "border-dark": "#4B5563", // gray-600
+                    },
+                    fontFamily: {
+                        sans: ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex h-screen">
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="#">
+                    <span class="material-icons-outlined mr-3">home</span>
+                    <span>首頁</span>
+                </a>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心</h3>
+
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-create-all.html">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-cluster-create-all.html">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>專案叢集申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>簽核作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="execute-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>申請執行</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        資源池管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-resource-pool.html">
+                        <span class="material-icons-outlined mr-3">dns</span>
+                        <span>虛擬主機總覽</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="container-resource-pool.html">
+                        <span class="material-icons-outlined mr-3">view_in_ar</span>
+                        <span>容器總覽</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案成員</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-list.html">
+                        <span class="material-icons-outlined mr-3">list_alt</span>
+                        <span>虛擬機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">security</span>
+                        <span>虛擬防火牆服務</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md bg-primary/10 text-primary dark:bg-primary/20" href="#">
+                        <span class="material-icons-outlined mr-3">apps</span>
+                        <span>容器管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        作業執行追蹤</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">play_circle_outline</span>
+                        <span>執行作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">hourglass_empty</span>
+                        <span>執行狀態追蹤</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">history</span>
+                        <span>執行紀錄查詢</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">vpn_key</span>
+                        <span>全域角色管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span>
+                        <span>專案角色管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        帳號管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">find_in_page</span>
+                        <span>帳號查詢</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>帳號權限變更</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">timeline</span>
+                        <span>軌跡</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        統計</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">bar_chart</span>
+                        <span>資源統計</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        稽核管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">policy</span>
+                        <span>稽核管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 flex flex-col">
+            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="relative w-full max-w-md">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+                        placeholder="功能快速搜尋" type="text" />
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- 角色權限指示器 -->
+                    <div class="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+                        <span class="material-icons-outlined text-blue-600 text-sm">admin_panel_settings</span>
+                        <span class="text-sm text-blue-700" id="userRole">操作者</span>
+                        <div class="relative">
+                            <button class="text-blue-600 text-xs" onclick="showRoleInfo()">權限說明</button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                        e
+                    </div>
+                </div>
+            </header>
+            <div class="flex-1 p-8 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold">容器管理</h2>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button id="createFromYaml"
+                            class="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 flex items-center">
+                            <span class="material-icons-outlined mr-2">code</span>
+                            從 YAML 建立
+                        </button>
+                    </div>
+                </div>
+
+
+                <!-- 專案資訊 + Namespace -->
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="text-sm text-slate-500">
+                            <span class="text-slate-600">當前專案：</span>
+                            <span id="currentProject"
+                                class="text-slate-800 font-medium bg-blue-50 px-2 py-1 rounded">itw</span>
+                        </div>
+                        <div class="text-sm text-slate-500">
+                            <span class="text-slate-600">Namespace：</span>
+                            <span id="currentNamespace"
+                                class="text-slate-800 font-medium font-mono bg-gray-50 px-2 py-1 rounded">itw</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-600">
+                        k8s叢集：
+                        <select id="clusterSelect"
+                            class="ml-2 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 text-sm">
+                            <option value="microk8s">microk8s (地端)</option>
+                            <option value="azure-aks">Azure AKS (雲端)</option>
+                            <option value="aws-eks">AWS EKS (雲端)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 資源概況儀表板 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <!-- 總體狀態 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-green-600 text-2xl">check_circle</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">Namespace 狀態</p>
+                                <p class="text-lg font-semibold text-green-600">正常</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pod 統計 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-blue-600 text-2xl">apps</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">運行中 Pod</p>
+                                <p class="text-lg font-semibold">12 / 15</p>
+                                <p class="text-xs text-slate-500">本 namespace</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CPU 使用率 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-orange-600 text-2xl">memory</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">CPU 請求</p>
+                                <p class="text-lg font-semibold">2.5 / 4 cores</p>
+                                <p class="text-xs text-slate-500">配額使用率</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-orange-600 h-2 rounded-full" style="width: 62%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Memory 使用率 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-purple-600 text-2xl">storage</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">記憶體請求</p>
+                                <p class="text-lg font-semibold">3.2 / 8 GB</p>
+                                <p class="text-xs text-slate-500">配額使用率</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-600 h-2 rounded-full" style="width: 40%"></div>
+                        </div>
+                    </div>
+
+                    <!-- PVC 存儲使用 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-indigo-600 text-2xl">folder</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">PVC 使用</p>
+                                <p class="text-lg font-semibold">15 / 50 GB</p>
+                                <p class="text-xs text-slate-500">存儲配額</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作權限和安全提示 -->
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                    <div class="flex items-start">
+                        <span class="material-icons-outlined text-amber-600 text-xl mr-3">info</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-amber-800 mb-1">容器管理說明</h3>
+                            <div class="text-sm text-amber-700 space-y-1">
+                                <p>• <strong>監控範圍：</strong>當前顯示 <span class="font-mono bg-white px-1 rounded">itw</span>
+                                    namespace 的資源狀況</p>
+                                <p>• <strong>資源指標：</strong>CPU/Memory 為配額請求值，PVC 為存儲配額使用情況</p>
+                                <p>• <strong>緊急操作：</strong>支援 Replica 調整、Pod 重啟等臨時性操作</p>
+                                <p>• <strong>權限控制：</strong>所有操作都會記錄，請謹慎使用管理功能</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 服務健康矩陣（Namespace: itw） -->
+                <section id="service-health" class="mb-6 mt-4">
+                    <div
+                        class="bg-white dark:bg-surface-dark rounded-xl shadow ring-1 ring-slate-200 dark:ring-border-dark overflow-hidden">
+                        <div
+                            class="px-4 py-3 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-base font-semibold text-slate-800 dark:text-text-dark">服務健康一覽（namespace:
+                                    <span class="font-mono">itw</span>）
+                                </h3>
+                                <span class="text-xs text-slate-500 dark:text-muted-dark">Ingress → Service →
+                                    Pods（固定三段，直接看哪格變色）</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button id="healthRefresh"
+                                    class="px-2 py-1 rounded-md border border-slate-200 dark:border-border-dark text-sm hover:bg-slate-50 dark:hover:bg-surface-dark/60">
+                                    <span class="material-icons-outlined align-[-3px] text-base">autorenew</span> 重新整理
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-auto">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-slate-50 dark:bg-surface-dark/60 text-slate-600 dark:text-muted-dark">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left w-48">服務</th>
+                                        <th class="px-4 py-2 text-left w-[30%]">Ingress / API Gateway</th>
+                                        <th class="px-4 py-2 text-left w-[30%]">Service / Endpoints</th>
+                                        <th class="px-4 py-2 text-left w-[30%]">Pods / HPA</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="healthRows" class="divide-y divide-slate-100 dark:divide-border-dark">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <aside id="drawer"
+        class="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white shadow-2xl ring-1 ring-slate-200 translate-x-full transition-transform">
+        <div class="flex items-center justify-between px-5 py-4 border-b">
+            <div>
+                <div class="text-xs text-slate-500">資源詳情</div>
+                <div id="drawerTitle" class="text-lg font-semibold">-</div>
+            </div>
+            <button id="closeDrawer" class="p-2 rounded-md hover:bg-slate-50">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+        <div class="h-[calc(100%-64px)] overflow-auto scroll-area p-5 space-y-6">
+            <div class="text-sm text-slate-600">選擇一個資源查看詳細資訊</div>
+        </div>
+    </aside>
+
+    <script>
+        // 簡化的 JavaScript
+        const drawer = document.getElementById('drawer');
+        const title = document.getElementById('drawerTitle');
+
+        document.querySelectorAll('.open-drawer').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const name = a.getAttribute('data-name') || a.textContent;
+                title.textContent = name;
+                drawer.classList.remove('translate-x-full');
+            });
+        });
+
+        document.getElementById('closeDrawer').addEventListener('click', () => {
+            drawer.classList.add('translate-x-full');
+        });
+
+        function switchCluster(clusterValue) {
+            try { window.localStorage.setItem('activeCluster', clusterValue); } catch (e) { }
+            console.log(`切換到叢集: ${clusterValue}`);
+        }
+
+        const clusterSelect = document.getElementById('clusterSelect');
+        if (clusterSelect) {
+            clusterSelect.addEventListener('change', (e) => {
+                switchCluster(e.target.value);
+            });
+        }
+
+        window.showRoleInfo = function () {
+            alert('當前角色：操作者\n權限：可查看容器資源狀態');
+        }
+    </script>
+</body>
+
+</html>
+<div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+    <div class="text-sm text-slate-600">共 <span id="countServices">2</span> 個服務</div>
+</div>
+<div class="overflow-auto scroll-area">
+    <table class="min-w-full text-sm">
+        <thead class="bg-slate-50 text-slate-600">
+            <tr>
+                <th class="px-4 py-2 text-left w-8">
+                    <input type="checkbox" class="rounded">
+                </th>
+                <th class="px-4 py-2 text-left">名稱</th>
+                <th class="px-4 py-2 text-left">類型</th>
+                <th class="px-4 py-2 text-left">叢集 IP</th>
+                <th class="px-4 py-2 text-left">外部 IP</th>
+                <th class="px-4 py-2 text-left">端口</th>
+                <th class="px-4 py-2 text-left">Age</th>
+                <th class="px-4 py-2 text-left">操作</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+            <tr class="hover:bg-slate-50">
+                <td class="px-4 py-2">
+                    <input type="checkbox" class="rounded">
+                </td>
+                <td class="px-4 py-2">
+                    <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="Service"
+                        data-name="web-service">web-service</a>
+                </td>
+                <td class="px-4 py-2">
+                    <span
+                        class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">ClusterIP</span>
+                </td>
+                <td class="px-4 py-2 font-mono text-xs">10.43.241.156</td>
+                <td class="px-4 py-2 text-slate-400">-</td>
+                <td class="px-4 py-2 font-mono text-xs">80/TCP</td>
+                <td class="px-4 py-2">2d</td>
+                <td class="px-4 py-2">
+                    <div class="flex items-center gap-2">
+                        <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                        <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                        <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                    </div>
+                </td>
+            </tr>
+            <tr class="hover:bg-slate-50">
+                <td class="px-4 py-2">
+                    <input type="checkbox" class="rounded">
+                </td>
+                <td class="px-4 py-2">
+                    <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="Service"
+                        data-name="db-service">db-service</a>
+                </td>
+                <td class="px-4 py-2">
+                    <span
+                        class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-50 text-green-700">NodePort</span>
+                </td>
+                <td class="px-4 py-2 font-mono text-xs">10.43.128.91</td>
+                <td class="px-4 py-2 font-mono text-xs">192.168.1.100</td>
+                <td class="px-4 py-2 font-mono text-xs">5432:30432/TCP</td>
+                <td class="px-4 py-2">5d</td>
+                <td class="px-4 py-2">
+                    <div class="flex items-center gap-2">
+                        <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                        <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                        <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</div>
+</section>
+
+</div>
+</main>
+
+<!-- 右側抽屜 -->
+<section id="tab-ingress" class="tab-panel hidden">
+    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <div class="text-sm text-slate-600">共 <span id="countIngress">1</span> 個入口</div>
+        </div>
+        <div class="overflow-auto scroll-area">
+            <table class="min-w-full text-sm">
+                <thead class="bg-slate-50 text-slate-600">
+                    <tr>
+                        <th class="px-4 py-2 text-left w-8">
+                            <input type="checkbox" class="rounded">
+                        </th>
+                        <th class="px-4 py-2 text-left">名稱</th>
+                        <th class="px-4 py-2 text-left">主機</th>
+                        <th class="px-4 py-2 text-left">IP 地址</th>
+                        <th class="px-4 py-2 text-left">端口</th>
+                        <th class="px-4 py-2 text-left">TLS</th>
+                        <th class="px-4 py-2 text-left">Age</th>
+                        <th class="px-4 py-2 text-left">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="Ingress"
+                                data-name="web-ingress">web-ingress</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1">
+                                <div class="font-mono text-xs">api.example.com</div>
+                                <div class="font-mono text-xs">web.example.com</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 font-mono text-xs">192.168.1.100</td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1 font-mono text-xs">
+                                <div>80, 443</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-50 text-green-700">
+                                <span class="material-icons-outlined text-xs mr-1">security</span>已啟用
+                            </span>
+                        </td>
+                        <td class="px-4 py-2">1d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ConfigMap 分頁 -->
+<section id="tab-configmaps" class="tab-panel hidden">
+    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <div class="text-sm text-slate-600">共 <span id="countConfigMaps">3</span> 個 ConfigMap</div>
+        </div>
+        <div class="overflow-auto scroll-area">
+            <table class="min-w-full text-sm">
+                <thead class="bg-slate-50 text-slate-600">
+                    <tr>
+                        <th class="px-4 py-2 text-left w-8">
+                            <input type="checkbox" class="rounded">
+                        </th>
+                        <th class="px-4 py-2 text-left">名稱</th>
+                        <th class="px-4 py-2 text-left">資料項目</th>
+                        <th class="px-4 py-2 text-left">大小</th>
+                        <th class="px-4 py-2 text-left">Age</th>
+                        <th class="px-4 py-2 text-left">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="ConfigMap"
+                                data-name="app-config">app-config</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1 text-xs">
+                                <div class="font-mono">database.conf</div>
+                                <div class="font-mono">app.properties</div>
+                                <div class="text-slate-500">+2 more</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-xs">2.3 KB</td>
+                        <td class="px-4 py-2">3d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="ConfigMap"
+                                data-name="nginx-config">nginx-config</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1 text-xs">
+                                <div class="font-mono">nginx.conf</div>
+                                <div class="font-mono">default.conf</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-xs">1.8 KB</td>
+                        <td class="px-4 py-2">5d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="ConfigMap"
+                                data-name="log-config">log-config</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1 text-xs">
+                                <div class="font-mono">logback.xml</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2 text-xs">956 B</td>
+                        <td class="px-4 py-2">1d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- Secret 分頁 -->
+<section id="tab-secrets" class="tab-panel hidden">
+    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <div class="text-sm text-slate-600">共 <span id="countSecrets">2</span> 個 Secret</div>
+        </div>
+        <div class="overflow-auto scroll-area">
+            <table class="min-w-full text-sm">
+                <thead class="bg-slate-50 text-slate-600">
+                    <tr>
+                        <th class="px-4 py-2 text-left w-8">
+                            <input type="checkbox" class="rounded">
+                        </th>
+                        <th class="px-4 py-2 text-left">名稱</th>
+                        <th class="px-4 py-2 text-left">類型</th>
+                        <th class="px-4 py-2 text-left">資料項目</th>
+                        <th class="px-4 py-2 text-left">Age</th>
+                        <th class="px-4 py-2 text-left">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="Secret"
+                                data-name="db-credentials">db-credentials</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-purple-50 text-purple-700">Opaque</span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1 text-xs">
+                                <div class="font-mono">username</div>
+                                <div class="font-mono">password</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2">7d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="Secret"
+                                data-name="tls-cert">tls-cert</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-green-50 text-green-700">kubernetes.io/tls</span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="space-y-1 text-xs">
+                                <div class="font-mono">tls.crt</div>
+                                <div class="font-mono">tls.key</div>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2">2d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- 儲存 (PV/PVC) 分頁 -->
+<section id="tab-storage" class="tab-panel hidden">
+    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-200 flex items-center justify-between">
+            <div class="text-sm text-slate-600">共 <span id="countStorage">4</span> 個儲存資源</div>
+        </div>
+        <div class="overflow-auto scroll-area">
+            <table class="min-w-full text-sm">
+                <thead class="bg-slate-50 text-slate-600">
+                    <tr>
+                        <th class="px-4 py-2 text-left w-8">
+                            <input type="checkbox" class="rounded">
+                        </th>
+                        <th class="px-4 py-2 text-left">名稱</th>
+                        <th class="px-4 py-2 text-left">類型</th>
+                        <th class="px-4 py-2 text-left">狀態</th>
+                        <th class="px-4 py-2 text-left">容量</th>
+                        <th class="px-4 py-2 text-left">存取模式</th>
+                        <th class="px-4 py-2 text-left">儲存類別</th>
+                        <th class="px-4 py-2 text-left">Age</th>
+                        <th class="px-4 py-2 text-left">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer"
+                                data-kind="PersistentVolumeClaim" data-name="db-storage">db-storage</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">PVC</span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs">Bound</span>
+                        </td>
+                        <td class="px-4 py-2 font-mono text-xs">10Gi</td>
+                        <td class="px-4 py-2 text-xs">RWO</td>
+                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
+                        <td class="px-4 py-2">5d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer" data-kind="PersistentVolume"
+                                data-name="pv-001">pv-001</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-indigo-50 text-indigo-700">PV</span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs">Bound</span>
+                        </td>
+                        <td class="px-4 py-2 font-mono text-xs">10Gi</td>
+                        <td class="px-4 py-2 text-xs">RWO</td>
+                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
+                        <td class="px-4 py-2">5d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer"
+                                data-kind="PersistentVolumeClaim" data-name="web-logs">web-logs</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">PVC</span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center gap-1 text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded text-xs">Bound</span>
+                        </td>
+                        <td class="px-4 py-2 font-mono text-xs">5Gi</td>
+                        <td class="px-4 py-2 text-xs">RWX</td>
+                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
+                        <td class="px-4 py-2">3d</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr class="hover:bg-slate-50">
+                        <td class="px-4 py-2">
+                            <input type="checkbox" class="rounded">
+                        </td>
+                        <td class="px-4 py-2">
+                            <a href="#" class="text-brand-700 hover:underline open-drawer"
+                                data-kind="PersistentVolumeClaim" data-name="temp-storage">temp-storage</a>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center px-2 py-0.5 rounded text-xs bg-blue-50 text-blue-700">PVC</span>
+                        </td>
+                        <td class="px-4 py-2">
+                            <span
+                                class="inline-flex items-center gap-1 text-amber-700 bg-amber-50 px-2 py-0.5 rounded text-xs">Pending</span>
+                        </td>
+                        <td class="px-4 py-2 font-mono text-xs">1Gi</td>
+                        <td class="px-4 py-2 text-xs">RWO</td>
+                        <td class="px-4 py-2 text-xs">microk8s-hostpath</td>
+                        <td class="px-4 py-2">1h</td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center gap-2">
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">YAML</button>
+                                <button class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50">編輯</button>
+                                <button
+                                    class="px-2 py-1 rounded-md border text-xs hover:bg-slate-50 text-red-600">刪除</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section id="tab-quota" class="tab-panel hidden">
+    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-6 text-sm text-slate-600">
+        配額與限制（ResourceQuota / LimitRange）摘要（示意）。
+    </div>
+</section>
+
+</footer>
+</main>
+</div>
+
+<aside id="drawer"
+    class="fixed top-0 right-0 h-full w-full md:w-[540px] bg-white shadow-2xl ring-1 ring-slate-200 translate-x-full transition-transform">
+    <div class="flex items-center justify-between px-5 py-4 border-b">
+        <div>
+            <div class="text-xs text-slate-500">資源詳情</div>
+            <div id="drawerTitle" class="text-lg font-semibold">-</div>
+        </div>
+        <button id="closeDrawer" class="p-2 rounded-md hover:bg-slate-50">
+            <span class="material-icons-outlined">close</span>
+        </button>
+    </div>
+    <div class="h-[calc(100%-64px)] overflow-auto scroll-area p-5 space-y-6">
+        <!-- 概覽 -->
+        <section>
+            <h3 class="text-sm font-medium text-slate-700 mb-3">概覽</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                <div><span class="text-slate-500">Kind：</span><span id="dKind" class="font-medium">-</span>
+                </div>
+                <div><span class="text-slate-500">專案：</span><span
+                        class="font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded">itw</span></div>
+                <div><span class="text-slate-500">Namespace：</span><span id="dNamespace"
+                        class="font-medium font-mono bg-gray-50 text-gray-700 px-2 py-0.5 rounded">itw</span>
+                </div>
+                <div><span class="text-slate-500">Label：</span><span class="font-mono text-xs">app=web,
+                        tier=frontend</span></div>
+                <div><span class="text-slate-500">策略：</span><span class="font-medium">RollingUpdate</span></div>
+            </div>
+        </section>
+        <!-- 指標（示意靜態條） -->
+        <section>
+            <h3 class="text-sm font-medium text-slate-700 mb-3">度量（最近 15 分鐘）</h3>
+            <div class="space-y-2 text-sm">
+                <div>CPU 使用 <div class="w-full h-2 bg-slate-100 rounded">
+                        <div class="h-2 bg-brand-500 rounded" style="width: 45%"></div>
+                    </div>
+                </div>
+                <div>記憶體 使用 <div class="w-full h-2 bg-slate-100 rounded">
+                        <div class="h-2 bg-brand-500 rounded" style="width: 32%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- YAML（示例） -->
+        <section>
+            <h3 class="text-sm font-medium text-slate-700 mb-3">YAML（唯讀）</h3>
+            <pre class="bg-slate-50 rounded-lg p-3 text-xs overflow-auto"><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deploy
+  labels:
+    app: web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/acme/web:1.2.3
+          ports:
+            - containerPort: 8080
+</code></pre>
+        </section>
+        <!-- 事件 -->
+        <section>
+            <h3 class="text-sm font-medium text-slate-700 mb-3">近期事件</h3>
+            <ul class="text-xs space-y-1">
+                <li>[Normal] ScalingReplicaSet 由 2 → 3</li>
+                <li>[Normal] Pulled ghcr.io/acme/web:1.2.3</li>
+                <li>[Normal] SuccessfulCreate pod/web-deploy-xxxxx</li>
+            </ul>
+        </section>
+    </div>
+</aside>
+
+<!-- YAML 編輯器模態框 -->
+<div id="yamlModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl h-3/4 flex flex-col">
+        <div class="flex items-center justify-between px-6 py-4 border-b">
+            <div>
+                <h3 class="text-lg font-semibold">從 YAML 建立 Kubernetes 資源</h3>
+                <p class="text-sm text-slate-500">支援建立任何類型的 Kubernetes 資源 - 工作負載、服務、配置等</p>
+            </div>
+            <button id="closeYamlModal" class="p-2 rounded-md hover:bg-slate-50">
+                <span class="material-icons-outlined">close</span>
+            </button>
+        </div>
+        <div class="flex-1 p-6 flex flex-col">
+            <div class="flex items-center gap-2 mb-4">
+                <select id="yamlResourceType"
+                    class="rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 text-sm">
+                    <option value="">選擇資源類型（可選）</option>
+                    <option value="Deployment">Deployment</option>
+                    <option value="StatefulSet">StatefulSet</option>
+                    <option value="Service">Service</option>
+                    <option value="Ingress">Ingress</option>
+                    <option value="ConfigMap">ConfigMap</option>
+                    <option value="Secret">Secret</option>
+                    <option value="PersistentVolumeClaim">PersistentVolumeClaim</option>
+                    <option value="PersistentVolume">PersistentVolume</option>
+                </select>
+                <button id="loadSampleYaml"
+                    class="px-3 py-1.5 rounded-lg border border-slate-200 text-sm hover:bg-slate-50">
+                    載入範例
+                </button>
+            </div>
+            <textarea id="yamlEditor"
+                class="flex-1 w-full rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 font-mono text-sm resize-none"
+                placeholder="在此貼上您的 YAML 配置...
+
+支援的資源類型：
+• 工作負載：Deployment, StatefulSet, DaemonSet, Job, CronJob
+• 網路：Service, Ingress
+• 配置：ConfigMap, Secret
+• 儲存：PersistentVolume, PersistentVolumeClaim
+• 以及任何其他 Kubernetes 資源
+
+範例：
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-config
+  namespace: itw
+data:
+  key1: value1
+  key2: value2"></textarea>
+        </div>
+        <div class="px-6 py-4 border-t flex items-center justify-between">
+            <div class="text-sm text-slate-500">
+                提示：確保 YAML 格式正確，並設定正確的 namespace
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="validateYaml"
+                    class="px-4 py-2 rounded-md border border-slate-200 text-sm hover:bg-slate-50">
+                    驗證 YAML
+                </button>
+                <button id="applyYaml" class="px-4 py-2 rounded-md bg-green-600 text-white text-sm hover:bg-green-700">
+                    套用資源
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    brand: {
+                        50: '#eef2ff',
+                        100: '#e0e7ff',
+                        200: '#c7d2fe',
+                        300: '#a5b4fc',
+                        400: '#818cf8',
+                        500: '#6366f1',
+                        600: '#4f46e5',
+                        700: '#4338ca',
+                        800: '#3730a3',
+                        900: '#312e81'
+                    }
+                }
+            }
+        }
+    }
+</script>
+<script>
+    // 簡易分頁切換
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', e => {
+            const tab = btn.getAttribute('data-tab');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('bg-brand-50', 'text-brand-700'));
+            btn.classList.add('bg-brand-50', 'text-brand-700');
+            document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+            document.querySelector('#tab-' + tab).classList.remove('hidden');
+        });
+    });
+
+    // 展開列
+    document.querySelectorAll('.expander').forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+            const row = btn.closest('tr');
+            const next = row.nextElementSibling;
+            const expanded = next.classList.contains('hidden');
+            document.querySelectorAll('tr.row-expand').forEach(n => n.classList.add('hidden'));
+            document.querySelectorAll('.expander').forEach(b => b.setAttribute('aria-expanded', 'false'));
+            if (expanded) {
+                next.classList.remove('hidden');
+                btn.setAttribute('aria-expanded', 'true');
+            }
+        });
+    });
+
+    // 服務健康矩陣渲染
+    const svcHealthDemo = [
+        {
+            name: 'test1',
+            ingress: { state: 'OK', five_xx: 0.006, host: 'test1.itw.example.com', route: '/api/t1' },
+            service: { state: 'OK', endpoints: 6, notReady: 0 },
+            pods: { state: 'OK', ready: '6/6', cpu: 0.41, mem: 0.52, hpa: { min: 3, max: 8, cur: 4 } }
+        },
+        {
+            name: 'test2',
+            ingress: { state: 'WARN', five_xx: 0.035, host: 'test2.itw.example.com', route: '/api/t2' },
+            service: { state: 'BAD', endpoints: 0, notReady: 0 },
+            pods: { state: 'WARN', ready: '2/5', cpu: 0.85, mem: 0.91, hpa: { min: 2, max: 5, cur: 2 } }
+        }
+    ];
+
+    const badge = (state, label) => {
+        const map = {
+            OK: 'text-emerald-700 bg-emerald-50 ring-emerald-200',
+            WARN: 'text-amber-700 bg-amber-50 ring-amber-200',
+            BAD: 'text-red-700 bg-red-50 ring-red-200'
+        }[state] || 'text-slate-700 bg-slate-50 ring-slate-200';
+        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded ring-1 ${map}">${label}</span>`;
+    };
+
+    function renderHealthTable() {
+        const tbody = document.getElementById('healthRows');
+        if (!tbody) return;
+
+        const pct = x => (x * 100).toFixed(1) + '%';
+
+        const rows = svcHealthDemo.map(s => `
+            <tr class="hover:bg-slate-50 align-top">
+                <td class="px-4 py-3">
+                    <div class="flex items-center gap-2">
+                        <span class="material-icons-outlined text-indigo-600">apps</span>
+                        <div>
+                            <div class="font-medium text-slate-800">${s.name}</div>
+                            <div class="text-xs text-slate-500">ns: itw</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-4 py-3">
+                    <div class="flex flex-col gap-1">
+                        ${badge(s.ingress.state, s.ingress.state === 'OK' ? '🟢 正常' : s.ingress.state === 'WARN' ? '🟡 輕微異常' : '🔴 故障')}
+                        <div class="text-xs text-slate-600">${s.ingress.host} · ${s.ingress.route}</div>
+                        <div class="text-xs text-slate-600">5xx 比例 ${pct(s.ingress.five_xx)}</div>
+                    </div>
+                </td>
+                <td class="px-4 py-3">
+                    <div class="flex flex-col gap-1">
+                        ${badge(s.service.state, s.service.state === 'OK' ? '🟢 正常' : s.service.state === 'WARN' ? '🟡 輕微異常' : '🔴 故障')}
+                        <div class="text-xs text-slate-600">endpoints ${s.service.endpoints} · notReady ${s.service.notReady}</div>
+                    </div>
+                </td>
+                <td class="px-4 py-3">
+                    <div class="flex flex-col gap-1">
+                        ${badge(s.pods.state, s.pods.state === 'OK' ? '🟢 正常' : s.pods.state === 'WARN' ? '🟡 輕微異常' : '🔴 故障')}
+                        <div class="text-xs text-slate-600">Ready ${s.pods.ready} · CPU ${(s.pods.cpu * 100 | 0)}% · MEM ${(s.pods.mem * 100 | 0)}%</div>
+                        <div class="text-xs text-slate-500">HPA ${s.pods.hpa.min}→${s.pods.hpa.max}（cur ${s.pods.hpa.cur}）</div>
+                        <div class="mt-1 flex flex-wrap gap-1">
+                            <button class="px-2 py-0.5 rounded border border-slate-200 text-xs hover:bg-slate-50" onclick="alert('重測 ${s.name}')">重測</button>
+                            <button class="px-2 py-0.5 rounded border border-slate-200 text-xs hover:bg-slate-50" onclick="alert('滾動重啟 ${s.name}')">重啟</button>
+                            <button class="px-2 py-0.5 rounded border border-slate-200 text-xs hover:bg-slate-50" onclick="alert('調整 HPA ${s.name}')">調 HPA</button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+        tbody.innerHTML = rows;
+    }
+
+    // 初始化
+    renderHealthTable();
+    document.getElementById('healthRefresh')?.addEventListener('click', renderHealthTable);
+</script>
+
+</body>
+
+</html>
