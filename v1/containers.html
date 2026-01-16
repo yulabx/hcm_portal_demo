@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>混合雲管理系統 - 服務健康一覽（itw, Pod明細 + Scale）</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA', // indigo-700
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#1F2937", // gray-800
+                        "surface-light": "#FFFFFF", // white
+                        "surface-dark": "#374151", // gray-700
+                        "text-light": "#111827", // gray-900
+                        "text-dark": "#F9FAFB", // gray-50
+                        "muted-light": "#6B7280", // gray-500
+                        "muted-dark": "#9CA3AF", // gray-400
+                        "border-light": "#E5E7EB", // gray-200
+                        "border-dark": "#4B5563", // gray-600
+                    },
+                    fontFamily: {
+                        sans: ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .375rem;
+            padding: .125rem .5rem;
+            border-radius: .5rem;
+            font-size: .75rem;
+            font-weight: 600
+        }
+
+        .chip i {
+            font-size: 1rem
+        }
+
+        .chip-ctl-Deployment {
+            color: #4338ca;
+            background: #eef2ff;
+            border: 1px solid #c7d2fe
+        }
+
+        .chip-ctl-StatefulSet {
+            color: #1d4ed8;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe
+        }
+
+        .chip-ctl-DaemonSet {
+            color: #065f46;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0
+        }
+
+        .chip-ctl-Job {
+            color: #92400e;
+            background: #fffbeb;
+            border: 1px solid #fde68a
+        }
+
+        .chip-ctl-CronJob {
+            color: #7e22ce;
+            background: #faf5ff;
+            border: 1px solid #e9d5ff
+        }
+
+        .chip-ctl-ReplicaSet {
+            color: #0f172a;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0
+        }
+
+        .chip-muted {
+            color: #64748b;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex h-screen">
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="#">
+                    <span class="material-icons-outlined mr-3">home</span>
+                    <span>首頁</span>
+                </a>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心</h3>
+
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-create-all.html">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-cluster-create-all.html">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>專案叢集申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>簽核作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="execute-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>申請執行</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        叢集管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="cluster.html">
+                        <span class="material-icons-outlined mr-3">storage</span>
+                        <span>叢集總覽</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案成員</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-list.html">
+                        <span class="material-icons-outlined mr-3">list_alt</span>
+                        <span>虛擬主機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">security</span>
+                        <span>虛擬防火牆服務</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md bg-primary/10 text-primary dark:bg-primary/20" href="#">
+                        <span class="material-icons-outlined mr-3">apps</span>
+                        <span>容器管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        作業執行追蹤</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">play_circle_outline</span>
+                        <span>執行作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">hourglass_empty</span>
+                        <span>執行狀態追蹤</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">history</span>
+                        <span>執行紀錄查詢</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">vpn_key</span>
+                        <span>全域角色管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span>
+                        <span>專案角色管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        帳號管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">find_in_page</span>
+                        <span>帳號查詢</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>帳號權限變更</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">timeline</span>
+                        <span>軌跡</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        統計</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">bar_chart</span>
+                        <span>資源統計</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        稽核管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">policy</span>
+                        <span>稽核管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="flex-1 flex flex-col">
+            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="relative w-full max-w-md">
+                    <span
+                        class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+                        placeholder="功能快速搜尋" type="text" />
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- 角色權限指示器 -->
+                    <div class="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 rounded-lg">
+                        <span class="material-icons-outlined text-blue-600 text-sm">admin_panel_settings</span>
+                        <span class="text-sm text-blue-700" id="userRole">操作者</span>
+                        <div class="relative">
+                            <button class="text-blue-600 text-xs" onclick="showRoleInfo()">權限說明</button>
+                        </div>
+                    </div>
+
+                    <button
+                        class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">
+                        e
+                    </div>
+                </div>
+            </header>
+            <div class="flex-1 p-8 overflow-y-auto">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-bold">容器管理</h2>
+                    </div>
+                </div>
+
+
+                <!-- 專案資訊 + Namespace -->
+                <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+                    <div class="flex items-center gap-3">
+                        <div class="text-sm text-slate-500">
+                            <span class="text-slate-600">當前專案：</span>
+                            <span id="currentProject"
+                                class="text-slate-800 font-medium bg-blue-50 px-2 py-1 rounded">itw</span>
+                        </div>
+                        <div class="text-sm text-slate-500">
+                            <span class="text-slate-600">Namespace：</span>
+                            <span id="currentNamespace"
+                                class="text-slate-800 font-medium font-mono bg-gray-50 px-2 py-1 rounded">itw</span>
+                        </div>
+                    </div>
+                    <div class="text-sm text-slate-600">
+                        k8s叢集：
+                        <select id="clusterSelect"
+                            class="ml-2 rounded-lg border-slate-200 focus:ring-brand-400 focus:border-brand-400 text-sm">
+                            <option value="microk8s">microk8s (地端)</option>
+                            <option value="azure-aks">Azure AKS (雲端)</option>
+                            <option value="aws-eks">AWS EKS (雲端)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 資源概況儀表板 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                    <!-- 總體狀態 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-green-600 text-2xl">check_circle</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">Namespace 狀態</p>
+                                <p class="text-lg font-semibold text-green-600">正常</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pod 統計 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-blue-600 text-2xl">apps</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">運行中 Pod</p>
+                                <p class="text-lg font-semibold">12 / 15</p>
+                                <p class="text-xs text-slate-500">本 namespace</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CPU 使用率 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-orange-600 text-2xl">memory</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">CPU 請求</p>
+                                <p class="text-lg font-semibold">2.5 / 4 cores</p>
+                                <p class="text-xs text-slate-500">配額使用率</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-orange-600 h-2 rounded-full" style="width: 62%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Memory 使用率 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-purple-600 text-2xl">storage</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">記憶體請求</p>
+                                <p class="text-lg font-semibold">3.2 / 8 GB</p>
+                                <p class="text-xs text-slate-500">配額使用率</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-purple-600 h-2 rounded-full" style="width: 40%"></div>
+                        </div>
+                    </div>
+
+                    <!-- PVC 存儲使用 -->
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 p-4">
+                        <div class="flex items-center">
+                            <span class="material-icons-outlined text-indigo-600 text-2xl">folder</span>
+                            <div class="ml-3">
+                                <p class="text-sm text-slate-600">PVC 使用</p>
+                                <p class="text-lg font-semibold">15 / 50 GB</p>
+                                <p class="text-xs text-slate-500">存儲配額</p>
+                            </div>
+                        </div>
+                        <div class="mt-2 w-full bg-gray-200 rounded-full h-2">
+                            <div class="bg-indigo-600 h-2 rounded-full" style="width: 30%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 操作權限和安全提示 -->
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6">
+                    <div class="flex items-start">
+                        <span class="material-icons-outlined text-amber-600 text-xl mr-3">info</span>
+                        <div class="flex-1">
+                            <h3 class="text-sm font-medium text-amber-800 mb-1">容器管理說明</h3>
+                            <div class="text-sm text-amber-700 space-y-1">
+                                <p>• <strong>監控範圍：</strong>當前顯示 <span class="font-mono bg-white px-1 rounded">itw</span>
+                                    namespace 的資源狀況</p>
+                                <p>• <strong>資源指標：</strong>CPU/Memory 為配額請求值，PVC 為存儲配額使用情況</p>
+                                <p>• <strong>緊急操作：</strong>支援 Replica 調整、Pod 重啟等臨時性操作</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- 工作負載管理（Namespace: itw） -->
+                <section id="service-health" class="mb-6 mt-4">
+                    <div
+                        class="bg-white dark:bg-surface-dark rounded-xl shadow ring-1 ring-slate-200 dark:ring-border-dark overflow-hidden">
+                        <div
+                            class="px-4 py-3 border-b border-slate-200 dark:border-border-dark flex items-center justify-between">
+                            <div class="flex items-center gap-3">
+                                <h3 class="text-base font-semibold text-slate-800 dark:text-text-dark">工作負載管理（namespace:
+                                    <span class="font-mono">itw</span>）
+                                </h3>
+                                <span class="text-xs text-slate-500 dark:text-muted-dark">以工作負載類型維度查看各控制器狀態</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button id="healthRefresh"
+                                    class="px-2 py-1 rounded-md border border-slate-200 dark:border-border-dark text-sm hover:bg-slate-50 dark:hover:bg-surface-dark/60">
+                                    <span class="material-icons-outlined align-[-3px] text-base">autorenew</span> 重新整理
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="overflow-auto">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-slate-50 dark:bg-surface-dark/60 text-slate-600 dark:text-muted-dark">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left w-48">工作負載名稱</th>
+                                        <th class="px-4 py-2 text-left w-32">類型</th>
+                                        <th class="px-4 py-2 text-left w-32">副本狀態</th>
+                                        <th class="px-4 py-2 text-left w-32">資源總計 (所有Pod)</th>
+                                        <th class="px-4 py-2 text-left w-40">狀態</th>
+                                        <th class="px-4 py-2 text-left">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="healthRows" class="divide-y divide-slate-100 dark:divide-border-dark">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Kubernetes 事件紀錄 -->
+                <section class="mb-6">
+                    <div class="bg-white rounded-xl shadow ring-1 ring-slate-200 overflow-hidden">
+                        <div class="px-4 py-3 border-b flex items-center justify-between">
+                            <h3 class="text-base font-semibold">Kubernetes 事件紀錄（namespace: itw）</h3>
+                            <button id="eventsRefresh" class="px-2 py-1 rounded border text-sm hover:bg-slate-50"><span
+                                    class="material-icons-outlined align-[-4px]">autorenew</span> 重新整理</button>
+                        </div>
+                        <div class="overflow-auto">
+                            <table class="min-w-full text-sm">
+                                <thead class="bg-slate-50 text-slate-600">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left w-40">時間</th>
+                                        <th class="px-4 py-2 text-left w-24">類型</th>
+                                        <th class="px-4 py-2 text-left w-56">物件</th>
+                                        <th class="px-4 py-2 text-left w-32">Reason</th>
+                                        <th class="px-4 py-2 text-left">Message</th>
+                                        <th class="px-4 py-2 text-left w-16">次數</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="eventsRows" class="divide-y divide-slate-100"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- 詳情抽屜（含控制器徽章 + YAML + Pods 狀態明細） -->
+    <aside id="drawer"
+        class="fixed top-0 right-0 h-full w-full md:w-[680px] bg-white shadow-2xl ring-1 ring-slate-200 translate-x-full transition-transform">
+        <div class="flex items-center justify-between px-5 py-4 border-b">
+            <div>
+                <div class="text-xs text-slate-500">資源詳情</div>
+                <div id="drawerTitle" class="text-lg font-semibold">-</div>
+            </div>
+            <button id="closeDrawer" class="p-2 rounded-md hover:bg-slate-50"><span
+                    class="material-icons-outlined">close</span></button>
+        </div>
+        <div class="h-[calc(100%-64px)] overflow-auto p-5 space-y-6">
+            <section>
+                <h3 class="text-sm font-medium text-slate-700 mb-3">概覽</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                    <div><span class="text-slate-500">Kind：</span><span id="dKind" class="font-medium">Pod</span></div>
+                    <div><span class="text-slate-500">Namespace：</span><span id="dNamespace"
+                            class="font-medium font-mono bg-gray-50 text-gray-700 px-2 py-0.5 rounded">itw</span></div>
+                    <div class="sm:col-span-2 flex items-center gap-2">
+                        <span class="text-slate-500">控制器：</span>
+                        <span id="dControllerBadge" class="chip chip-muted"><i
+                                class="material-icons-outlined">help_outline</i> Unknown</span>
+                        <span id="dControllerName" class="font-mono text-slate-600"></span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="podsSection">
+                <h3 class="text-sm font-medium text-slate-700 mb-3">Pods 狀態明細</h3>
+                <div class="overflow-auto">
+                    <table class="min-w-full text-xs" id="podsTable">
+                        <thead class="bg-slate-50">
+                            <tr>
+                                <th class="px-3 py-2 text-left w-56">Pod 名稱</th>
+                                <th class="px-3 py-2 text-left w-20">Phase</th>
+                                <th class="px-3 py-2 text-left w-32">Ready(Container)</th>
+                                <th class="px-3 py-2 text-left w-24">Pod IP</th>
+                                <th class="px-3 py-2 text-left w-24">Node</th>
+                                <th class="px-3 py-2 text-left w-20">Restarts</th>
+                                <th class="px-3 py-2 text-left w-20">CPU</th>
+                                <th class="px-3 py-2 text-left w-24">Memory</th>
+                            </tr>
+                        </thead>
+                        <tbody id="podsTbody" class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="px-3 py-2 text-slate-500" colspan="8">—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section>
+                <h3 class="text-sm font-medium text-slate-700 mb-3">YAML（唯讀）</h3>
+                <pre id="dYaml" class="bg-slate-50 rounded-lg p-3 text-xs overflow-auto"><code># 選擇一個項目查看詳情</code></pre>
+            </section>
+        </div>
+    </aside>
+
+    <script>
+        // ===== Demo: 工作負載數據 =====
+        const workloads = [
+            {
+                name: 'web-deploy',
+                kind: 'Deployment',
+                namespace: 'itw',
+                replicas: { desired: 6, ready: 6, available: 6 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '300m', limit: '500m', total: '1.8 cores' },
+                    memory: { request: '1.2Gi', limit: '2Gi', total: '7.2Gi' }
+                },
+                image: 'ghcr.io/acme/web:1.2.3',
+                age: '15d',
+                hasService: true,
+                service: {
+                    name: 'web-frontend-service',
+                    type: 'ClusterIP',
+                    clusterIP: '10.43.2.10',
+                    port: '8080:8080/TCP'
+                },
+                hasIngress: true,
+                ingress: {
+                    host: 'portal.itw.example.com',
+                    class: 'aws-load-balancer',
+                    status: '正常'
+                },
+                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web-deploy\n  namespace: itw\nspec:\n  replicas: 6\n  selector:\n    matchLabels:\n      app: web\n  template:\n    metadata:\n      labels:\n        app: web\n    spec:\n      containers:\n      - name: web\n        image: ghcr.io/acme/web:1.2.3\n        ports:\n        - containerPort: 8080`,
+                podDetails: genPods('web-deploy', 6)
+            },
+            {
+                name: 'api-ss',
+                kind: 'StatefulSet',
+                namespace: 'itw',
+                replicas: { desired: 4, ready: 4, available: 4 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '200m', limit: '400m', total: '800m' },
+                    memory: { request: '800Mi', limit: '1.5Gi', total: '3.2Gi' }
+                },
+                image: 'ghcr.io/acme/api:2.0.0',
+                age: '12d',
+                hasService: true,
+                service: {
+                    name: 'api-service',
+                    type: 'ClusterIP',
+                    clusterIP: '10.43.3.20',
+                    port: '80:8080/TCP'
+                },
+                hasIngress: true,
+                ingress: {
+                    host: 'api.itw.example.com',
+                    class: 'nginx',
+                    status: '正常'
+                },
+                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: api-ss\n  namespace: itw\nspec:\n  serviceName: api\n  replicas: 4\n  selector:\n    matchLabels:\n      app: api\n  template:\n    metadata:\n      labels:\n        app: api\n    spec:\n      containers:\n      - name: api\n        image: ghcr.io/acme/api:2.0.0\n        ports:\n        - containerPort: 8080`,
+                podDetails: genPods('api-ss', 4, true)
+            },
+            {
+                name: 'kong-gateway',
+                kind: 'Deployment',
+                namespace: 'itw',
+                replicas: { desired: 3, ready: 3, available: 3 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '150m', limit: '300m', total: '450m' },
+                    memory: { request: '512Mi', limit: '1Gi', total: '1.5Gi' }
+                },
+                image: 'ghcr.io/acme/kong:3.6',
+                age: '8d',
+                hasService: true,
+                service: {
+                    name: 'kong-gateway-service',
+                    type: 'NodePort',
+                    clusterIP: '10.43.8.21',
+                    port: '8000:8000/TCP (NodePort: 32080)'
+                },
+                hasIngress: true,
+                ingress: {
+                    host: 'gw.itw.example.com',
+                    class: 'kong',
+                    status: '正常'
+                },
+                yaml: `apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: kong-gateway\n  namespace: itw\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: kong\n  template:\n    metadata:\n      labels:\n        app: kong\n    spec:\n      containers:\n      - name: kong\n        image: ghcr.io/acme/kong:3.6\n        ports:\n        - containerPort: 8000`,
+                podDetails: genPods('kong-gateway', 3)
+            },
+            {
+                name: 'internal-db',
+                kind: 'StatefulSet',
+                namespace: 'itw',
+                replicas: { desired: 1, ready: 1, available: 1 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '100m', limit: '200m', total: '100m' },
+                    memory: { request: '256Mi', limit: '512Mi', total: '256Mi' }
+                },
+                image: 'postgres:15',
+                age: '25d',
+                hasService: true,
+                service: {
+                    name: 'internal-db-service',
+                    type: 'ClusterIP',
+                    clusterIP: 'None (Headless)',
+                    port: '5432:5432/TCP'
+                },
+                hasIngress: false,
+                yaml: `apiVersion: apps/v1\nkind: StatefulSet\nmetadata:\n  name: internal-db\n  namespace: itw\nspec:\n  serviceName: db\n  replicas: 1\n  selector:\n    matchLabels:\n      app: db\n  template:\n    metadata:\n      labels:\n        app: db\n    spec:\n      containers:\n      - name: db\n        image: postgres:15\n        ports:\n        - containerPort: 5432`,
+                podDetails: genPods('internal-db', 1, true)
+            },
+            {
+                name: 'log-agent',
+                kind: 'DaemonSet',
+                namespace: 'itw',
+                replicas: { desired: 5, ready: 5, available: 5 },
+                status: 'OK',
+                resources: {
+                    cpu: { request: '50m', limit: '100m', total: '250m' },
+                    memory: { request: '128Mi', limit: '256Mi', total: '640Mi' }
+                },
+                image: 'ghcr.io/acme/agent:1.0.0',
+                age: '30d',
+                hasService: true,
+                service: {
+                    name: 'log-agent-service',
+                    type: 'ClusterIP',
+                    clusterIP: '10.43.5.30',
+                    port: '9200:9200/TCP'
+                },
+                hasIngress: false,
+                yaml: `apiVersion: apps/v1\nkind: DaemonSet\nmetadata:\n  name: log-agent\n  namespace: itw\nspec:\n  selector:\n    matchLabels:\n      app: log-agent\n  template:\n    metadata:\n      labels:\n        app: log-agent\n    spec:\n      containers:\n      - name: agent\n        image: ghcr.io/acme/agent:1.0.0\n        ports:\n        - containerPort: 9200`,
+                podDetails: genPods('log-agent', 5)
+            },
+            {
+                name: 'data-sync-job',
+                kind: 'Job',
+                namespace: 'itw',
+                replicas: { desired: 1, ready: 1, available: 1 },
+                status: 'Completed',
+                resources: {
+                    cpu: { request: '100m', limit: '200m', total: '100m' },
+                    memory: { request: '256Mi', limit: '512Mi', total: '256Mi' }
+                },
+                image: 'ghcr.io/acme/sync:0.3.1',
+                age: '2h',
+                hasIngress: false,
+                hasService: false,
+                yaml: `apiVersion: batch/v1\nkind: Job\nmetadata:\n  name: data-sync-job\n  namespace: itw\nspec:\n  completions: 1\n  template:\n    spec:\n      restartPolicy: Never\n      containers:\n      - name: sync\n        image: ghcr.io/acme/sync:0.3.1`,
+                podDetails: [{ name: 'data-sync-job-xyz', phase: 'Succeeded', ready: '1/1', ip: '10.42.11.2', node: 'node-a', restarts: 0, cpu: '85m', mem: '90Mi' }]
+            }
+        ];
+
+        function genPods(prefix, n, ordinal) { // ordinal: for StatefulSet
+            const arr = [];
+            for (let i = 0; i < n; i++) {
+                const name = ordinal ? `${prefix}-${i}` : `${prefix}-${Math.random().toString(36).slice(2, 5)}`;
+                arr.push({ name, phase: 'Running', ready: '1/1', ip: `10.42.${(i % 10) + 3}.${(i % 50) + 10}`, node: `node-${'abcde'[i % 5]}`, restarts: 0, cpu: `${60 + i * 3}m`, mem: `${100 + i * 5}Mi` });
+            }
+            return arr;
+        }
+
+        const stateBadge = (state) => state === 'OK'
+            ? '<span class="chip" style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0">🟢 正常</span>'
+            : state === 'WARN' ? '<span class="chip" style="color:#92400e;background:#fffbeb;border:1px solid #fde68a">🟡 輕微異常</span>'
+                : state === 'BAD' ? '<span class="chip" style="color:#b91c1c;background:#fef2f2;border:1px solid #fecaca">🔴 故障</span>'
+                    : '<span class="chip chip-muted">—</span>';
+
+        function controllerChip(kind) {
+            const map = { Deployment: 'chip-ctl-Deployment', StatefulSet: 'chip-ctl-StatefulSet', DaemonSet: 'chip-ctl-DaemonSet', Job: 'chip-ctl-Job', CronJob: 'chip-ctl-CronJob', ReplicaSet: 'chip-ctl-ReplicaSet' };
+            const icon = { Deployment: 'hub', StatefulSet: 'dns', DaemonSet: 'device_hub', Job: 'schedule', CronJob: 'event_repeat', ReplicaSet: 'polyline' }[kind] || 'help_outline';
+            const cls = map[kind] || 'chip-muted';
+            return `<span class="chip ${cls}"><i class="material-icons-outlined">${icon}</i>${kind}</span>`;
+        }
+
+        function canRestart(kind) { return kind === 'Deployment' || kind === 'StatefulSet' || kind === 'DaemonSet'; }
+        function canScale(kind) { return kind === 'Deployment'; }
+
+        function podCountLabel(s) { return s.controller.kind === 'Job' ? s.pods.ready : `Ready Pods ${s.pods.ready}`; }
+
+        function rowActions(w, idx) {
+            const btns = [];
+            if (canRestart(w.kind)) {
+                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="restartWorkload(${idx})">重啟</button>`);
+            }
+            if (canScale(w.kind)) {
+                btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick="scaleWorkload(${idx})">調整副本數</button>`);
+            }
+            btns.push(`<button class="px-2 py-0.5 rounded border text-xs hover:bg-slate-50" onclick='openWorkloadDrawer(${idx})'>詳情</button>`);
+            return btns.join(' ');
+        }
+
+        function rowOf(w, idx) {
+            const statusIcon = w.status === 'OK' ? '🟢' : w.status === 'Completed' ? '✅' : '🟡';
+            const replicasText = w.kind === 'Job' ? (w.status === 'Completed' ? 'Completed' : 'Running') : `${w.replicas.ready}/${w.replicas.desired}`;
+
+            return `
+        <tr class="hover:bg-slate-50 align-top">
+          <td class="px-4 py-3">
+            <div class="font-medium">${w.name}</div>
+            <div class="text-xs text-slate-500 space-y-1">
+              <div>ns: ${w.namespace}</div>
+              <div>age: ${w.age}</div>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex items-center gap-2">
+              ${controllerChip(w.kind)}
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-col gap-1">
+              <div class="text-sm font-medium">${replicasText}</div>
+              ${w.kind !== 'Job' ? `<div class="text-xs text-slate-500">desired: ${w.replicas.desired}</div>` : ''}
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="text-xs text-slate-600 space-y-1">
+              <div><strong>CPU:</strong> ${w.resources.cpu.total}</div>
+              <div class="text-slate-500">req: ${w.resources.cpu.request}</div>
+              <div><strong>Memory:</strong> ${w.resources.memory.total}</div>
+              <div class="text-slate-500">req: ${w.resources.memory.request}</div>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-col gap-1">
+              <span class="chip" style="color:#047857;background:#ecfdf5;border:1px solid #a7f3d0">${statusIcon} ${w.status}</span>
+            </div>
+          </td>
+          <td class="px-4 py-3">
+            <div class="flex flex-wrap gap-1">
+              ${rowActions(w, idx)}
+            </div>
+          </td>
+        </tr>`;
+        }
+
+        function renderHealthTable(items) {
+            const tbody = document.getElementById('healthRows');
+            tbody.innerHTML = items.map((w, i) => rowOf(w, i)).join('');
+        }
+
+        function fillPodsTable(pods) {
+            const tbody = document.getElementById('podsTbody');
+            if (!pods || pods.length === 0) { tbody.innerHTML = '<tr><td class="px-3 py-2 text-slate-500" colspan="8">—</td></tr>'; return; }
+            tbody.innerHTML = pods.map(p => `
+        <tr>
+          <td class="px-3 py-2 font-mono">${p.name}</td>
+          <td class="px-3 py-2">${p.phase}</td>
+          <td class="px-3 py-2">${p.ready}</td>
+          <td class="px-3 py-2 font-mono">${p.ip}</td>
+          <td class="px-3 py-2 font-mono">${p.node}</td>
+          <td class="px-3 py-2">${p.restarts}</td>
+          <td class="px-3 py-2 font-mono">${p.cpu}</td>
+          <td class="px-3 py-2 font-mono">${p.mem}</td>
+        </tr>`).join('');
+        }
+
+        function openWorkloadDrawer(idx) {
+            const w = workloads[idx];
+            const drawer = document.getElementById('drawer');
+            document.getElementById('drawerTitle').textContent = w.name;
+            document.getElementById('dKind').textContent = w.kind;
+            document.getElementById('dNamespace').textContent = w.namespace;
+            document.getElementById('dControllerBadge').innerHTML = controllerChip(w.kind).replace('<span class="chip', '<span id="dControllerBadge" class="chip');
+            document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">replicas:</span> <span class="font-mono">${w.replicas.ready}/${w.replicas.desired}</span>`;
+
+            document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(w.yaml || '# 無示例 YAML')}</code>`;
+            // Show pods section for workload details
+            document.getElementById('podsSection').style.display = 'block';
+            fillPodsTable(w.podDetails);
+            drawer.classList.remove('translate-x-full');
+        }
+
+        function restartWorkload(idx) {
+            const w = workloads[idx];
+            if (!canRestart(w.kind)) { alert('此資源不支援滾動重啟'); return; }
+            if (!confirm(`確定要滾動重啟 ${w.kind} / ${w.name} 嗎？`)) return;
+            alert(`已觸發：kubectl rollout restart ${w.kind.toLowerCase()} ${w.name} -n ${w.namespace}`);
+        }
+
+        function scaleWorkload(idx) {
+            const w = workloads[idx];
+            if (!canScale(w.kind)) { alert('只有 Deployment 支援調整副本數'); return; }
+            const cur = w.replicas.desired;
+            const val = prompt(`調整 ${w.name} 的副本數 (目前: ${cur})`, cur);
+            if (val === null) return;
+            const n = Number(val);
+            if (!Number.isInteger(n) || n < 0 || n > 50) { alert('請輸入 0~50 的整數'); return; }
+            if (!confirm(`確認將 ${w.name} 副本數調整為 ${n} ?`)) return;
+            // Demo: 更新本地資料
+            w.replicas.desired = n;
+            w.replicas.ready = Math.min(n, n);
+            w.replicas.available = Math.min(n, n);
+            w.yaml = w.yaml.replace(/replicas:\s*\d+/, 'replicas: ' + n);
+            w.podDetails = genPods(w.name, n);
+            renderHealthTable(workloads);
+            // 若抽屜正打開且是這個工作負載，順便更新
+            if (document.getElementById('drawerTitle').textContent === w.name) {
+                document.getElementById('dControllerName').innerHTML = `<span class="text-slate-500 ml-1">replicas:</span> <span class="font-mono">${w.replicas.ready}/${w.replicas.desired}</span>`;
+                document.getElementById('dYaml').innerHTML = `<code>${escapeHtml(w.yaml)}</code>`;
+                fillPodsTable(w.podDetails);
+            }
+            alert(`已模擬：kubectl scale ${w.kind.toLowerCase()} ${w.name} -n ${w.namespace} --replicas=${n}`);
+        }
+
+        function escapeHtml(str) { return str.replace(/[&<>\"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[c])); }
+
+        document.getElementById('closeDrawer').addEventListener('click', () => {
+            document.getElementById('drawer').classList.add('translate-x-full');
+        });
+
+        renderHealthTable(workloads);
+
+        async function loadK8sEvents() {
+            const tbody = document.getElementById('eventsRows');
+            tbody.innerHTML = "<tr><td colspan='6' class='px-4 py-3 text-slate-500'>載入中...</td></tr>";
+            tbody.innerHTML = `
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-3">2025-11-07 14:22</td><td>Warning</td><td>pod/web-deploy-xxxxx</td><td>FailedScheduling</td><td>0/5 nodes are available: not enough memory.</td><td>3</td>
+        </tr>
+        <tr class="hover:bg-slate-50">
+          <td class="px-4 py-3">2025-11-07 10:05</td><td>Normal</td><td>deployment/web-deploy</td><td>ScalingReplicaSet</td><td>Scaled up replica set web-deploy-55b44d7d6f to 6</td><td>1</td>
+        </tr>`;
+        }
+        loadK8sEvents();
+        document.getElementById('eventsRefresh').addEventListener('click', loadK8sEvents);
+        document.getElementById('healthRefresh').addEventListener('click', () => renderHealthTable(svcHealth));
+    </script>
+</body>
+
+</html>

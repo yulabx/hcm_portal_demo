@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>混合雲管理系統 - 智慧便民專案詳情</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#4338CA', // indigo-700
+                        "background-light": "#F3F4F6", // gray-100
+                        "background-dark": "#1F2937", // gray-800
+                        "surface-light": "#FFFFFF", // white
+                        "surface-dark": "#374151", // gray-700
+                        "text-light": "#111827", // gray-900
+                        "text-dark": "#F9FAFB", // gray-50
+                        "muted-light": "#6B7280", // gray-500
+                        "muted-dark": "#9CA3AF", // gray-400
+                        "border-light": "#E5E7EB", // gray-200
+                        "border-dark": "#4B5563", // gray-600
+                    },
+                    fontFamily: {
+                        sans: ["Noto Sans TC", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                    },
+                },
+            },
+        };
+    </script>
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .tooltip-content {
+            visibility: hidden;
+            position: absolute;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip-content::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+        }
+
+        .tooltip-container:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+    <div class="flex h-screen">
+        <aside
+            class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+            <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center">
+                    <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+                    <h1 class="text-lg font-bold">混合雲管理系統</h1>
+                </div>
+                <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                    <span class="material-icons-outlined">menu_open</span>
+                </button>
+            </div>
+            <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+                <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+                    href="#">
+                    <span class="material-icons-outlined mr-3">home</span>
+                    <span>首頁</span>
+                </a>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        申請中心</h3>
+
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-create-all.html">
+                        <span class="material-icons-outlined mr-3">post_add</span>
+                        <span>專案申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="project-cluster-create-all.html">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>專案叢集申請</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="approval-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>簽核作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="execute-list.html">
+                        <span class="material-icons-outlined mr-3">approval</span>
+                        <span>申請執行</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        叢集管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="cluster.html">
+                        <span class="material-icons-outlined mr-3">storage</span>
+                        <span>叢集總覽</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案管理</h3>
+                    <a class="flex items-center p-2 rounded-md bg-primary/10 text-primary dark:bg-primary/20"
+                        href="project-list.html">
+                        <span class="material-icons-outlined mr-3">list_alt</span>
+                        <span>專案清單</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">group</span>
+                        <span>專案成員</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        專案資源</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="vm-list.html">
+                        <span class="material-icons-outlined mr-3">dvr</span>
+                        <span>虛擬主機管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">security</span>
+                        <span>虛擬防火牆服務</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+                        href="containers.html">
+                        <span class="material-icons-outlined mr-3">apps</span>
+                        <span>容器管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        作業執行追蹤</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">play_circle_outline</span>
+                        <span>執行作業</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">hourglass_empty</span>
+                        <span>執行狀態追蹤</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">history</span>
+                        <span>執行紀錄查詢</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        角色管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">vpn_key</span>
+                        <span>全域角色管理</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">admin_panel_settings</span>
+                        <span>專案角色管理</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        帳號管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">find_in_page</span>
+                        <span>帳號查詢</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">manage_accounts</span>
+                        <span>帳號權限變更</span>
+                    </a>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">timeline</span>
+                        <span>軌跡</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        統計</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">bar_chart</span>
+                        <span>資源統計</span>
+                    </a>
+                </div>
+                <div class="pt-4">
+                    <h3
+                        class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">
+                        稽核管理</h3>
+                    <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+                        <span class="material-icons-outlined mr-3">policy</span>
+                        <span>稽核管理</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+        <main class="flex-1 flex flex-col">
+            <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+                <div class="flex items-center space-x-2">
+                    <a class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark"
+                        href="#">專案清單</a>
+                    <span class="material-icons-outlined text-muted-light dark:text-muted-dark">chevron_right</span>
+                    <h2 class="text-xl font-semibold">智慧便民</h2>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button
+                        class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+                        <span class="material-icons-outlined">notifications</span>
+                        <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+                    </button>
+                    <div
+                        class="w-8 h-8 rounded-full bg-purple-200 flex items-center justify-center text-purple-600 font-bold">
+                        A
+                    </div>
+                </div>
+            </header>
+            <div class="flex-1 p-8 overflow-y-auto space-y-8">
+                <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">專案資訊</h3>
+                    <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-2">
+                        <label class="block text-sm font-medium text-text-light dark:text-text-dark"
+                            for="project-id">專案代號</label>
+                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">itw</span>
+                        <label class="block text-sm font-medium text-text-light dark:text-text-dark"
+                            for="project-id">專案名稱</label>
+                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">智慧便民</span>
+                        <label class="block text-sm font-medium text-text-light dark:text-text-dark"
+                            for="project-id">狀態</label>
+                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">運行中</span>
+                        <label class="block text-sm font-medium text-text-light dark:text-text-dark"
+                            for="project-id">專案管理員</label>
+                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">Anya</span>
+                    </div>
+                    <hr class="my-6 border-t border-border-light dark:border-border-dark" />
+                    <h4 class="font-semibold">總虛擬主機配額</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-muted-light dark:text-muted-dark">CPU
+                                    (Cores)</span>
+                                <span class="text-sm font-medium">20 / 40 Cores</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-muted-light dark:text-muted-dark">記憶體
+                                    (GB)</span>
+                                <span class="text-sm font-medium">40 / 80 GB</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 62.5%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm font-medium text-muted-light dark:text-muted-dark">儲存空間
+                                    (GB)</span>
+                                <span class="text-sm font-medium">500 / 1000 GB</span>
+                            </div>
+                            <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                <div class="bg-primary h-2.5 rounded-full" style="width: 39%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="space-y-8">
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow">
+                        <div class="p-6 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-lg font-semibold">叢集: Harvester</h3>
+                            <h4 class="font-semibold">虛擬主機配額</h4>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">CPU
+                                            (Cores)</span>
+                                        <span class="text-sm font-medium">12 / 20 Cores</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">記憶體
+                                            (GB)</span>
+                                        <span class="text-sm font-medium">24 / 40 GB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 62.5%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">儲存空間
+                                            (GB)</span>
+                                        <span class="text-sm font-medium">300 / 500 GB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 39%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-semibold">虛擬主機清單</h4>
+                                <button onclick="toggleVMList('harvester')"
+                                    class="flex items-center gap-1 text-primary hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
+                                    <span class="text-sm">展開/收合</span>
+                                    <span id="vm-toggle-icon-harvester"
+                                        class="material-icons-outlined text-xl">expand_more</span>
+                                </button>
+                            </div>
+
+                            <div id="vm-list-harvester" class="hidden">
+                                <!-- 入口網系統區域 -->
+                                <div class="mb-6">
+                                    <div
+                                        class="bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-t-lg border-l-4 border-purple-500">
+                                        <h5 class="font-semibold text-purple-700 dark:text-purple-300">eiw</h5>
+                                    </div>
+                                    <div
+                                        class="overflow-x-auto border border-t-0 border-border-light dark:border-border-dark rounded-b-lg">
+                                        <table class="w-full text-sm">
+                                            <thead
+                                                class="text-left text-muted-light dark:text-muted-dark bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-2 font-medium">主機名稱</th>
+                                                    <th class="px-4 py-2 font-medium text-center">主機規格</th>
+                                                    <th class="px-4 py-2 font-medium text-center">儲存空間</th>
+                                                    <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
+                                                    <th class="px-4 py-2 font-medium">狀態</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-surface-light dark:bg-surface-dark">
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="vm-detail.html">itw-har01-vm-db01</a>
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
+                                                    <td class="px-4 py-2 text-center">100 GB</td>
+                                                    <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 65%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">65%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.6 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 72%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">72%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.8 / 8 GB</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">itw-har01-vm-eiwap01</a>
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
+                                                    <td class="px-4 py-2 text-center">100 GB</td>
+                                                    <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 45%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">45%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.8 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 58%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">58%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.6 / 8 GB</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- 網網通系統區域 -->
+                                <div class="mb-6">
+                                    <div
+                                        class="bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-t-lg border-l-4 border-blue-500">
+                                        <h5 class="font-semibold text-blue-700 dark:text-blue-300">eix</h5>
+                                    </div>
+                                    <div
+                                        class="overflow-x-auto border border-t-0 border-border-light dark:border-border-dark rounded-b-lg">
+                                        <table class="w-full text-sm">
+                                            <thead
+                                                class="text-left text-muted-light dark:text-muted-dark bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-2 font-medium">主機名稱</th>
+                                                    <th class="px-4 py-2 font-medium text-center">主機規格</th>
+                                                    <th class="px-4 py-2 font-medium text-center">儲存空間</th>
+                                                    <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
+                                                    <th class="px-4 py-2 font-medium">狀態</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-surface-light dark:bg-surface-dark">
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">itw-har01-vm-eixap01</a>
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
+                                                    <td class="px-4 py-2 text-center">100 GB</td>
+                                                    <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 52%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">52%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.1 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 68%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">68%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.4 / 8 GB</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow">
+                        <div class="p-6 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-lg font-semibold">叢集: AWS</h3>
+                            <h4 class="font-semibold">虛擬主機配額</h4>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">CPU
+                                            (Cores)</span>
+                                        <span class="text-sm font-medium">8Cores</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">記憶體
+                                            (GB)</span>
+                                        <span class="text-sm font-medium">16 GB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 62.5%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">儲存空間
+                                            (GB)</span>
+                                        <span class="text-sm font-medium">200 GB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 39%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-semibold">虛擬主機清單</h4>
+                                <button onclick="toggleVMList('aws')"
+                                    class="flex items-center gap-1 text-primary hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
+                                    <span class="text-sm">展開/收合</span>
+                                    <span id="vm-toggle-icon-aws"
+                                        class="material-icons-outlined text-xl">expand_more</span>
+                                </button>
+                            </div>
+
+                            <div id="vm-list-aws" class="hidden">
+                                <!-- 網網通系統區域 -->
+                                <div class="mb-6">
+                                    <div
+                                        class="bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-t-lg border-l-4 border-blue-500">
+                                        <h5 class="font-semibold text-blue-700 dark:text-blue-300">eix</h5>
+                                    </div>
+                                    <div
+                                        class="overflow-x-auto border border-t-0 border-border-light dark:border-border-dark rounded-b-lg">
+                                        <table class="w-full text-sm">
+                                            <thead
+                                                class="text-left text-muted-light dark:text-muted-dark bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-2 font-medium">主機名稱</th>
+                                                    <th class="px-4 py-2 font-medium text-center">主機規格</th>
+                                                    <th class="px-4 py-2 font-medium text-center">儲存空間</th>
+                                                    <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
+                                                    <th class="px-4 py-2 font-medium">狀態</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-surface-light dark:bg-surface-dark">
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">itw-aws01-vm-eixap01</a>
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
+                                                    <td class="px-4 py-2 text-center">100 GB</td>
+                                                    <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 38%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">38%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.5 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 55%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">55%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.4 / 8 GB</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- 入口網系統區域 -->
+                                <div class="mb-6">
+                                    <div
+                                        class="bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-t-lg border-l-4 border-purple-500">
+                                        <h5 class="font-semibold text-purple-700 dark:text-purple-300">eiw</h5>
+                                    </div>
+                                    <div
+                                        class="overflow-x-auto border border-t-0 border-border-light dark:border-border-dark rounded-b-lg">
+                                        <table class="w-full text-sm">
+                                            <thead
+                                                class="text-left text-muted-light dark:text-muted-dark bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-2 font-medium">主機名稱</th>
+                                                    <th class="px-4 py-2 font-medium text-center">主機規格</th>
+                                                    <th class="px-4 py-2 font-medium text-center">儲存空間</th>
+                                                    <th class="px-4 py-2 font-medium">映像檔</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
+                                                    <th class="px-4 py-2 font-medium">狀態</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-surface-light dark:bg-surface-dark">
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">itw-aws01-vm-eiwap01</a>
+                                                    </td>
+                                                    <td class="px-4 py-2 text-center">4 vCPU / 8 GB</td>
+                                                    <td class="px-4 py-2 text-center">100 GB</td>
+                                                    <td class="px-4 py-2">Ubuntu 24.04</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 42%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">42%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.7 / 4 vCPU</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 62%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">62%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.0 / 8 GB</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">運行中</span>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow">
+                        <div class="p-6 border-b border-border-light dark:border-border-dark">
+                            <h3 class="text-lg font-semibold">叢集: k8s</h3>
+                            <h4 class="font-semibold">容器資源配額</h4>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">CPU
+                                            (Cores)</span>
+                                        <span class="text-sm font-medium">8 / 20 Cores</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 50%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-1">
+                                        <span class="text-sm font-medium text-muted-light dark:text-muted-dark">記憶體
+                                            (GB)</span>
+                                        <span class="text-sm font-medium">40 / 64 GB</span>
+                                    </div>
+                                    <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2.5">
+                                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 62.5%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-6 pt-0">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-semibold">工作負載清單</h4>
+                                <button onclick="toggleVMList('k8s')"
+                                    class="flex items-center gap-1 text-primary hover:text-indigo-800 dark:hover:text-indigo-300 transition-colors">
+                                    <span class="text-sm">展開/收合</span>
+                                    <span id="vm-toggle-icon-k8s"
+                                        class="material-icons-outlined text-xl">expand_more</span>
+                                </button>
+                            </div>
+
+                            <div id="vm-list-k8s" class="hidden">
+                                <!-- EIX:網網通系統區域 -->
+                                <div class="mb-6">
+                                    <div
+                                        class="bg-blue-50 dark:bg-blue-900/20 px-4 py-2 rounded-t-lg border-l-4 border-blue-500">
+                                        <h5 class="font-semibold text-blue-700 dark:text-blue-300">eix</h5>
+                                    </div>
+                                    <div
+                                        class="overflow-x-auto border border-t-0 border-border-light dark:border-border-dark rounded-b-lg">
+                                        <table class="w-full text-sm">
+                                            <thead
+                                                class="text-left text-muted-light dark:text-muted-dark bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-2 font-medium">名稱</th>
+                                                    <th class="px-4 py-2 font-medium">類型</th>
+                                                    <th class="px-4 py-2 font-medium text-center">就緒度</th>
+                                                    <th class="px-4 py-2 font-medium">狀態</th>
+                                                    <th class="px-4 py-2 font-medium">映像</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-surface-light dark:bg-surface-dark">
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eix-web-deploy</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">Deployment</td>
+                                                    <td class="px-4 py-2 text-center">3/3</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">eix/web:1.2.3</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.2 / 2.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 64%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">64%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 3.2 / 5.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eix-api-deploy</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">Deployment</td>
+                                                    <td class="px-4 py-2 text-center">2/2</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">eix/api:2.1.0</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 50%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">50%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 0.8 / 1.6 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.4 / 4.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eix-db-sts</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">StatefulSet</td>
+                                                    <td class="px-4 py-2 text-center">1/1</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Running</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">postgres:14</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 40%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">40%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 0.5 / 1.25 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 80%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">80%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.0 / 5.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- EIW:入口網系統區域 -->
+                                <div class="mb-6">
+                                    <div
+                                        class="bg-purple-50 dark:bg-purple-900/20 px-4 py-2 rounded-t-lg border-l-4 border-purple-500">
+                                        <h5 class="font-semibold text-purple-700 dark:text-purple-300">eiw</h5>
+                                    </div>
+                                    <div
+                                        class="overflow-x-auto border border-t-0 border-border-light dark:border-border-dark rounded-b-lg">
+                                        <table class="w-full text-sm">
+                                            <thead
+                                                class="text-left text-muted-light dark:text-muted-dark bg-gray-50 dark:bg-gray-700">
+                                                <tr>
+                                                    <th class="px-4 py-2 font-medium">名稱</th>
+                                                    <th class="px-4 py-2 font-medium">類型</th>
+                                                    <th class="px-4 py-2 font-medium text-center">就緒度</th>
+                                                    <th class="px-4 py-2 font-medium">狀態</th>
+                                                    <th class="px-4 py-2 font-medium">映像</th>
+                                                    <th class="px-4 py-2 font-medium text-center">CPU</th>
+                                                    <th class="px-4 py-2 font-medium text-center">Memory</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="bg-surface-light dark:bg-surface-dark">
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eiw-frontend</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">Deployment</td>
+                                                    <td class="px-4 py-2 text-center">4/4</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">eiw/frontend:3.0.1</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 67%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">67%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 2.0 / 3.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 4.8 / 8.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eiw-backend</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">Deployment</td>
+                                                    <td class="px-4 py-2 text-center">3/3</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">eiw/backend:3.0.1</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 64%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">64%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.8 / 2.8 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 70%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">70%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 5.6 / 8.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eiw-redis</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">StatefulSet</td>
+                                                    <td class="px-4 py-2 text-center">1/1</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Running</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">redis:7-alpine</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 30%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">30%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 0.3 / 1.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 60%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">60%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.2 / 2.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-t border-border-light dark:border-border-dark">
+                                                    <td class="px-4 py-2">
+                                                        <a class="font-medium text-primary hover:underline"
+                                                            href="#">eiw-worker</a>
+                                                    </td>
+                                                    <td class="px-4 py-2">Deployment</td>
+                                                    <td class="px-4 py-2 text-center">2/2</td>
+                                                    <td class="px-4 py-2">
+                                                        <span
+                                                            class="px-2 py-1 text-xs rounded-full bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Available</span>
+                                                    </td>
+                                                    <td class="px-4 py-2">eiw/worker:3.0.1</td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-blue-500 h-2 rounded-full"
+                                                                        style="width: 75%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">75%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 1.5 / 2.0 cores</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="px-4 py-2">
+                                                        <div class="tooltip-container">
+                                                            <div class="flex items-center gap-2">
+                                                                <div
+                                                                    class="w-16 bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+                                                                    <div class="bg-green-500 h-2 rounded-full"
+                                                                        style="width: 64%"></div>
+                                                                </div>
+                                                                <span class="text-xs whitespace-nowrap">64%</span>
+                                                            </div>
+                                                            <span class="tooltip-content">已使用 3.2 / 5.0 GB</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer
+                class="text-center p-4 text-sm text-muted-light dark:text-muted-dark border-t border-border-light dark:border-border-dark">
+                版權所有 © 混合雲管理系統 2025
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        function toggleVMList(clusterId) {
+            const vmListElement = document.getElementById('vm-list-' + clusterId);
+            const iconElement = document.getElementById('vm-toggle-icon-' + clusterId);
+
+            if (vmListElement.classList.contains('hidden')) {
+                vmListElement.classList.remove('hidden');
+                iconElement.textContent = 'expand_less';
+            } else {
+                vmListElement.classList.add('hidden');
+                iconElement.textContent = 'expand_more';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

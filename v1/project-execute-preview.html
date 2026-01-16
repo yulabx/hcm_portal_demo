@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>混合雲管理系統 - 申請執行預覽（分配網段）</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: '#4338CA',
+            "background-light": "#F3F4F6",
+            "background-dark": "#1F2937",
+            "surface-light": "#FFFFFF",
+            "surface-dark": "#374151",
+            "text-light": "#111827",
+            "text-dark": "#F9FAFB",
+            "muted-light": "#6B7280",
+            "muted-dark": "#9CA3AF",
+            "border-light": "#E5E7EB",
+            "border-dark": "#4B5563",
+          },
+          fontFamily: { sans: ["Noto Sans TC", "sans-serif"] },
+          borderRadius: { DEFAULT: "0.5rem" },
+        },
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans TC', sans-serif
+    }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-light dark:text-text-dark">
+  <div class="flex min-h-screen">
+    <!-- Sidebar (kept same as source) -->
+    <aside
+      class="w-64 flex flex-col bg-surface-light dark:bg-surface-dark border-r border-border-light dark:border-border-dark">
+      <div class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+        <div class="flex items-center">
+          <span class="material-icons-outlined text-primary text-2xl mr-2">cloud_queue</span>
+          <h1 class="text-lg font-bold">混合雲管理系統</h1>
+        </div>
+        <button class="text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+          <span class="material-icons-outlined">menu_open</span>
+        </button>
+      </div>
+      <nav class="flex-1 overflow-y-auto p-4 space-y-2">
+        <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-muted-light dark:text-muted-dark"
+          href="#">
+          <span class="material-icons-outlined mr-3">home</span><span>首頁</span>
+        </a>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">申請中心
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="project-create-all.html">
+            <span class="material-icons-outlined mr-3">post_add</span>
+            <span>專案申請</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="project-cluster-create-all.html">
+            <span class="material-icons-outlined mr-3">manage_accounts</span>
+            <span>專案叢集申請</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="approval-list.html">
+            <span class="material-icons-outlined mr-3">approval</span><span>簽核作業</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="execute-list.html">
+            <span class="material-icons-outlined mr-3">approval</span><span>申請執行</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">叢集管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="cluster.html">
+            <span class="material-icons-outlined mr-3">storage</span><span>叢集總覽</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">專案管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="project-list.html">
+            <span class="material-icons-outlined mr-3">group</span><span>專案清單</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">group</span><span>專案成員</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">專案資源
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="vm-list.html">
+            <span class="material-icons-outlined mr-3">dvr</span><span>虛擬主機管理</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">security</span><span>虛擬防火牆服務</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1"
+            href="containers.html">
+            <span class="material-icons-outlined mr-3">apps</span><span>容器管理</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">作業執行追蹤
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">play_circle_outline</span><span>執行作業</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">hourglass_empty</span><span>執行狀態追蹤</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">history</span><span>執行紀錄查詢</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">角色管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">vpn_key</span><span>全域角色管理</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">admin_panel_settings</span><span>專案角色管理</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">帳號管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">find_in_page</span><span>帳號查詢</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">manage_accounts</span><span>帳號權限變更</span>
+          </a>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">timeline</span><span>軌跡</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">統計</h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">bar_chart</span><span>資源統計</span>
+          </a>
+        </div>
+        <div class="pt-4">
+          <h3 class="px-2 text-xs font-semibold text-muted-light dark:text-muted-dark uppercase tracking-wider">稽核管理
+          </h3>
+          <a class="flex items-center p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 mt-1" href="#">
+            <span class="material-icons-outlined mr-3">policy</span><span>稽核管理</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="flex-1 flex flex-col">
+      <!-- Header (kept) -->
+      <header class="flex items-center justify-between p-4 border-b border-border-light dark:border-border-dark">
+        <div class="relative w-full max-w-md">
+          <span
+            class="material-icons-outlined absolute left-3 top-1/2 -translate-y-1/2 text-muted-light dark:text-muted-dark">search</span>
+          <input
+            class="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 dark:bg-gray-800 border-transparent focus:border-primary focus:ring-primary"
+            placeholder="功能快速搜尋" type="text" />
+        </div>
+        <div class="flex items-center space-x-4">
+          <button
+            class="relative text-muted-light dark:text-muted-dark hover:text-text-light dark:hover:text-text-dark">
+            <span class="material-icons-outlined">notifications</span>
+            <span class="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
+          </button>
+          <div class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-600 font-bold">e</div>
+        </div>
+      </header>
+
+      <!-- Content: Execution preview + per-subnet assigned CIDR input -->
+      <div class="flex-1 p-8 overflow-y-auto">
+        <h2 class="text-2xl font-bold mb-6">申請執行（分配網段）預覽</h2>
+        <!-- Apply ID -->
+        <div class="max-w-6xl mx-auto mb-4">
+          <div class="text-sm text-muted-light dark:text-muted-dark">申請編號</div>
+          <div class="text-lg font-semibold text-primary">apply-c-clu-20251009-00001</div>
+        </div>
+
+        <!-- Project Info (read-only) -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto space-y-6">
+          <div>
+            <h3 class="text-lg font-semibold mb-2">專案資訊</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label class="block text-sm font-medium">專案代號 (PRJ)</label>
+                <p class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">itw</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium">專案名稱</label>
+                <p class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">智慧便民</p>
+              </div>
+              <div>
+                <label class="block text-sm font-medium">專案負責人</label>
+                <p class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">Anya</p>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-1 gap-4 mt-4">
+              <label class="block text-sm font-medium">專案描述</label>
+              <p class="mt-1 p-2 rounded-md bg-background-light dark:bg-gray-800">此頁僅示範，實務上由後端帶入申請內容。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Clusters: read-only + per-subnet execution input -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <h3 class="text-lg font-semibold">叢集申請（執行階段）</h3>
+              <span class="text-xs text-muted-light dark:text-muted-dark">以下欄位為唯讀預覽，並可填寫每個 Subnet 的「分配網段」</span>
+            </div>
+          </div>
+
+          <div id="exec-clusters" class="space-y-4">
+            <!-- Example cluster with one subnet -->
+            <div
+              class="border border-border-light dark:border-border-dark rounded-lg p-4 bg-background-light dark:bg-gray-800">
+              <div class="flex items-center justify-between">
+                <div class="font-semibold">叢集：<span>Harvester</span></div>
+              </div>
+
+              <fieldset class="border border-border-light dark:border-border-dark p-4 rounded-md mt-3">
+                <legend class="text-base font-medium px-2">資源配額</legend>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
+                  <div>
+                    <label class="block text-sm font-medium">處理器配額 (Cores)</label>
+                    <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">4</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium">記憶體配額 (GB)</label>
+                    <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">16</p>
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium">儲存配額 (GB)</label>
+                    <p class="mt-1 p-2 rounded-md bg-white/70 dark:bg-gray-700/70">100</p>
+                  </div>
+                </div>
+              </fieldset>
+
+              <div class="border-t border-dashed border-border-light dark:border-border-dark my-4"></div>
+
+              <div class="font-semibold mb-2">Subnet 需求</div>
+
+              <div class="space-y-3">
+                <!-- Subnet row -->
+                <div
+                  class="rounded-md p-4 border border-border-light dark:border-border-dark bg-white/60 dark:bg-gray-700/60">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="md:col-span-2">
+                      <div class="text-muted-light dark:text-muted-dark">名稱</div>
+                      <div>itw-har01-subnet-db</div>
+                    </div>
+                    <div>
+                      <div class="text-muted-light dark:text-muted-dark">預期網段大小</div>
+                      <div>/24（~254 hosts）</div>
+                    </div>
+                    <div class="md:col-span-3">
+                      <div class="text-muted-light dark:text-muted-dark">用途描述</div>
+                      <div>資料庫</div>
+                    </div>
+                  </div>
+
+                  <!-- NEW: Execution input block per subnet -->
+                  <div class="mt-4 border-t border-dashed border-border-light dark:border-border-dark pt-4">
+                    <h4 class="font-semibold mb-2 flex items-center">
+                      <span class="material-icons-outlined text-sm mr-1">settings_ethernet</span>執行設定
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium" for="cidr-1">分配網段 (CIDR)</label>
+                        <input id="cidr-1" name="assignedCidr" type="text" placeholder="例如：10.10.0.0/24"
+                          class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                        <p class="text-xs text-muted-light dark:text-muted-dark mt-1">請填寫有效 IPv4 CIDR，例如 10.0.1.0/24。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Subnet row -->
+              </div>
+
+              <div class="space-y-3">
+                <!-- Subnet row -->
+                <div
+                  class="rounded-md p-4 border border-border-light dark:border-border-dark bg-white/60 dark:bg-gray-700/60">
+                  <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="md:col-span-2">
+                      <div class="text-muted-light dark:text-muted-dark">名稱</div>
+                      <div>itw-har01-subnet-ap</div>
+                    </div>
+                    <div>
+                      <div class="text-muted-light dark:text-muted-dark">預期網段大小</div>
+                      <div>/24（~254 hosts）</div>
+                    </div>
+                    <div class="md:col-span-3">
+                      <div class="text-muted-light dark:text-muted-dark">用途描述</div>
+                      <div>應用程式</div>
+                    </div>
+                  </div>
+
+                  <!-- NEW: Execution input block per subnet -->
+                  <div class="mt-4 border-t border-dashed border-border-light dark:border-border-dark pt-4">
+                    <h4 class="font-semibold mb-2 flex items-center">
+                      <span class="material-icons-outlined text-sm mr-1">settings_ethernet</span>執行設定
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label class="block text-sm font-medium" for="cidr-1">分配網段 (CIDR)</label>
+                        <input id="cidr-1" name="assignedCidr" type="text" placeholder="例如：10.10.0.0/24"
+                          class="mt-1 block w-full rounded-md bg-background-light dark:bg-gray-800 border-border-light dark:border-border-dark focus:border-primary focus:ring-primary" />
+                        <p class="text-xs text-muted-light dark:text-muted-dark mt-1">請填寫有效 IPv4 CIDR，例如 10.0.1.0/24。
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- /Subnet row -->
+              </div>
+            </div>
+            <!-- /cluster -->
+          </div>
+        </div>
+
+        <!-- Execution Actions -->
+        <div class="bg-surface-light dark:bg-surface-dark rounded-lg shadow p-6 max-w-6xl mx-auto mt-6">
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="text-sm text-muted-light dark:text-muted-dark">
+              請完成各 Subnet 的「分配網段」輸入後提交執行。
+            </div>
+            <div class="flex gap-3 justify-end">
+              <button id="btn-cancel"
+                class="px-4 py-2 rounded-md border border-border-light dark:border-border-dark hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center">
+                <span class="material-icons-outlined mr-2">undo</span>取消
+              </button>
+              <button id="btn-exec"
+                class="bg-primary text-white px-4 py-2 rounded-md hover:bg-indigo-600 flex items-center">
+                <span class="material-icons-outlined mr-2">play_circle</span>送出執行
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <footer
+        class="text-center p-4 text-sm text-muted-light dark:text-muted-dark border-t border-border-light dark:border-border-dark">
+        版權所有 © 混合雲管理系統 2025
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Simple IPv4 CIDR validation
+    function isValidCIDR(cidr) {
+      const part = '(25[0-5]|2[0-4]\\d|1\\d{2}|[1-9]?\\d)';
+      const regex = new RegExp(`^${part}\\.${part}\\.${part}\\.${part}\\/(3[0-2]|[12]?\\d)$`);
+      return regex.test(cidr);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const execBtn = document.getElementById('btn-exec');
+      const cancelBtn = document.getElementById('btn-cancel');
+
+      execBtn?.addEventListener('click', () => {
+        const cidrInputs = document.querySelectorAll('input[name="assignedCidr"]');
+        const values = [];
+        let invalid = false;
+        cidrInputs.forEach((el, idx) => {
+          const val = (el.value || '').trim();
+          if (!val) { invalid = true; el.focus(); alert(`Subnet #${idx + 1} 請輸入分配網段`); return; }
+          if (!isValidCIDR(val)) { invalid = true; el.focus(); alert(`Subnet #${idx + 1} 分配網段格式錯誤，請輸入有效 IPv4 CIDR`); return; }
+          values.push(val);
+        });
+        if (invalid) return;
+        // TODO: Replace with real API call
+        alert('（Demo）已送出執行，分配網段：\\n' + values.join('\\n'));
+        // fetch('/api/execute/{applyId}', { method: 'POST', body: JSON.stringify({ subnets: values }) })
+      });
+
+      cancelBtn?.addEventListener('click', () => history.back());
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>混合雲智能申請 DEMO</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: "Noto Sans TC", sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 text-gray-900">
+  <div class="max-w-6xl mx-auto p-6">
+    <h1 class="text-2xl font-bold mb-4">混合雲智能申請（DEMO）</h1>
+    <p class="text-sm text-gray-600 mb-6">
+      只要回答三個問題，系統就會自動產生建議架構（叢集＋Subnet 用途）。這一版是展示給老闆看的「體驗版」，不牽涉所有細節欄位。
+    </p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- 問卷區 -->
+      <div class="bg-white rounded-lg shadow p-5 space-y-4">
+        <h2 class="text-lg font-semibold mb-2">1. 基本需求</h2>
+
+        <!-- 問題 1：系統類型 -->
+        <div>
+          <label class="block text-sm font-medium mb-1">系統類型</label>
+          <select id="q-system-type" class="w-full rounded border-gray-300 text-sm">
+            <option value="web">Web 前台系統</option>
+            <option value="api">API / 微服務</option>
+            <option value="internal">內部後台系統</option>
+            <option value="db-only">純資料庫服務</option>
+            <option value="batch">批次 / 排程作業</option>
+          </select>
+        </div>
+
+        <!-- 問題 2：是否對外 -->
+        <div>
+          <label class="block text-sm font-medium mb-1">是否需要對外存取？</label>
+          <div class="space-y-1 text-sm">
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="q-external" value="yes" checked class="border-gray-300">
+              <span>是，需要對 Internet 提供服務或遠端登入</span>
+            </label><br />
+            <label class="inline-flex items-center gap-2">
+              <input type="radio" name="q-external" value="no" class="border-gray-300">
+              <span>否，只在內網使用</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 問題 3：資源等級 -->
+        <div>
+          <label class="block text-sm font-medium mb-1">資源規模</label>
+          <select id="q-size" class="w-full rounded border-gray-300 text-sm">
+            <option value="s">小型（測試 / PoC）</option>
+            <option value="m" selected>中型（一般正式環境）</option>
+            <option value="l">大型（高負載 / 多人共用）</option>
+          </select>
+        </div>
+
+        <button id="btn-generate"
+          class="mt-2 w-full bg-indigo-600 hover:bg-indigo-700 text-white text-sm py-2 rounded flex items-center justify-center gap-1">
+          <span class="material-icons-outlined text-sm">auto_awesome</span>
+          產生建議架構
+        </button>
+      </div>
+
+      <!-- 結果預覽區 -->
+      <div class="bg-white rounded-lg shadow p-5 space-y-4">
+        <h2 class="text-lg font-semibold">建議架構預覽</h2>
+        <p class="text-xs text-gray-500">
+          本區展示系統根據你的回答，自動推導出的叢集類型、Provider 與 Subnet 用途配置。實際 CIDR、VPC、Firewall 規則皆由後端與網管自動配置。
+        </p>
+        <div id="result-arch" class="space-y-3 text-sm text-gray-800">
+          <p class="text-gray-500 text-sm">請先在左邊填寫需求，然後按「產生建議架構」。</p>
+        </div>
+
+        <div class="border-t pt-3 mt-3">
+          <h3 class="text-sm font-semibold mb-1">對後端輸出的 JSON（示意）</h3>
+          <pre id="result-json"
+            class="text-xs bg-gray-900 text-green-200 rounded p-3 overflow-auto h-48 whitespace-pre-wrap"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function buildRecommendation() {
+      const systemType = document.getElementById("q-system-type").value;
+      const external = document.querySelector("input[name='q-external']:checked").value;
+      const size = document.getElementById("q-size").value;
+
+      // 1) 根據系統類型推叢集組合
+      const clusters = [];
+
+      // 基本 CPU/Memory/Storage 配額範本
+      const sizePreset = {
+        s: { cpu: 2, memory: 4, storage: 100 },
+        m: { cpu: 4, memory: 16, storage: 200 },
+        l: { cpu: 8, memory: 32, storage: 400 },
+      };
+      const baseQuota = sizePreset[size] || sizePreset.m;
+
+      const makeCluster = (role, provider) => ({
+        role, // web / app / db / batch ...
+        provider,
+        quota: { ...baseQuota },
+        zones: [],
+      });
+
+      // 簡化 Provider 策略：內部多用 Harvester，對外 Web / API 用 AWS / K8s
+      if (systemType === "web" || systemType === "api") {
+        clusters.push(makeCluster("app", external === "yes" ? "aws" : "harvester"));
+        clusters.push(makeCluster("db", "harvester"));
+      } else if (systemType === "db-only") {
+        clusters.push(makeCluster("db", "harvester"));
+      } else if (systemType === "batch") {
+        clusters.push(makeCluster("batch", "harvester"));
+      } else { // internal
+        clusters.push(makeCluster("app", "harvester"));
+        clusters.push(makeCluster("db", "harvester"));
+      }
+
+      // 2) 根據是否對外，決定是否加上 bastion 區塊
+      if (external === "yes") {
+        clusters.unshift(makeCluster("bastion", "aws")); // bastion 一律 public
+      }
+
+      // 3) 根據角色，決定 zones（用途），並標記 isPublic
+      clusters.forEach((c) => {
+        if (c.role === "bastion") {
+          c.zones = [{ key: "bastion", isPublic: true }];
+        } else if (c.role === "app") {
+          c.zones = [{ key: "app", isPublic: false }];
+        } else if (c.role === "db") {
+          c.zones = [{ key: "db", isPublic: false }];
+        } else if (c.role === "batch") {
+          c.zones = [{ key: "batch", isPublic: false }];
+        }
+      });
+
+      return { systemType, external, size, clusters };
+    }
+
+    function renderArchView(model) {
+      const container = document.getElementById("result-arch");
+      container.innerHTML = "";
+
+      const badge = (text, color) =>
+        `<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium ${color}">${text}</span>`;
+
+      model.clusters.forEach((c, idx) => {
+        const div = document.createElement("div");
+        div.className = "border rounded p-3 bg-gray-50";
+
+        const title = document.createElement("div");
+        title.className = "flex justify-between items-center mb-1";
+        title.innerHTML = `
+          <span class="font-semibold text-sm">叢集 #${idx + 1} - ${c.role.toUpperCase()}</span>
+          <span class="text-xs text-gray-500">Provider：${c.provider.toUpperCase()}</span>
+        `;
+
+        const quota = document.createElement("div");
+        quota.className = "text-xs text-gray-600 mb-1";
+        quota.textContent = `CPU: ${c.quota.cpu} cores、Memory: ${c.quota.memory} GB、Storage: ${c.quota.storage} GB`;
+
+        const zones = document.createElement("div");
+        zones.className = "text-xs mt-1 space-y-1";
+        if (!c.zones.length) {
+          zones.innerHTML = `<span class="text-gray-400">（此叢集不需要 Subnet 用途配置）</span>`;
+        } else {
+          c.zones.forEach(z => {
+            const isPub = z.isPublic;
+            const line = document.createElement("div");
+            line.innerHTML = `
+              ${badge(z.key.toUpperCase(), isPub ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700")}
+              ${isPub ? "Public Subnet（需搭配防火牆申請）" : "Private Subnet"}
+            `;
+            zones.appendChild(line);
+          });
+        }
+
+        div.appendChild(title);
+        div.appendChild(quota);
+        div.appendChild(zones);
+        container.appendChild(div);
+      });
+
+      // JSON 區
+      const jsonBox = document.getElementById("result-json");
+      jsonBox.textContent = JSON.stringify(model, null, 2);
+    }
+
+    document.getElementById("btn-generate").addEventListener("click", () => {
+      const model = buildRecommendation();
+      renderArchView(model);
+    });
+  </script>
+</body>
+
+</html>

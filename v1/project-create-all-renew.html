@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>建立專案</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+</head>
+
+<body class="bg-gray-100 p-8">
+
+    <div class="max-w-4xl mx-auto bg-white shadow rounded-lg p-6 space-y-8">
+
+        <!-- 標題 -->
+        <header>
+            <h1 class="text-2xl font-bold">建立專案</h1>
+            <p class="text-gray-500 text-sm mt-1">
+                依專案需求建立資源空間，包含可使用的平台、Quota 與網路配置。
+            </p>
+        </header>
+
+        <!-- 基本資料 -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">基本資訊</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium">專案名稱</label>
+                    <input class="mt-1 w-full border rounded-md" placeholder="例如：itw-project" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">描述（選填）</label>
+                    <input class="mt-1 w-full border rounded-md" placeholder="專案說明" />
+                </div>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- 啟用的平台（取代複雜 cluster 選擇） -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">想在哪些平台使用資源？</h2>
+
+            <p class="text-sm text-gray-500 mb-2">
+                選擇本專案需要使用的運算平台（地端 / 雲端）。Quota 與網路會根據平台自動建立。
+            </p>
+
+            <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" class="h-4 w-4" checked>
+                    <span>地端 Harvester 叢集</span>
+                </label>
+
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" class="h-4 w-4">
+                    <span>AWS 雲端叢集</span>
+                </label>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- VM 配額 -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">VM 資源上限</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium">CPU (vCPU)</label>
+                    <input type="number" class="mt-1 w-full border rounded-md" placeholder="例如：50">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">記憶體 (GB)</label>
+                    <input type="number" class="mt-1 w-full border rounded-md" placeholder="例如：200">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium">磁碟 (GB)</label>
+                    <input type="number" class="mt-1 w-full border rounded-md" placeholder="例如：2000">
+                </div>
+            </div>
+
+            <p class="text-xs text-gray-500 mt-2">
+                ※ 依平台（地端 / 雲端）將由系統拆分可用配額，審核階段可調整。
+            </p>
+        </section>
+
+        <hr>
+
+        <!-- 網段方案 -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">網路配置</h2>
+
+            <label class="block text-sm font-medium">網段型態</label>
+            <select class="mt-1 w-full border rounded-md">
+                <option>單一網段（最簡單）</option>
+                <option>三層架構（Web / App / DB）</option>
+                <option>多區（3~6 Subnets）</option>
+            </select>
+
+            <p class="text-xs text-gray-500 mt-2">
+                ※ 將依照選擇的型態於各平台（地端 / 雲端）自動建立對應 VPC 與 Subnet。
+            </p>
+        </section>
+
+        <hr>
+
+        <!-- Kubernetes 可選 -->
+        <section>
+            <h2 class="text-lg font-semibold mb-3">Kubernetes（選用）</h2>
+
+            <label class="flex items-center space-x-2">
+                <input type="checkbox" id="enable-k8s" class="h-4 w-4">
+                <span>啟用 Kubernetes Namespace</span>
+            </label>
+
+            <div id="k8s-quota" class="mt-4 hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium">K8s CPU (vCPU)</label>
+                        <input type="number" class="mt-1 w-full border rounded-md" placeholder="例如：20">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">K8s 記憶體 (GB)</label>
+                        <input type="number" class="mt-1 w-full border rounded-md" placeholder="例如：80">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium">K8s 儲存 (GB)</label>
+                        <input type="number" class="mt-1 w-full border rounded-md" placeholder="例如：500">
+                    </div>
+                </div>
+
+                <p class="text-xs text-gray-500 mt-2">
+                    ※ Namespace 與 ResourceQuota 將由系統自動建立。
+                </p>
+            </div>
+        </section>
+
+        <hr>
+
+        <!-- 進階設定（可以藏 CIDR、Subnet、自訂叢集、Provider Mapping） -->
+        <section>
+            <button id="toggle-advanced" class="text-indigo-600 hover:underline text-sm">
+                ＋ 顯示進階設定
+            </button>
+
+            <div id="advanced-area" class="hidden mt-4 p-4 bg-gray-50 border rounded-lg space-y-4">
+
+                <h3 class="font-semibold text-base">進階設定（技術人員使用）</h3>
+
+                <div>
+                    <label class="block text-sm font-medium">地端 VPC CIDR（自動產生，可調）</label>
+                    <input class="mt-1 w-full border rounded-md" value="10.100.X.0/22">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">雲端 VPC CIDR（自動產生，可調）</label>
+                    <input class="mt-1 w-full border rounded-md" value="172.31.X.0/22">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium">自訂 Subnet（可留空使用自動配置）</label>
+                    <textarea rows="4" class="mt-1 w-full border rounded-md"></textarea>
+                </div>
+
+                <p class="text-xs text-gray-500">
+                    ※ 一般使用者無需設定，系統會依需求自動分配 Subnet。
+                </p>
+            </div>
+        </section>
+
+        <hr>
+
+        <footer class="flex justify-end space-x-2">
+            <button class="px-4 py-2 border rounded-md">取消</button>
+            <button class="px-6 py-2 bg-indigo-600 text-white rounded-md">建立專案</button>
+        </footer>
+
+    </div>
+
+    <script>
+        // Show/Hide Kubernetes section
+        document.getElementById('enable-k8s').addEventListener('change', (e) => {
+            document.getElementById('k8s-quota').classList.toggle('hidden', !e.target.checked);
+        });
+
+        // Toggle advanced
+        document.getElementById('toggle-advanced').addEventListener('click', () => {
+            document.getElementById('advanced-area').classList.toggle('hidden');
+        });
+    </script>
+
+</body>
+
+</html>
