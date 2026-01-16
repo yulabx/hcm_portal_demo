@@ -6,31 +6,35 @@
   <style>
     body { font-family: sans-serif; }
     ul { line-height: 1.8; }
+    .ver { font-weight: bold; margin-right: 8px; }
+    .desc { color: #555; }
+    .date { color: #999; font-size: 0.9em; margin-left: 6px; }
   </style>
 </head>
 <body>
-  <h1>文件版本</h1>
+  <h1>版本</h1>
   <ul id="version-list">載入中…</ul>
 
   <script>
     fetch('./versions.json')
-      .then(res => {
-        if (!res.ok) throw new Error('讀取失敗');
-        return res.json();
-      })
-      .then(versions => {
+      .then(r => r.json())
+      .then(list => {
         const ul = document.getElementById('version-list');
         ul.innerHTML = '';
-        versions.forEach(v => {
+
+        list.forEach(item => {
           const li = document.createElement('li');
-          li.innerHTML = `<a href="${v}/">${v}</a>`;
+
+          li.innerHTML = `
+            <a href="${item.version}/">
+              <span class="ver">${item.version}</span>
+            </a>
+            <span class="desc">${item.title || ''}</span>
+            ${item.date ? `<span class="date">(${item.date})</span>` : ''}
+          `;
+
           ul.appendChild(li);
         });
-      })
-      .catch(err => {
-        document.getElementById('version-list').innerText =
-          '無法載入版本清單';
-        console.error(err);
       });
   </script>
 </body>
