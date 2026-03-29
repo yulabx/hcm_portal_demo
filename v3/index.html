@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCM Resource Strategy - Design Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fcfcfd;
+            color: #101828;
+        }
+
+        .premium-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 32px;
+            padding: 40px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .premium-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 40px 80px -15px rgba(0, 0, 0, 0.08);
+            border-color: #2e90fa;
+        }
+
+        .version-tag {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 6px;
+            background: #f2f4f7;
+            color: #475467;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .premium-card:hover .version-tag {
+            background: #eff6ff;
+            color: #2e90fa;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2e90fa;
+            display: inline-block;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+
+<body class="py-20 px-8">
+
+    <div class="max-w-6xl mx-auto">
+        <!-- Header -->
+        <header class="text-center mb-24">
+            <div class="flex justify-center items-center gap-3 mb-6">
+                <div class="w-12 h-12 bg-slate-900 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-xl">H</div>
+                <h1 class="text-4xl font-black tracking-tight text-slate-900 uppercase">HCM Design Gallery</h1>
+            </div>
+            <p class="text-slate-500 font-medium text-lg">Resource Pool / Project / System 視覺化模型設計演進</p>
+            <div class="h-1 w-20 bg-blue-600 mx-auto mt-8 rounded-full"></div>
+        </header>
+
+        <!-- Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            
+            <!-- Version 1.1 -->
+            <a href="resource-pool-overview_v1_1.html" class="premium-card">
+                <div class="flex justify-between items-start mb-8">
+                    <span class="version-tag">Edition 1.1</span>
+                    <span class="text-slate-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-4">基礎直觀版</h3>
+                <p class="text-slate-500 leading-relaxed mb-8">採用經典的大卡片鑽取模式，著重於資源水桶的百分比呈現，提供最快速的容量感官體驗。</p>
+                <div class="flex gap-4">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center"><span class="dot"></span>Drill-down</span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center"><span class="dot"></span>Visual Capacity</span>
+                </div>
+            </a>
+
+            <!-- Version 1.2 -->
+            <a href="resource-pool-overview_v1_2.html" class="premium-card">
+                <div class="flex justify-between items-start mb-8">
+                    <span class="version-tag">Edition 1.2</span>
+                    <span class="text-slate-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-4">進階美化版</h3>
+                <p class="text-slate-500 leading-relaxed mb-8">在 V1 的基礎上優化了色彩與陰影層次，並強化了 Site 層級的資訊密度，適合初級管理展示。</p>
+                <div class="flex gap-4">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center"><span class="dot"></span>Refined UI</span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center"><span class="dot"></span>Site Focus</span>
+                </div>
+            </a>
+
+            <!-- Version 2.1 -->
+            <a href="resource-pool-overview_v2_1.html" class="premium-card">
+                <div class="flex justify-between items-start mb-8">
+                    <span class="version-tag">Edition 2.1</span>
+                    <span class="text-slate-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-4">戰略指揮版 (推薦)</h3>
+                <p class="text-slate-500 leading-relaxed mb-8">結合三維度語義標籤與業務嵌套卡片。支援全時監控、圓環儀表 HUD 與自動捲動導航。</p>
+                <div class="flex gap-4">
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest flex items-center"><span class="dot"></span>Semantic HUD</span>
+                    <span class="text-[10px] font-bold text-blue-600 uppercase tracking-widest flex items-center"><span class="dot"></span>Business Centric</span>
+                </div>
+            </a>
+
+            <!-- Version 2.2 -->
+            <a href="resource-pool-overview_v2_2.html" class="premium-card">
+                <div class="flex justify-between items-start mb-8">
+                    <span class="version-tag">Edition 2.2</span>
+                    <span class="text-slate-300">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                    </span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-4">層級矩陣版</h3>
+                <p class="text-slate-500 leading-relaxed mb-8">採用嚴謹的階層展開邏輯與高密度數據表格，適合需要完整審視所有配置標籤的維運情境。</p>
+                <div class="flex gap-4">
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center"><span class="dot"></span>Tree View</span>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex items-center"><span class="dot"></span>Full Registry</span>
+                </div>
+            </a>
+
+        </div>
+
+        <footer class="mt-32 text-center text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
+            HCM Strategic Management Dashboard // 2026 Portfolio
+        </footer>
+    </div>
+
+</body>
+
+</html>

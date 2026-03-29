@@ -1,0 +1,231 @@
+﻿<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Noto+Sans+TC:wght@300;400;500;700&display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+            display: inline-block;
+            line-height: 1;
+            white-space: nowrap;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f8f9fa;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c6d8;
+            border-radius: 999px;
+        }
+    </style>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        tertiary: "#a33200",
+                        surface: "#f8f9fa",
+                        surfaceBright: "#f8f9fa",
+                        surfaceContainer: "#edeeef",
+                        surfaceContainerLow: "#f3f4f5",
+                        surfaceContainerLowest: "#ffffff",
+                        outlineVariant: "#c2c6d8",
+                        onSurface: "#191c1d",
+                        onSurfaceVariant: "#424656",
+                        primary: "#0050cb",
+                        primaryContainer: "#0066ff",
+                        secondary: "#425ca0",
+                        error: "#ba1a1a",
+                        errorContainer: "#ffdad6"
+                    },
+                    fontFamily: {
+                        headline: ["Manrope", "sans-serif"],
+                        body: ["Noto Sans TC", "sans-serif"],
+                        label: ["Noto Sans TC", "sans-serif"]
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.125rem",
+                        lg: "0.25rem",
+                        xl: "0.5rem",
+                        full: "0.75rem"
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="bg-surface text-onSurface font-body selection:bg-primaryContainer selection:text-white">
+    <aside class="fixed left-0 top-0 z-50 flex h-screen w-64 flex-col border-r border-slate-200/40 bg-[#f3f4f5] px-4 py-6 text-[0.875rem] leading-relaxed">
+        <div class="mb-10 px-2">
+            <h1 class="text-xl font-black tracking-tighter text-[#0066FF]">資源池管理</h1>
+            <p class="text-[10px] uppercase tracking-[0.2em] text-onSurfaceVariant/60">System Dashboard</p>
+        </div>
+        <nav class="flex-1 space-y-1">
+            <a class="flex items-center gap-3 rounded-lg border-r-2 border-[#0066FF] bg-white/60 px-3 py-2.5 font-bold text-[#0066FF]" href="#">
+                <span class="material-symbols-outlined">cloud</span>
+                <span>資源池總覽</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-onSurfaceVariant hover:bg-white/80 hover:text-[#0066FF]" href="#">
+                <span class="material-symbols-outlined">location_on</span>
+                <span>站點檢視</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-onSurfaceVariant hover:bg-white/80 hover:text-[#0066FF]" href="#">
+                <span class="material-symbols-outlined">account_tree</span>
+                <span>層級關聯</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-onSurfaceVariant hover:bg-white/80 hover:text-[#0066FF]" href="#">
+                <span class="material-symbols-outlined">reorder</span>
+                <span>資源池清單</span>
+            </a>
+        </nav>
+        <div class="mt-auto space-y-1 border-t border-outlineVariant/20 pt-6">
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-onSurfaceVariant hover:bg-white/80 hover:text-[#0066FF]" href="#">
+                <span class="material-symbols-outlined">person</span>
+                <span>管理者帳號</span>
+            </a>
+            <a class="flex items-center gap-3 rounded-lg px-3 py-2.5 text-error hover:bg-errorContainer/40" href="#">
+                <span class="material-symbols-outlined">logout</span>
+                <span>登出</span>
+            </a>
+        </div>
+    </aside>
+    <header class="sticky top-0 z-40 flex h-16 w-full items-center justify-between border-b border-surfaceContainer bg-surface px-8 pl-72 text-sm">
+        <div class="flex items-center gap-8">
+            <span class="text-lg font-bold tracking-tight text-onSurface">資源池管理面板</span>
+            <div class="hidden items-center gap-6 md:flex">
+                <a class="font-semibold text-[#0066FF]" href="#">資源池總覽</a>
+                <a class="text-onSurfaceVariant transition-colors duration-200 hover:text-[#0066FF]" href="#">申請狀況</a>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="relative group">
+                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-lg text-onSurfaceVariant">search</span>
+                <input class="w-64 rounded-full border-none bg-surfaceContainerLow py-1.5 pl-10 pr-4 text-xs transition-all focus:ring-1 focus:ring-primary" placeholder="搜尋資源池、系統、站點..." type="text" />
+            </div>
+            <div class="flex items-center gap-2">
+                <button class="p-2 text-onSurfaceVariant transition-all hover:text-primary"><span class="material-symbols-outlined">notifications</span></button>
+                <button class="p-2 text-onSurfaceVariant transition-all hover:text-primary"><span class="material-symbols-outlined">help</span></button>
+                <button class="p-2 text-onSurfaceVariant transition-all hover:text-primary"><span class="material-symbols-outlined">settings</span></button>
+            </div>
+            <div class="flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primaryContainer text-xs font-bold text-white">AD</div>
+        </div>
+    </header>
+    <main class="ml-64 min-h-screen p-8">
+        <div class="mx-auto max-w-7xl space-y-12">
+            <section class="flex flex-col gap-2">
+                <h2 class="font-headline text-3xl font-extrabold tracking-tight text-onSurface">資源池申請狀況</h2>
+                <p class="font-body text-onSurfaceVariant">上方卡片保留原本概念，並以下方階層完整呈現範例一的 dedicated resource pool 配置。</p>
+            </section>
+            <section class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                <div class="group rounded-xl border border-outlineVariant/10 bg-surfaceContainerLowest p-6 transition-all hover:shadow-[0px_4px_20px_rgba(25,28,29,0.04)]">
+                    <div class="mb-8 flex items-start justify-between">
+                        <div>
+                            <span class="mb-2 inline-block rounded bg-primary/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-primary">Enterprise</span>
+                            <h3 class="font-headline text-xl font-bold">私有雲</h3>
+                        </div>
+                        <span class="material-symbols-outlined text-3xl text-primary transition-transform group-hover:scale-110">lan</span>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">正式 / DR 環境覆蓋</span><span class="text-onSurface">100%</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-primary"></div></div></div>
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">資源池配置</span><span class="text-onSurface">4 / 4</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-primary"></div></div></div>
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">Allocation 完整度</span><span class="text-onSurface">100%</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-primary"></div></div></div>
+                    </div>
+                </div>
+                <div class="group rounded-xl border border-outlineVariant/10 bg-surfaceContainerLowest p-6 transition-all hover:shadow-[0px_4px_20px_rgba(25,28,29,0.04)]">
+                    <div class="mb-8 flex items-start justify-between">
+                        <div>
+                            <span class="mb-2 inline-block rounded bg-secondary/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-secondary">Public</span>
+                            <h3 class="font-headline text-xl font-bold">hiCloud</h3>
+                        </div>
+                        <span class="material-symbols-outlined text-3xl text-secondary transition-transform group-hover:scale-110">cloud_queue</span>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">系統覆蓋</span><span class="text-onSurface">2 Systems</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-[72%] rounded-full bg-secondary"></div></div></div>
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">資源池配置</span><span class="text-onSurface">4 / 4</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-secondary"></div></div></div>
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">Prod / UAT 完整度</span><span class="text-onSurface">100%</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-secondary"></div></div></div>
+                    </div>
+                </div>
+                <div class="group rounded-xl border border-outlineVariant/10 bg-surfaceContainerLowest p-6 transition-all hover:shadow-[0px_4px_20px_rgba(25,28,29,0.04)]">
+                    <div class="mb-8 flex items-start justify-between">
+                        <div>
+                            <span class="mb-2 inline-block rounded bg-tertiary/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-tertiary">Hybrid</span>
+                            <h3 class="font-headline text-xl font-bold">AWS</h3>
+                        </div>
+                        <span class="material-symbols-outlined text-3xl text-tertiary transition-transform group-hover:scale-110">filter_drama</span>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">環境覆蓋</span><span class="text-onSurface">Prod / UAT</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-tertiary"></div></div></div>
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">資源池配置</span><span class="text-onSurface">2 / 2</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-full rounded-full bg-tertiary"></div></div></div>
+                        <div class="space-y-2"><div class="flex justify-between text-xs font-medium"><span class="text-onSurfaceVariant">主站角色</span><span class="text-onSurface">Primary</span></div><div class="h-1.5 w-full overflow-hidden rounded-full bg-surfaceContainer"><div class="h-full w-[68%] rounded-full bg-tertiary"></div></div></div>
+                    </div>
+                </div>
+            </section>
+            <section class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-headline text-2xl font-bold">階層式資源展開</h3>
+                    <div class="flex gap-2">
+                        <button class="flex items-center gap-2 rounded-lg bg-surfaceContainerLow px-4 py-2 text-xs font-bold text-onSurfaceVariant transition-all hover:bg-surfaceContainer"><span class="material-symbols-outlined text-sm">filter_list</span>篩選</button>
+                        <button class="flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:opacity-90"><span class="material-symbols-outlined text-sm">download</span>匯出階層</button>
+                    </div>
+                </div>
+                <div class="overflow-hidden rounded-xl border border-outlineVariant/10 bg-surfaceContainerLowest shadow-sm">
+                    <div class="grid grid-cols-12 border-b border-outlineVariant/5 bg-surfaceContainerLow px-6 py-4 text-[10px] font-bold uppercase tracking-widest text-onSurfaceVariant">
+                        <div class="col-span-4">Cloud &gt; Site &gt; Resource Pool</div>
+                        <div class="col-span-2 text-center">Pool ID</div>
+                        <div class="col-span-2 text-center">System</div>
+                        <div class="col-span-2 text-center">Environment</div>
+                        <div class="col-span-2 text-right">Role / Usage</div>
+                    </div>
+                    <div class="border-b border-outlineVariant/5">
+                        <div class="grid grid-cols-12 items-center px-6 py-5 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-primary">keyboard_arrow_down</span><span class="material-symbols-outlined text-primary">cloud</span><span class="font-bold text-onSurface">私有雲</span></div><div class="col-span-2 text-center text-sm font-medium">P01-P04</div><div class="col-span-2 text-center text-sm font-medium">電力系統</div><div class="col-span-2 text-center text-sm font-medium">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-bold text-green-700">Dedicated</span></div></div>
+                        <div class="bg-surfaceContainerLow/30">
+                            <div class="grid grid-cols-12 items-center px-6 py-4 ml-8 border-l border-primary/20 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">location_on</span><span class="font-semibold text-onSurface">台北主中心</span></div><div class="col-span-2 text-center text-sm">P01-P02</div><div class="col-span-2 text-center text-sm">電力系統</div><div class="col-span-2 text-center text-sm">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="h-2 w-2 rounded-full bg-green-500"></span></div></div>
+                            <div class="bg-surfaceContainerLow/50">
+                                <div class="grid grid-cols-12 items-center px-6 py-4 ml-16 border-l border-primary/10 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">account_tree</span><span class="font-medium text-onSurface">電發專案 - 電力系統</span></div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">P01 / P02</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">電力系統</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">Prod / UAT</div><div class="col-span-2 flex justify-end items-center gap-2"><span class="text-[10px] font-bold text-onSurfaceVariant">primary</span></div></div>
+                                <div class="ml-24 border-l border-outlineVariant/20"><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-primary">P01 電力系統私有雲-Prod</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P01</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">Prod</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-secondary">P02 電力系統私有雲-UAT</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P02</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">UAT</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div></div>
+                            </div>
+                            <div class="grid grid-cols-12 items-center px-6 py-4 ml-8 border-l border-primary/20 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">location_on</span><span class="font-semibold text-onSurface">台中異備</span></div><div class="col-span-2 text-center text-sm">P03-P04</div><div class="col-span-2 text-center text-sm">電力系統</div><div class="col-span-2 text-center text-sm">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="h-2 w-2 rounded-full bg-secondary"></span></div></div>
+                            <div class="ml-16 border-l border-primary/10 bg-surfaceContainerLow/50"><div class="grid grid-cols-12 items-center px-6 py-4 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">account_tree</span><span class="font-medium text-onSurface">電發專案 - 電力系統 DR</span></div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">P03 / P04</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">電力系統</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">Prod / UAT</div><div class="col-span-2 flex justify-end items-center gap-2"><span class="text-[10px] font-bold text-onSurfaceVariant">dr</span></div></div><div class="ml-8 border-l border-outlineVariant/20"><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-primary">P03 電力系統私有雲DR-Prod</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P03</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">Prod</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">dr / exclusive</span></div></div><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-secondary">P04 電力系統私有雲DR-UAT</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P04</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">UAT</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">dr / exclusive</span></div></div></div></div>
+                        </div>
+                    </div>
+                    <div class="border-b border-outlineVariant/5"><div class="grid grid-cols-12 items-center px-6 py-5 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-secondary">keyboard_arrow_down</span><span class="material-symbols-outlined text-secondary">cloud_queue</span><span class="font-bold text-onSurface">hiCloud</span></div><div class="col-span-2 text-center text-sm font-medium">P05-P08</div><div class="col-span-2 text-center text-sm font-medium">電力系統 / 帳務APP</div><div class="col-span-2 text-center text-sm font-medium">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-blue-700">Dedicated</span></div></div><div class="bg-surfaceContainerLow/30"><div class="grid grid-cols-12 items-center px-6 py-4 ml-8 border-l border-secondary/20 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">location_on</span><span class="font-semibold text-onSurface">東七</span></div><div class="col-span-2 text-center text-sm">P05-P08</div><div class="col-span-2 text-center text-sm">電力系統 / 帳務APP</div><div class="col-span-2 text-center text-sm">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="h-2 w-2 rounded-full bg-green-500"></span></div></div><div class="ml-16 border-l border-secondary/10 bg-surfaceContainerLow/50"><div class="grid grid-cols-12 items-center px-6 py-4 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">account_tree</span><span class="font-medium text-onSurface">電發專案 - 電力系統</span></div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">P05 / P06</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">電力系統</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">Prod / UAT</div><div class="col-span-2 flex justify-end items-center gap-2"><span class="text-[10px] font-bold text-onSurfaceVariant">primary</span></div></div><div class="ml-8 border-l border-outlineVariant/20"><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-primary">P05 電力系統 hiCloud-Prod</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P05</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">Prod</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-secondary">P06 電力系統 hiCloud-UAT</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P06</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">UAT</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div></div></div><div class="ml-16 border-l border-secondary/10 bg-surfaceContainerLow/50"><div class="grid grid-cols-12 items-center px-6 py-4 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">account_tree</span><span class="font-medium text-onSurface">電發專案 - 帳務APP</span></div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">P07 / P08</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">帳務APP</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">Prod / UAT</div><div class="col-span-2 flex justify-end items-center gap-2"><span class="text-[10px] font-bold text-onSurfaceVariant">primary</span></div></div><div class="ml-8 border-l border-outlineVariant/20"><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-primary">P07 帳務APP hiCloud-Prod</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P07</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">帳務APP</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">Prod</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-secondary">P08 帳務APP hiCloud-UAT</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P08</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">帳務APP</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">UAT</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div></div></div></div></div>
+                    <div><div class="grid grid-cols-12 items-center px-6 py-5 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-tertiary">keyboard_arrow_down</span><span class="material-symbols-outlined text-tertiary">filter_drama</span><span class="font-bold text-onSurface">AWS</span></div><div class="col-span-2 text-center text-sm font-medium">P09-P10</div><div class="col-span-2 text-center text-sm font-medium">電力系統</div><div class="col-span-2 text-center text-sm font-medium">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-bold text-orange-700">Dedicated</span></div></div><div class="bg-surfaceContainerLow/30"><div class="grid grid-cols-12 items-center px-6 py-4 ml-8 border-l border-tertiary/20 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">location_on</span><span class="font-semibold text-onSurface">東京區域</span></div><div class="col-span-2 text-center text-sm">P09-P10</div><div class="col-span-2 text-center text-sm">電力系統</div><div class="col-span-2 text-center text-sm">Prod / UAT</div><div class="col-span-2 flex justify-end"><span class="h-2 w-2 rounded-full bg-orange-500"></span></div></div><div class="ml-16 border-l border-tertiary/10 bg-surfaceContainerLow/50"><div class="grid grid-cols-12 items-center px-6 py-4 transition-all hover:bg-surfaceBright"><div class="col-span-4 flex items-center gap-3"><span class="material-symbols-outlined text-lg text-onSurfaceVariant">keyboard_arrow_down</span><span class="material-symbols-outlined text-onSurfaceVariant">account_tree</span><span class="font-medium text-onSurface">電發專案 - 電力系統</span></div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">P09 / P10</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">電力系統</div><div class="col-span-2 text-center text-sm text-onSurfaceVariant">Prod / UAT</div><div class="col-span-2 flex justify-end items-center gap-2"><span class="text-[10px] font-bold text-onSurfaceVariant">primary</span></div></div><div class="ml-8 border-l border-outlineVariant/20"><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-primary">P09 電力系統 AWS-Prod</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P09</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">Prod</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div><div class="grid grid-cols-12 items-center px-6 py-3 transition-all hover:bg-primary/5"><div class="col-span-4 flex items-center gap-3"><div class="h-px w-2 bg-outlineVariant"></div><span class="text-xs font-bold text-secondary">P10 電力系統 AWS-UAT</span></div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">P10</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">電力系統</div><div class="col-span-2 text-center text-xs text-onSurfaceVariant/70">UAT</div><div class="col-span-2 flex justify-end"><span class="text-[10px] text-onSurfaceVariant opacity-60">primary / exclusive</span></div></div></div></div></div></div>
+                </div>
+            </section>
+            <section class="grid grid-cols-12 gap-6">
+                <div class="group relative col-span-12 overflow-hidden rounded-xl bg-primary p-8 text-white lg:col-span-8">
+                    <div class="relative z-10 space-y-4">
+                        <h4 class="font-headline text-2xl font-bold">資源池調整建議</h4>
+                        <p class="max-w-md text-sm opacity-80">範例一顯示 dedicated 架構已覆蓋私有雲、hiCloud 與 AWS。下一步可依照正式、UAT、DR 的角色，進一步補上容量追蹤與申請流程整合。</p>
+                        <button class="mt-4 rounded-lg bg-white px-6 py-2.5 text-xs font-bold text-primary transition-all hover:bg-surface">檢視建議清單</button>
+                    </div>
+                    <div class="pointer-events-none absolute right-0 top-0 h-full w-1/2 bg-gradient-to-l from-white/10 to-transparent"></div>
+                    <span class="material-symbols-outlined absolute -bottom-8 -right-8 rotate-12 text-[12rem] opacity-5">auto_awesome</span>
+                </div>
+                <div class="col-span-12 flex flex-col justify-center space-y-4 rounded-xl border border-outlineVariant/10 bg-surfaceContainerLowest p-8 text-center shadow-sm lg:col-span-4">
+                    <span class="material-symbols-outlined mx-auto text-5xl text-onSurfaceVariant/20">map</span>
+                    <h4 class="font-headline text-xl font-bold">站點配置檢視</h4>
+                    <p class="text-xs text-onSurfaceVariant">可再延伸整合站點地圖、主備切換與容量健康度視覺化。</p>
+                    <button class="w-full rounded-lg border border-outlineVariant/20 py-3 text-xs font-bold text-onSurface transition-all hover:bg-surfaceContainerLow">開啟站點視圖</button>
+                </div>
+            </section>
+        </div>
+    </main>
+    <button class="group fixed bottom-8 right-8 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-primary text-white shadow-lg transition-all hover:scale-110 active:scale-95">
+        <span class="material-symbols-outlined text-2xl">add</span>
+        <span class="absolute right-full mr-4 whitespace-nowrap rounded-lg bg-[#191c1d] px-3 py-1.5 text-[10px] text-white opacity-0 transition-opacity group-hover:opacity-100">新增資源池配置</span>
+    </button>
+</body>
+</html>

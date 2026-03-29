@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HCM Strategic Command - V21 Semantic Labels</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fcfcfd;
+            color: #101828;
+            scroll-behavior: smooth;
+        }
+
+        .container-wide {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* 結構語義化標籤 (Semantic Labels) */
+        .layer-label {
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 4px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-right: 16px;
+        }
+
+        .label-cloud {
+            background: #1e40af;
+            color: #ffffff;
+        }
+
+        .label-site {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        .label-alloc {
+            background: #334155;
+            color: #ffffff;
+        }
+
+        /* Cloud Hero Card */
+        .cloud-hero-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 24px;
+            padding: 24px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        .cloud-hero-card.active {
+            border: 2.5px solid #2e90fa;
+            background: #f9faff;
+            box-shadow: 0 10px 30px rgba(46, 144, 250, 0.1);
+        }
+
+        /* 圓環儀表 */
+        .gauge-ring {
+            transition: stroke-dashoffset 0.8s ease-in-out;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .bento-card {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 24px;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+        }
+
+        /* 業務嵌套設計 */
+        .system-container {
+            background: #ffffff;
+            border: 1px solid #eaecf0;
+            border-radius: 32px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(16, 24, 40, 0.05);
+        }
+
+        .pool-sub-card {
+            background: #fcfcfd;
+            border: 1px solid #f2f4f7;
+            border-radius: 20px;
+            padding: 24px;
+            transition: all 0.3s ease;
+        }
+
+        .pool-sub-card:hover {
+            border-color: #d1e9ff;
+            background: #ffffff;
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.03);
+            transform: translateY(-2px);
+        }
+
+        /* 標籤樣式 */
+        .tag-pro {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 2px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        .tag-prod {
+            background: #101828;
+            color: #ffffff;
+        }
+
+        .tag-uat {
+            background: #94a3b8;
+            color: #ffffff;
+        }
+
+        .tag-primary {
+            color: #2e90fa;
+            background: rgba(46, 144, 250, 0.08);
+        }
+
+        .tag-dr {
+            color: #f79009;
+            background: rgba(247, 144, 9, 0.08);
+        }
+
+        .mini-bar {
+            height: 4px;
+            background: #f2f4f7;
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .fill-cpu {
+            background: #2e90fa;
+        }
+
+        .fill-mem {
+            background: #12b76a;
+        }
+
+        .fill-dsk {
+            background: #f79009;
+        }
+
+        /* 動態區域 */
+        #region-section,
+        #site-hud-section,
+        #dashboard-section {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+
+<body class="py-12 md:py-24">
+
+    <div class="container-wide">
+        <!-- HEADER -->
+        <header class="mb-16">
+            <div class="flex items-center gap-3 mb-4">
+                <div
+                    class="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-100 text-white font-black">
+                    H</div>
+                <h1 class="text-3xl font-black tracking-tight text-slate-900 uppercase">Dashboard Overview</h1>
+            </div>
+            <p class="text-slate-500 font-medium italic">Universal Strategic Resource Portfolio Portal</p>
+        </header>
+
+        <!-- LEVEL 1: CLOUD PORTFOLIO -->
+        <section class="mb-32">
+            <div class="flex items-center mb-10">
+                <span class="layer-label label-cloud">CLOUD</span>
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest">雲端供應商</span>
+                <div class="h-px flex-grow bg-slate-100 ml-6"></div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Cards same as V20 but with the new styling context -->
+                <div onclick="drillToCloud('PrivateCloud', this)" class="cloud-hero-card" id="hero-PrivateCloud">
+                    <div class="flex justify-between items-start mb-10">
+                        <div>
+                            <p class="text-[10px] font-black text-blue-600 uppercase">私有雲</p>
+                            <h3 class="text-xl font-black text-slate-900">財稅中心</h3>
+                        </div>
+                        <span class="text-2xl font-black text-slate-900">45%</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-6">
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">CPU</p>
+                            <p class="text-[10px] font-black">180/400</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">RAM</p>
+                            <p class="text-[10px] font-black">256/512</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">DSK</p>
+                            <p class="text-[10px] font-black">400/800</p>
+                        </div>
+                    </div>
+                </div>
+                <div onclick="drillToCloud('hiCloud', this)" class="cloud-hero-card" id="hero-hiCloud">
+                    <div class="flex justify-between items-start mb-10">
+                        <div>
+                            <p class="text-[10px] font-black text-emerald-600 uppercase">公有雲</p>
+                            <h3 class="text-xl font-black text-slate-900">hiCloud</h3>
+                        </div>
+                        <span class="text-2xl font-black text-slate-900">30%</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-6">
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">CPU</p>
+                            <p class="text-[10px] font-black">60/200</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">RAM</p>
+                            <p class="text-[10px] font-black">128/256</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">DSK</p>
+                            <p class="text-[10px] font-black">100/500</p>
+                        </div>
+                    </div>
+                </div>
+                <div onclick="drillToCloud('AWS', this)" class="cloud-hero-card" id="hero-AWS">
+                    <div class="flex justify-between items-start mb-10">
+                        <div>
+                            <p class="text-[10px] font-black text-orange-600 uppercase">公有雲</p>
+                            <h3 class="text-xl font-black text-slate-900">AWS Global</h3>
+                        </div>
+                        <span class="text-2xl font-black text-slate-900">20%</span>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4 border-t border-slate-50 pt-6">
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">CPU</p>
+                            <p class="text-[10px] font-black">20/100</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">RAM</p>
+                            <p class="text-[10px] font-black">64/128</p>
+                        </div>
+                        <div>
+                            <p class="text-[8px] font-bold text-slate-400 uppercase">DSK</p>
+                            <p class="text-[10px] font-black">80/200</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEVEL 2: REGION SITE SELECTION -->
+        <section id="region-section" class="mb-12 pt-12 fade-in">
+            <div class="flex items-center mb-8">
+                <span class="layer-label label-site">SITE</span>
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest">站點區域</span>
+                <div class="h-px flex-grow bg-slate-100 ml-6"></div>
+            </div>
+            <div id="site-tabs-container" class="flex gap-3 bg-slate-100/50 p-2 rounded-2xl w-fit"></div>
+        </section>
+
+        <!-- LEVEL 2.5: SITE HUD GAUGE -->
+        <section id="site-hud-section" class="mb-12 fade-in">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bento-card p-10 flex items-center gap-8">
+                    <div class="relative w-24 h-24">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f2f4f7" stroke-width="10">
+                            </circle>
+                            <circle id="cpu-gauge" class="gauge-ring" cx="50" cy="50" r="40" fill="transparent"
+                                stroke="#2e90fa" stroke-width="10" stroke-dasharray="251.2" stroke-dashoffset="138.1">
+                            </circle>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <p class="text-lg font-black text-slate-900" id="cpu-pct">0%</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Region CPU</p>
+                        <p class="text-2xl font-black text-slate-900" id="cpu-val">0 / 0</p>
+                    </div>
+                </div>
+                <div class="bento-card p-10 flex items-center gap-8">
+                    <div class="relative w-24 h-24">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f2f4f7" stroke-width="10">
+                            </circle>
+                            <circle id="mem-gauge" class="gauge-ring" cx="50" cy="50" r="40" fill="transparent"
+                                stroke="#12b76a" stroke-width="10" stroke-dasharray="251.2" stroke-dashoffset="125.6">
+                            </circle>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <p class="text-lg font-black text-slate-900" id="mem-pct">0%</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Region RAM</p>
+                        <p class="text-2xl font-black text-slate-900" id="mem-val">0 / 0</p>
+                    </div>
+                </div>
+                <div class="bento-card p-10 flex items-center gap-8">
+                    <div class="relative w-24 h-24">
+                        <svg class="w-full h-full" viewBox="0 0 100 100">
+                            <circle cx="50" cy="50" r="40" fill="transparent" stroke="#f2f4f7" stroke-width="10">
+                            </circle>
+                            <circle id="dsk-gauge" class="gauge-ring" cx="50" cy="50" r="40" fill="transparent"
+                                stroke="#f79009" stroke-width="10" stroke-dasharray="251.2" stroke-dashoffset="150.7">
+                            </circle>
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <p class="text-lg font-black text-slate-900" id="dsk-pct">0%</p>
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-[10px] font-bold text-slate-400 uppercase mb-1">Region DSK</p>
+                        <p class="text-2xl font-black text-slate-900" id="dsk-val">0 / 0</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- LEVEL 3: ALLOCATION MATRIX -->
+        <section id="dashboard-section" class="fade-in pb-32">
+            <div class="flex items-center mb-8">
+                <span class="layer-label label-alloc">Pool</span>
+                <span class="text-xs font-black text-slate-400 uppercase tracking-widest">資源池明細</span>
+                <div class="h-px flex-grow bg-slate-100 ml-6"></div>
+            </div>
+            <div id="business-grid-container"></div>
+        </section>
+    </div>
+
+    <script>
+        const caseData = {
+            'PrivateCloud': {
+                sites: [
+                    { id: 'TPE-Main', name: '台北主中心', role: 'primary', cpu: 45, cV: '180/400', mem: 50, mV: '256/512', dsk: 40, dV: '400/800' },
+                    { id: 'TXG-DR', name: '台中異備中心', role: 'dr', cpu: 30, cV: '80/260', mem: 40, mV: '128/320', dsk: 25, dV: '200/800' }
+                ],
+                pools: {
+                    'TPE-Main': [
+                        { id: 'P01', name: '私有雲正式資源池', sys: '電發系統', pj: '電發專案', env: 'Prod', type: 'Exclusive', role: 'Primary', cpu: '60/100', mem: '128/256', dsk: '80/200' },
+                        { id: 'P02', name: '私有雲整測資源池', sys: '電發系統', pj: '電發專案', env: 'UAT', type: 'Exclusive', role: 'Primary', cpu: '40/100', mem: '64/256', dsk: '40/200' }
+                    ],
+                    'TXG-DR': [
+                        { id: 'P03', name: '私有雲異備正式資源池', sys: '電發系統', pj: '電發專案', env: 'Prod', type: 'Exclusive', role: 'DR Support', cpu: '10/80', mem: '32/128', dsk: '20/100' },
+                        { id: 'P04', name: '私有雲異備測試資源池', sys: '電發系統', pj: '電發專案', env: 'UAT', type: 'Exclusive', role: 'DR Support', cpu: '10/80', mem: '32/128', dsk: '20/100' }
+                    ]
+                }
+            },
+            'hiCloud': {
+                sites: [{ id: 'CHT-E7', name: '東七機房', role: 'primary', cpu: 60, cV: '60/100', mem: 50, mV: '128/256', dsk: 20, dV: '100/500' }],
+                pools: {
+                    'CHT-E7': [
+                        { id: 'P05', name: 'hiCloud電發服務正式資源池', sys: '電發系統', pj: '電發專案', env: 'Prod', type: 'Exclusive', role: 'Primary', cpu: '20/60', mem: '32/128', dsk: '20/100' },
+                        { id: 'P06', name: 'hiCloud電發服務整測資源池', sys: '電發系統', pj: '電發專案', env: 'UAT', type: 'Exclusive', role: 'Primary', cpu: '20/60', mem: '32/128', dsk: '20/100' },
+                        { id: 'P07', name: 'hiCloud允獎APP正式資源池', sys: '允獎APP', pj: '電發專案', env: 'Prod', type: 'Exclusive', role: 'Primary', cpu: '25/60', mem: '64/128', dsk: '50/100' },
+                        { id: 'P08', name: 'hiCloud允獎APP整測資源池', sys: '允獎APP', pj: '電發專案', env: 'UAT', type: 'Exclusive', role: 'Primary', cpu: '25/60', mem: '64/128', dsk: '50/100' },
+
+                    ]
+                }
+            },
+            'AWS': {
+                sites: [{ id: 'AWS-TPE', name: 'AWS Tokyo', role: 'primary', cpu: 20, cV: '20/100', mem: 50, mV: '64/128', dsk: 40, dV: '80/200' }],
+                pools: {
+                    'AWS-TPE': [
+                        { id: 'P09', name: 'AWS正式資源池', sys: '電發系統', pj: '電發專案', env: 'Prod', type: 'Exclusive', role: 'Primary', cpu: '10/40', mem: '32/64', dsk: '40/80' },
+                        { id: 'P10', name: 'AWS整測資源池', sys: '電發系統', pj: '電發專案', env: 'UAT', type: 'Exclusive', role: 'Primary', cpu: '10/40', mem: '32/64', dsk: '40/80' }
+                    ]
+                }
+            }
+        };
+
+        function drillToCloud(key, el) {
+            document.querySelectorAll('.cloud-hero-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+
+            const regionSection = document.getElementById('region-section');
+            regionSection.style.display = 'block';
+
+            const tabContainer = document.getElementById('site-tabs-container');
+            const cloud = caseData[key];
+            tabContainer.innerHTML = cloud.sites.map(site => `
+                <button onclick="drillToSite('${key}', '${site.id}', this, true)" class="px-6 py-2.5 rounded-xl text-xs font-bold transition-all">
+                    ${site.name} <span class="ml-1 opacity-40 text-[8px] uppercase">${site.role}</span>
+                </button>
+            `).join('');
+
+            drillToSite(key, cloud.sites[0].id, tabContainer.firstElementChild, false);
+
+            setTimeout(() => { regionSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+        }
+
+        function drillToSite(cloudKey, siteId, el, shouldScroll) {
+            document.querySelectorAll('#site-tabs-container button').forEach(b => b.classList.remove('bg-white', 'shadow-sm', 'text-blue-600'));
+            el.classList.add('bg-white', 'shadow-sm', 'text-blue-600');
+
+            const hudSection = document.getElementById('site-hud-section');
+            const dashboardSection = document.getElementById('dashboard-section');
+            hudSection.style.display = 'block';
+            dashboardSection.style.display = 'block';
+
+            const cloud = caseData[cloudKey];
+            const site = cloud.sites.find(s => s.id === siteId);
+
+            updateGauge('cpu-gauge', site.cpu, 'cpu');
+            updateGauge('mem-gauge', site.mem, 'mem');
+            updateGauge('dsk-gauge', site.dsk, 'dsk');
+            document.getElementById('cpu-val').innerText = site.cV;
+            document.getElementById('mem-val').innerText = site.mV;
+            document.getElementById('dsk-val').innerText = site.dV;
+
+            const pools = cloud.pools[siteId];
+            const container = document.getElementById('business-grid-container');
+            const groups = {};
+            pools.forEach(p => {
+                const key = `${p.pj} - ${p.sys}`;
+                if (!groups[key]) groups[key] = [];
+                groups[key].push(p);
+            });
+
+            container.innerHTML = Object.entries(groups).map(([title, items]) => `
+                <div class="system-container fade-in">
+                    <div class="flex items-center gap-4 mb-10">
+                        <div class="h-10 w-2 bg-blue-600 rounded-full"></div>
+                        <h3 class="text-2xl font-black text-slate-900 uppercase tracking-tight">${title}</h3>
+                        <div class="h-px flex-grow bg-slate-100 ml-4"></div>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-8">
+                        ${items.map(pool => `
+                            <div class="pool-sub-card">
+                                <div class="flex justify-between items-start mb-8">
+                                    <div>
+                                        <p class="text-[10px] font-black text-blue-600 mb-1 tracking-widest">${pool.id}</p>
+                                        <h4 class="text-sm font-bold text-slate-900">${pool.name}</h4>
+                                    </div>
+                                    <div class="flex flex-col items-end gap-2">
+                                        <span class="tag-pro ${pool.env === 'Prod' ? 'tag-prod' : 'tag-uat'}">${pool.env} ENV</span>
+                                        <span class="tag-pro ${pool.role.includes('Primary') ? 'tag-primary' : 'tag-dr'}">${pool.role}</span>
+                                    </div>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-6">
+                                    <div><p class="text-[8px] font-bold text-slate-400 uppercase mb-1">CPU</p><p class="text-xs font-black text-slate-800">${pool.cpu}</p></div>
+                                    <div><p class="text-[8px] font-bold text-slate-400 uppercase mb-1">RAM</p><p class="text-xs font-black text-slate-800">${pool.mem}</p></div>
+                                    <div><p class="text-[8px] font-bold text-slate-400 uppercase mb-1">DISK</p><p class="text-xs font-black text-slate-800">${pool.dsk}</p></div>
+                                </div>
+                                <div class="space-y-2">
+                                    <div class="mini-bar"><div class="h-full fill-cpu" style="width: 65%"></div></div>
+                                    <div class="mini-bar"><div class="h-full fill-mem" style="width: 50%"></div></div>
+                                    <div class="mini-bar"><div class="h-full fill-dsk" style="width: 45%"></div></div>
+                                </div>
+                                <p class="mt-6 text-[9px] font-black text-slate-300 uppercase tracking-widest border-t border-slate-50 pt-4">Resource Nature: ${pool.type}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+
+            if (shouldScroll) {
+                setTimeout(() => { hudSection.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+            }
+        }
+
+        function updateGauge(id, percent, type) {
+            const radius = 40;
+            const circum = 2 * Math.PI * radius;
+            document.getElementById(id).style.strokeDashoffset = circum - (percent / 100) * circum;
+            document.getElementById(type + '-pct').innerText = percent + '%';
+        }
+    </script>
+</body>
+
+</html>
