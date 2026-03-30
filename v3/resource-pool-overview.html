@@ -72,7 +72,7 @@
       background: var(--bg);
       color: var(--ink);
       font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.5;
       min-height: 100vh;
       display: flex;
@@ -1345,11 +1345,11 @@
 
     .search-input {
       width: 100%;
-      padding: 8px 12px 8px 34px;
+      padding: 9px 12px 9px 36px;
       border: 1px solid var(--border);
       border-radius: 7px;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 13px;
+      font-size: 14px;
       color: var(--ink);
       background: var(--surface);
       transition: border-color .15s, box-shadow .15s;
@@ -1373,7 +1373,7 @@
     }
 
     .filter-lbl {
-      font-size: 11px;
+      font-size: 13px;
       color: var(--ink4);
       font-weight: 600;
       flex-shrink: 0
@@ -1382,10 +1382,10 @@
     .fchip {
       display: flex;
       align-items: center;
-      gap: 4px;
-      padding: 5px 11px;
+      gap: 5px;
+      padding: 6px 13px;
       border-radius: 99px;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid var(--border);
@@ -1406,8 +1406,8 @@
     }
 
     .fchip-dot {
-      width: 5px;
-      height: 5px;
+      width: 6px;
+      height: 6px;
       border-radius: 50%;
       background: currentColor;
       opacity: .7
@@ -1439,9 +1439,9 @@
     .proj-tab {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
-      font-size: 12px;
+      gap: 7px;
+      padding: 9px 18px;
+      font-size: 13px;
       font-weight: 600;
       color: var(--ink3);
       cursor: pointer;
@@ -1502,8 +1502,8 @@
 
     .stab {
       flex: 1;
-      padding: 7px 14px;
-      font-size: 12px;
+      padding: 8px 16px;
+      font-size: 13px;
       font-weight: 600;
       border: none;
       background: transparent;
@@ -1546,13 +1546,13 @@
     }
 
     .pcloud-name {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       letter-spacing: -.01em
     }
 
     .pcloud-region {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ink4);
       font-family: 'Fira Code', monospace;
       margin-left: auto
@@ -1570,16 +1570,16 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 16px
+      padding: 10px 16px
     }
 
     .psite-name {
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 600
     }
 
     .psite-count {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ink4);
       font-family: 'Fira Code', monospace;
       margin-left: auto
@@ -1587,9 +1587,9 @@
 
     .psite-pools {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 8px;
-      padding: 10px 16px 14px 40px
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px 16px 0 40px
     }
 
     /* ── Mini pool card (in project view) ── */
@@ -1599,7 +1599,8 @@
       overflow: hidden;
       cursor: pointer;
       transition: all .15s;
-      position: relative
+      position: relative;
+      min-height: 92px
     }
 
     .mini-pool::before {
@@ -1633,7 +1634,8 @@
     }
 
     .mini-pool.mp-open {
-      border-color: var(--or)
+      border-color: var(--or);
+      box-shadow: 0 0 0 1px var(--or)
     }
 
     .mini-pool.mp-open::before {
@@ -1643,15 +1645,15 @@
     .mini-pool-top {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 9px 10px 0 10px
+      gap: 8px;
+      padding: 12px 14px 2px 14px
     }
 
     .mpid {
       font-family: 'Fira Code', monospace;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 2px 6px;
+      padding: 3px 7px;
       border-radius: 3px
     }
 
@@ -1668,7 +1670,7 @@
     }
 
     .mpname {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--ink);
       flex: 1;
@@ -1679,7 +1681,7 @@
     }
 
     .mp-chev {
-      font-size: 11px;
+      font-size: 12px;
       color: var(--ink4);
       transition: transform .2s;
       flex-shrink: 0
@@ -1694,16 +1696,16 @@
       display: flex;
       gap: 4px;
       flex-wrap: wrap;
-      padding: 5px 10px 9px
+      padding: 8px 14px 14px
     }
 
     .mpt {
-      font-size: 9px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 3px;
       text-transform: uppercase;
-      letter-spacing: .06em;
+      letter-spacing: .05em;
       white-space: nowrap
     }
 
@@ -1749,49 +1751,99 @@
       border: 1px solid var(--shr-bd)
     }
 
-    /* full-width VM panel in mini-pool (project view) */
+    /* full-width VM panel — sits OUTSIDE the grid, inside psite-block */
     .mini-pool-detail {
-      display: none;
-      border-top: 1px solid var(--border);
-      background: var(--surface);
-      overflow-x: auto;
+      display: none
     }
 
-    .mini-pool.mp-open .mini-pool-detail {
+    .proj-vm-fullrow {
+      display: none;
+      border-top: 1px solid var(--border);
+      border-left: 3px solid var(--or);
+      background: var(--surface2);
+      margin: 0 0 14px 0;
+      animation: fadeUp .2s ease both;
+    }
+
+    .proj-vm-fullrow.visible {
       display: block
     }
 
-    .mini-vm-table {
-      width: 100%;
-      border-collapse: collapse
+    .proj-vm-fullrow-hd {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      border-bottom: 1px solid var(--border);
+      background: var(--or-l);
     }
 
-    .mini-vm-table th {
-      font-size: 9px;
+    .proj-vm-fullrow-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--or-d);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .proj-vm-fullrow-close {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--ink3);
+      cursor: pointer;
+      padding: 3px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      transition: all .15s;
+      font-family: inherit;
+    }
+
+    .proj-vm-fullrow-close:hover {
+      border-color: var(--or);
+      color: var(--or)
+    }
+
+    .proj-vm-table-wrap {
+      overflow-x: auto;
+      padding: 0 20px 16px;
+    }
+
+    .proj-vm-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 14px;
+    }
+
+    .proj-vm-table th {
+      font-size: 10px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .1em;
       color: var(--ink4);
-      padding: 7px 12px;
-      background: var(--or-l);
-      border-bottom: 1px solid var(--border);
+      padding: 9px 14px;
+      background: var(--surface);
+      border-bottom: 2px solid var(--border);
       text-align: left;
-      white-space: nowrap
+      white-space: nowrap;
     }
 
-    .mini-vm-table td {
-      padding: 8px 12px;
+    .proj-vm-table td {
+      font-size: 13px;
+      padding: 10px 14px;
       border-bottom: 1px solid var(--border);
-      font-size: 11px;
-      vertical-align: middle
+      vertical-align: middle;
     }
 
-    .mini-vm-table tr:last-child td {
+    .proj-vm-table tr:last-child td {
       border-bottom: none
     }
 
-    .mini-vm-table tr:hover td {
-      background: var(--or-l)
+    .proj-vm-table tr:hover td {
+      background: color-mix(in srgb, var(--or) 4%, white)
     }
 
     /* sys view */
@@ -1830,13 +1882,13 @@
     }
 
     .sys-card-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700;
       color: var(--ink)
     }
 
     .sys-card-sub {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--ink4);
       font-family: 'Fira Code', monospace;
       margin-top: 2px
@@ -1872,33 +1924,33 @@
     }
 
     .sys-cloud-name {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 700
     }
 
     .sys-cloud-body {
-      padding: 8px 12px;
+      padding: 10px 14px;
       display: flex;
       flex-direction: column;
-      gap: 5px
+      gap: 6px
     }
 
     .sys-pool-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 7px 10px;
+      padding: 9px 12px;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 5px;
-      font-size: 12px
+      font-size: 13px
     }
 
     .sys-pool-id {
       font-family: 'Fira Code', monospace;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 2px 6px;
+      padding: 3px 7px;
       border-radius: 3px;
       flex-shrink: 0
     }
@@ -1906,7 +1958,7 @@
     .sys-pool-site {
       color: var(--ink3);
       flex: 1;
-      font-size: 11px
+      font-size: 12px
     }
 
     /* other pages placeholder */
@@ -2616,12 +2668,12 @@
 
     function allocTableHtml(p) {
       return `<table class="vm-table">
-    <thead><tr><th>專案</th><th>系統</th><th>環境</th><th>角色</th><th>CPU 配額</th><th>Memory 配額</th><th>用法</th></tr></thead>
+    <thead><tr><th>專案</th><th>系統</th><th>環境</th><!--th>角色</th--><th>CPU 配額</th><th>Memory 配額</th><th>用法</th></tr></thead>
     <tbody>${p.allocs.map(a => `<tr>
       <td class="alloc-proj">${a.proj}</td>
       <td class="alloc-sys">${a.sys}</td>
       <td><span class="badge ${a.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${a.env}</span></td>
-      <td><span class="badge ${a.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${a.role}</span></td>
+      <!--td><span class="badge ${a.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${a.role}</span></td-->
       <td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:${Math.floor(Math.random() * 35 + 45)}%"></div></div><span class="quota-val">${a.quota_cpu}</span></div></td>
       <td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:${Math.floor(Math.random() * 35 + 45)}%"></div></div><span class="quota-val">${a.quota_mem}</span></div></td>
       <td><span class="badge b-shr" style="font-size:9px">shared</span></td>
@@ -2695,7 +2747,6 @@
                 <div class="pool-tags">
                   <span class="badge ${isDed ? 'b-ded' : 'b-shr'}" style="font-size:9px">${p.type}</span>
                   <span class="badge ${p.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${p.env}</span>
-                  <span class="badge ${p.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${p.role}</span>
                   <span class="badge b-neutral" style="font-size:9px">${p.sys}</span>
                 </div>
               </div>
@@ -2770,34 +2821,107 @@
       else renderProjSys();
     }
 
-    function miniPoolDetail(pid) {
-      const p = POOLS[pid]; if (!p) return '';
-      if (p.type === 'dedicated' && p.vms) return `<table class="mini-vm-table"><thead><tr><th>VM 名稱</th><th>狀態</th><th>規格</th><th>IP</th></tr></thead><tbody>${p.vms.map(v => `<tr><td><span class="status-dot ${v.status === 'running' ? 'dot-run' : 'dot-stop'}"></span><span class="vm-name">${v.name}</span></td><td><span class="badge ${v.status === 'running' ? 'b-run' : 'b-stop'}" style="font-size:9px">${v.status === 'running' ? 'Running' : 'Stopped'}</span></td><td class="vm-spec">${v.vcpu}C · ${v.ram} · ${v.disk}</td><td class="vm-ip">${v.ip}</td></tr>`).join('')}</tbody></table>`;
-      if (p.type === 'shared' && p.allocs) return `<table class="mini-vm-table"><thead><tr><th>專案</th><th>系統</th><th>環境</th><th>CPU 配額</th><th>Memory 配額</th></tr></thead><tbody>${p.allocs.map(a => `<tr><td style="font-weight:700">${a.proj}</td><td>${a.sys}</td><td><span class="badge ${a.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${a.env}</span></td><td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">${a.quota_cpu}</span></div></td><td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">${a.quota_mem}</span></div></td></tr>`).join('')}</tbody></table>`;
+    function projVmTableHtml(p) {
+      const isDed = p.type === 'dedicated';
+      if (isDed && p.vms) {
+        return '<table class="proj-vm-table"><thead><tr><th>VM 名稱</th><th>狀態</th><th>規格 (vCPU / RAM / Disk)</th><th>環境</th><th>IP 位址</th></tr></thead><tbody>' +
+          p.vms.map(v => '<tr>' +
+            '<td><span class="status-dot ' + (v.status === 'running' ? 'dot-run' : 'dot-stop') + '"></span><span class="vm-name">' + v.name + '</span></td>' +
+            '<td><span class="badge ' + (v.status === 'running' ? 'b-run' : 'b-stop') + '" style="font-size:10px">' + (v.status === 'running' ? 'Running' : 'Stopped') + '</span></td>' +
+            '<td class="vm-spec">' + v.vcpu + ' vCPU &nbsp;·&nbsp; ' + v.ram + ' &nbsp;·&nbsp; ' + v.disk + '</td>' +
+            '<td><span class="badge ' + (v.env === 'Prod' ? 'b-prod' : 'b-uat') + '" style="font-size:10px">' + v.env + '</span></td>' +
+            '<td class="vm-ip">' + v.ip + '</td>' +
+            '</tr>').join('') +
+          '</tbody></table>';
+      }
+      if (!isDed && p.allocs) {
+        return '<table class="proj-vm-table"><thead><tr><th>專案</th><th>系統</th><th>環境</th><th>CPU 配額</th><th>Memory 配額</th></tr></thead><tbody>' +
+          p.allocs.map(a => '<tr>' +
+            '<td style="font-weight:700">' + a.proj + '</td>' +
+            '<td>' + a.sys + '</td>' +
+            '<td><span class="badge ' + (a.env === 'Prod' ? 'b-prod' : 'b-uat') + '" style="font-size:10px">' + a.env + '</span></td>' +
+            '<td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">' + a.quota_cpu + '</span></div></td>' +
+            '<td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">' + a.quota_mem + '</span></div></td>' +
+            '</tr>').join('') +
+          '</tbody></table>';
+      }
       return '';
     }
 
+    const openMiniPool = {};
+
+    function toggleMiniPool(el, poolId, siteKey) {
+      const pool = POOLS[poolId];
+      if (!pool) return;
+      const isDed = pool.type === 'dedicated';
+      const count = isDed ? (pool.vms?.length || 0) : (pool.allocs?.length || 0);
+      const psiteBlock = el.closest('.psite-block');
+      if (!psiteBlock) return;
+
+      if (el.classList.contains('mp-open')) {
+        el.classList.remove('mp-open');
+        const existing = psiteBlock.querySelector('.proj-vm-fullrow');
+        if (existing) existing.remove();
+        openMiniPool[siteKey] = null;
+        return;
+      }
+
+      psiteBlock.querySelectorAll('.mini-pool.mp-open').forEach(mp => mp.classList.remove('mp-open'));
+      const existing = psiteBlock.querySelector('.proj-vm-fullrow');
+      if (existing) existing.remove();
+
+      el.classList.add('mp-open');
+      openMiniPool[siteKey] = poolId;
+
+      const panel = document.createElement('div');
+      panel.className = 'proj-vm-fullrow visible';
+      const closeId = 'close-' + poolId + '-' + siteKey.replace(/[^a-z0-9]/gi, '');
+      panel.innerHTML =
+        '<div class="proj-vm-fullrow-hd">' +
+        '<div class="proj-vm-fullrow-title">' +
+        (isDed ? '🖥 VM 清單' : '🔗 申請狀況') +
+        ' <span class="chip">' + count + ' 筆 &nbsp;·&nbsp; ' + poolId + ' ' + pool.name + '</span>' +
+        '</div>' +
+        '<button id="' + closeId + '" class="proj-vm-fullrow-close">✕ 收起</button>' +
+        '</div>' +
+        '<div class="proj-vm-table-wrap">' + projVmTableHtml(pool) + '</div>';
+
+      const psitePools = psiteBlock.querySelector('.psite-pools');
+      psitePools.after(panel);
+      document.getElementById(closeId).addEventListener('click', function () {
+        toggleMiniPool(el, poolId, siteKey);
+      });
+      setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+    }
+
+    function miniPoolDetail(pid) { return ''; }
+
     function renderProjCloud() {
       const pd = PROJ_DATA[curProj];
-      document.getElementById('sv-cloud').innerHTML =
-        Object.entries(pd.cloudView).map(([ck, cd]) => `
-    <div class="pcloud-block">
-      <div class="pcloud-hd"><div class="pcloud-dot" style="background:${cd.color}"></div><div class="pcloud-name">${cd.label}</div><div class="pcloud-region">${cd.sites.flatMap(s => s.pools).length} pools</div></div>
-      ${cd.sites.map(s => `
-        <div class="psite-block">
-          <div class="psite-hd"><span class="badge ${s.type === 'main' ? 'b-main' : 'b-dr'}">${s.type === 'main' ? '主中心' : '異備 DR'}</span><span class="psite-name" style="margin-left:8px">${s.name}</span><span class="psite-count">${s.pools.length} pools</span></div>
-          <div class="psite-pools">${s.pools.map(pool => {
-          const isDed = pool.type === 'dedicated';
-          const p = POOLS[pool.id];
-          const count = isDed ? (p?.vms?.length || 0) : (p?.allocs?.length || 0);
-          return `<div class="mini-pool ${isDed ? 'mp-ded' : 'mp-shr'}" onclick="this.classList.toggle('mp-open')">
-              <div class="mini-pool-top"><span class="mpid ${isDed ? 'mpid-ded' : 'mpid-shr'}">${pool.id}</span><span class="mpname">${pool.name}</span><span class="badge b-neutral" style="font-size:9px;margin-left:auto;margin-right:4px">${count}${isDed ? ' VMs' : ' Allocs'}</span><span class="mp-chev">▾</span></div>
-              <div class="mini-pool-tags"><span class="mpt ${isDed ? 'mpt-ded' : 'mpt-shr'}">${pool.type}</span><span class="mpt ${pool.env === 'Prod' ? 'mpt-prod' : 'mpt-uat'}">${pool.env}</span><span class="mpt ${pool.role === 'primary' ? 'mpt-primary' : 'mpt-dr'}">${pool.role}</span><span class="mpt mpt-sys">${pool.sys}</span></div>
-              <div class="mini-pool-detail">${miniPoolDetail(pool.id)}</div>
-            </div>`;
-        }).join('')}</div>
-        </div>`).join('')}
-    </div>`).join('');
+      let html = '';
+      Object.entries(pd.cloudView).forEach(([ck, cd]) => {
+        html += '<div class="pcloud-block">';
+        html += '<div class="pcloud-hd"><div class="pcloud-dot" style="background:' + cd.color + '"></div><div class="pcloud-name">' + cd.label + '</div><div class="pcloud-region">' + cd.sites.flatMap(s => s.pools).length + ' pools</div></div>';
+        cd.sites.forEach((s, si) => {
+          const siteKey = ck + '-' + si;
+          html += '<div class="psite-block">';
+          html += '<div class="psite-hd"><span class="badge ' + (s.type === 'main' ? 'b-main' : 'b-dr') + '">' + (s.type === 'main' ? '主中心' : '異備 DR') + '</span><span class="psite-name" style="margin-left:8px">' + s.name + '</span><span class="psite-count">' + s.pools.length + ' pools</span></div>';
+          html += '<div class="psite-pools">';
+          s.pools.forEach(pool => {
+            const isDed = pool.type === 'dedicated';
+            const p = POOLS[pool.id];
+            const count = isDed ? (p?.vms?.length || 0) : (p?.allocs?.length || 0);
+            const safeKey = siteKey.replace(/[^a-z0-9]/gi, '');
+            html += '<div class="mini-pool ' + (isDed ? 'mp-ded' : 'mp-shr') + '" data-pool="' + pool.id + '" onclick="toggleMiniPool(this,\'' + pool.id + '\',\'' + siteKey + '\')">' +
+              '<div class="mini-pool-top"><span class="mpid ' + (isDed ? 'mpid-ded' : 'mpid-shr') + '">' + pool.id + '</span><span class="mpname">' + pool.name + '</span><span class="badge b-neutral" style="font-size:10px;margin-left:auto;margin-right:4px">' + count + (isDed ? ' VMs' : ' Allocs') + '</span><span class="mp-chev">▾</span></div>' +
+              '<div class="mini-pool-tags"><span class="mpt ' + (isDed ? 'mpt-ded' : 'mpt-shr') + '">' + pool.type + '</span><span class="mpt ' + (pool.env === 'Prod' ? 'mpt-prod' : 'mpt-uat') + '">' + pool.env + '</span><span class="mpt mpt-sys">' + pool.sys + '</span></div>' +
+              '</div>';
+          });
+          html += '</div></div>';
+        });
+        html += '</div>';
+      });
+      document.getElementById('sv-cloud').innerHTML = html;
     }
 
     function renderProjSys() {
@@ -2816,7 +2940,7 @@
     <div class="sys-cloud-grid">${Object.values(byCloud).map((cd, i) => `
       <div class="sys-cloud-card anim" style="animation-delay:${i * 60}ms">
         <div class="sys-cloud-hd"><div class="sys-cloud-dot" style="background:${cd.color}"></div><div class="sys-cloud-name">${cd.label}</div><span style="margin-left:auto;font-size:10px;color:var(--ink4)">${cd.rows.length} pools</span></div>
-        <div class="sys-cloud-body">${cd.rows.map(r => `<div class="sys-pool-row"><span class="sys-pool-id ${r.type === 'dedicated' ? 'mpid-ded' : 'mpid-shr'}">${r.id}</span><span class="sys-pool-site">${r.site}</span><span class="badge ${r.type === 'dedicated' ? 'b-ded' : 'b-shr'}" style="font-size:9px">${r.type}</span><span class="badge ${r.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${r.env}</span><span class="badge ${r.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${r.role}</span></div>`).join('')}</div>
+        <div class="sys-cloud-body">${cd.rows.map(r => `<div class="sys-pool-row"><span class="sys-pool-id ${r.type === 'dedicated' ? 'mpid-ded' : 'mpid-shr'}">${r.id}</span><span class="sys-pool-site">${r.site}</span><span class="badge ${r.type === 'dedicated' ? 'b-ded' : 'b-shr'}" style="font-size:9px">${r.type}</span><span class="badge ${r.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${r.env}</span></div>`).join('')}</div>
       </div>`).join('')}</div>`;
     }
     function selectSysInProj(s) { curSys = s; renderProjSys(); }
