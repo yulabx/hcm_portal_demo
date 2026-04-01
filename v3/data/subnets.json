@@ -1,0 +1,12 @@
+[
+  { "id": "SN01", "name": "內部應用網段",    "cidr": "10.10.1.0/24",   "type": "internal",   "cloud": "private", "site_id": "tp-main", "status": "active" },
+  { "id": "SN02", "name": "DMZ 網段",        "cidr": "10.10.2.0/24",   "type": "dmz",        "cloud": "private", "site_id": "tp-main", "status": "active" },
+  { "id": "SN03", "name": "管理網段",        "cidr": "10.10.100.0/24", "type": "management", "cloud": "private", "site_id": "tp-main", "status": "active" },
+  { "id": "SN04", "name": "UAT 內部網段",    "cidr": "10.10.10.0/24",  "type": "internal",   "cloud": "private", "site_id": "tp-main", "status": "active" },
+  { "id": "SN05", "name": "hiCloud 生產網段","cidr": "172.16.1.0/24",  "type": "internal",   "cloud": "hicloud", "site_id": "e7-main", "status": "active" },
+  { "id": "SN06", "name": "hiCloud UAT 網段","cidr": "172.16.10.0/24", "type": "internal",   "cloud": "hicloud", "site_id": "e7-main", "status": "active" },
+  { "id": "SN07", "name": "AWS Public-A",    "cidr": "10.0.1.0/24",    "type": "public",     "cloud": "aws",     "site_id": "tw-main", "status": "active" },
+  { "id": "SN08", "name": "AWS Private-A",   "cidr": "10.0.2.0/24",    "type": "internal",   "cloud": "aws",     "site_id": "tw-main", "status": "active" },
+  { "id": "SN09", "name": "AWS Public-B",    "cidr": "10.0.3.0/24",    "type": "public",     "cloud": "aws",     "site_id": "tw-main", "status": "active" },
+  { "id": "SN10", "name": "AWS Private-B",   "cidr": "10.0.4.0/24",    "type": "internal",   "cloud": "aws",     "site_id": "tw-main", "status": "active" }
+]

@@ -1,0 +1,8 @@
+[
+  { "id": "SYS-001", "project_id": "PROJ-001", "name": "電發系統", "code": "SYS-POWER", "envs": ["Prod", "UAT"] },
+  { "id": "SYS-002", "project_id": "PROJ-001", "name": "允獎APP",  "code": "SYS-APP",   "envs": ["Prod", "UAT"] },
+  { "id": "SYS-003", "project_id": "PROJ-002", "name": "系統A",    "code": "SYS-D1A",   "envs": ["Prod"] },
+  { "id": "SYS-004", "project_id": "PROJ-003", "name": "系統B",    "code": "SYS-D2B",   "envs": ["Prod"] },
+  { "id": "SYS-005", "project_id": "PROJ-004", "name": "系統C",    "code": "SYS-D3C",   "envs": ["Prod"] },
+  { "id": "SYS-006", "project_id": "PROJ-005", "name": "系統D",    "code": "SYS-D4D",   "envs": ["UAT"] }
+]
