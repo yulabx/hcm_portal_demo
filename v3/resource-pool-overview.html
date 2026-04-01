@@ -1,91 +1,27 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-Hant">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resource Pool — v14</title>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Plus Jakarta Sans', 'Noto Sans TC', 'sans-serif'],
-            mono: ['Fira Code', 'monospace'],
-          },
-          colors: {
-            or:  { DEFAULT:'#ea580c', l:'#fff7ed', m:'#fed7aa', d:'#c2410c' },
-            ink: { DEFAULT:'#0f0f0f', 2:'#262626', 3:'#737373', 4:'#a3a3a3' },
-            surf:{ DEFAULT:'#ffffff', 2:'#f7f8fa' },
-            bord:{ DEFAULT:'#e8e8e8', 2:'#d4d4d4' },
-            ded: { DEFAULT:'#2563eb', l:'#eff6ff', m:'#bfdbfe' },
-            shr: { DEFAULT:'#0d9488', l:'#f0fdfa', m:'#99f6e4' },
-            grn: { DEFAULT:'#16a34a', l:'#f0fdf4', m:'#bbf7d0' },
-            red: { DEFAULT:'#dc2626', l:'#fef2f2', m:'#fecaca' },
-            pur: { DEFAULT:'#7c3aed', l:'#f5f3ff', m:'#ddd6fe' },
-            amb: { DEFAULT:'#d97706', l:'#fffbeb', m:'#fde68a' },
-          },
-          boxShadow: {
-            sm: '0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04)',
-            md: '0 4px 12px rgba(0,0,0,.08), 0 1px 3px rgba(0,0,0,.04)',
-            lg: '0 16px 36px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.06)',
-          }
-        }
-      }
-    }
-  </script>
+  <script src="tailwind-config.js"></script>
+  <script src="menu.js"></script>
+  <script src="sidebar.js"></script>
+  <link rel="stylesheet" href="shared.css">
   <style>
-    /* scrollbar */
-    #mainContent::-webkit-scrollbar { width: 5px }
-    #mainContent::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 99px }
+    /* page-specific scrollbar overrides */
     .proj-tabs::-webkit-scrollbar { height: 3px }
-    .proj-tabs::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 99px }
-
-    /* sidebar collapse */
-    .sb-collapsed #sidebar { width: 52px }
-    .sb-collapsed #topbar .tb-brand { width: 52px; padding: 0 10px; justify-content: center }
-    .sb-collapsed #topbar .brand-text { opacity: 0; width: 0 }
-    .sb-collapsed #sidebar .sb-label { opacity: 0; width: 0; overflow: hidden }
-    .sb-collapsed #sidebar .sb-section { opacity: 0 }
-    .sb-collapsed #sidebar .sb-item { justify-content: center; padding-left: 0; padding-right: 0 }
-    .sb-collapsed #sidebar .toggle-icon { transform: rotate(180deg) }
-    .sb-collapsed #sidebar .sb-toggle-btn { justify-content: center; padding-left: 0; padding-right: 0 }
-
-    /* page show/hide */
-    .page { display: none; padding: 24px 28px }
-    .page.active { display: block }
 
     /* open toggle */
     .pool-row.open .pool-row-hd { background: #fff7ed; border-bottom: 2px solid #ea580c }
     .pool-row.open .pool-chevron { transform: rotate(180deg); color: #ea580c }
     .pool-row.open .vm-fullrow { display: block }
 
-    /* animations */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(8px) }
-      to   { opacity: 1; transform: none }
-    }
-    .anim { animation: fadeUp .25s ease both }
-
-    /* progress track/fill — dynamic width needs CSS transition */
-    .res-track { height: 4px; background: #f7f8fa; border-radius: 99px; overflow: hidden }
-    .res-fill   { height: 100%; border-radius: 99px; transition: width .8s cubic-bezier(.23,1,.32,1) }
-
-    /* badge colour classes */
-    .b-ded     { background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe }
-    .b-shr     { background:#f0fdfa; color:#0d9488; border:1px solid #99f6e4 }
-    .b-prod    { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0 }
-    .b-uat     { background:#f5f3ff; color:#7c3aed; border:1px solid #ddd6fe }
-    .b-run     { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0 }
-    .b-stop    { background:#f7f8fa; color:#a3a3a3; border:1px solid #e8e8e8 }
-    .b-primary { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0 }
-    .b-dr      { background:#fef2f2; color:#dc2626; border:1px solid #fecaca }
-    .b-main    { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0 }
-    .b-neutral { background:#f7f8fa; color:#737373; border:1px solid #e8e8e8 }
+    /* progress bar override — thinner in this page */
+    .res-track { height: 4px; background: #f7f8fa; }
 
     /* vm-table */
     .vm-table { width:100%; border-collapse:collapse; margin-top:14px }
@@ -94,25 +30,9 @@
     .vm-table tr:last-child td { border-bottom:none }
     .vm-table tr:hover td { background:color-mix(in srgb,#ea580c 4%,white) }
 
-    /* proj-vm-table */
-    .proj-vm-table { width:100%; border-collapse:collapse; margin-top:14px }
-    .proj-vm-table th { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.1em; color:#a3a3a3; padding:9px 14px; background:#fff; border-bottom:2px solid #e8e8e8; text-align:left; white-space:nowrap }
-    .proj-vm-table td { font-size:13px; padding:10px 14px; border-bottom:1px solid #e8e8e8; vertical-align:middle }
-    .proj-vm-table tr:last-child td { border-bottom:none }
-    .proj-vm-table tr:hover td { background:color-mix(in srgb,#ea580c 4%,white) }
-
     /* vm-fullrow */
     .vm-fullrow { display:none; background:#f7f8fa; border-left:3px solid #ea580c }
     .pool-row.open .vm-fullrow { display:block }
-
-    /* proj-vm-fullrow */
-    .proj-vm-fullrow { display:none; border-top:1px solid #e8e8e8; border-left:3px solid #ea580c; background:#f7f8fa; margin:0 0 14px 0; animation:fadeUp .2s ease both }
-    .proj-vm-fullrow.visible { display:block }
-
-    /* mini-pool open state */
-    .mini-pool.mp-open { border-color:#ea580c; box-shadow:0 0 0 1px #ea580c }
-    .mini-pool.mp-open::before { background:#ea580c }
-    .mini-pool.mp-open .mp-chev { transform:rotate(180deg); color:#ea580c }
 
     /* input focus ring */
     .search-input:focus { border-color:#ea580c; box-shadow:0 0 0 2px rgba(234,88,12,.12); outline:none }
@@ -197,60 +117,13 @@
   <div class="flex flex-1 min-h-0 overflow-hidden relative" id="appBody">
 
     <!-- LEFT SIDEBAR -->
-    <nav id="sidebar" class="w-[220px] flex-shrink-0 bg-white border-r border-bord flex flex-col overflow-hidden z-10 transition-all">
-
-      <div class="p-2 pt-2 flex flex-col gap-0.5">
-        <div class="sb-item flex items-center gap-2.5 px-3.5 py-2 mx-1.5 rounded-[6px] bg-or-l cursor-pointer" data-label="資源池總覽" onclick="navigateTo('pool-overview',this)">
-          <span class="text-base w-5 text-center flex-shrink-0">🗄</span>
-          <span class="sb-label text-xs font-semibold text-or-d whitespace-nowrap overflow-hidden">資源池總覽</span>
-        </div>
-        <div class="sb-item flex items-center gap-2.5 px-3.5 py-2 mx-1.5 rounded-[6px] hover:bg-surf-2 transition-colors cursor-pointer" data-label="專案維度" onclick="navigateTo('proj-dimension',this)">
-          <span class="text-base w-5 text-center flex-shrink-0">📁</span>
-          <span class="sb-label text-xs font-semibold text-ink-2 whitespace-nowrap overflow-hidden">專案維度</span>
-        </div>
-      </div>
-
-      <div class="mx-3.5 my-2 h-px bg-bord"></div>
-
-      <div class="sb-section px-3.5 pb-1.5 pt-2 text-[9px] font-bold tracking-[.16em] uppercase text-ink-4 whitespace-nowrap overflow-hidden">作業</div>
-      <div class="px-2 flex flex-col gap-0.5">
-        <div class="sb-item flex items-center gap-2.5 px-3.5 py-2 mx-0 rounded-[6px] hover:bg-surf-2 transition-colors cursor-pointer" data-label="申請 VM" onclick="window.location.href='vm.html'">
-          <span class="text-base w-5 text-center flex-shrink-0">🖥</span>
-          <span class="sb-label text-xs font-semibold text-ink-2 whitespace-nowrap overflow-hidden">申請 VM</span>
-        </div>
-        <div class="sb-item flex items-center gap-2.5 px-3.5 py-2 mx-0 rounded-[6px] hover:bg-surf-2 transition-colors cursor-pointer" data-label="申請專案/系統" onclick="window.location.href='apply.html'">
-          <span class="text-base w-5 text-center flex-shrink-0">📋</span>
-          <span class="sb-label text-xs font-semibold text-ink-2 whitespace-nowrap overflow-hidden">申請專案/系統</span>
-        </div>
-      </div>
-
-      <div class="mx-3.5 my-2 h-px bg-bord"></div>
-
-      <div class="sb-section px-3.5 pb-1.5 pt-2 text-[9px] font-bold tracking-[.16em] uppercase text-ink-4 whitespace-nowrap overflow-hidden">設定</div>
-      <div class="px-2 flex flex-col gap-0.5">
-        <div class="sb-item flex items-center gap-2.5 px-3.5 py-2 mx-0 rounded-[6px] hover:bg-surf-2 transition-colors cursor-pointer" data-label="使用者管理" onclick="navigateTo('users',this)">
-          <span class="text-base w-5 text-center flex-shrink-0">👥</span>
-          <span class="sb-label text-xs font-semibold text-ink-2 whitespace-nowrap overflow-hidden">使用者管理</span>
-        </div>
-        <div class="sb-item flex items-center gap-2.5 px-3.5 py-2 mx-0 rounded-[6px] hover:bg-surf-2 transition-colors cursor-pointer" data-label="系統設定" onclick="window.location.href='settings-pool.html'">
-          <span class="text-base w-5 text-center flex-shrink-0">⚙️</span>
-          <span class="sb-label text-xs font-semibold text-ink-2 whitespace-nowrap overflow-hidden">系統設定</span>
-        </div>
-      </div>
-
-      <div class="mt-auto border-t border-bord p-2">
-        <button onclick="toggleSidebar()" class="sb-toggle-btn w-full flex items-center gap-2.5 px-3.5 py-2 rounded-[6px] hover:bg-surf-2 transition-colors">
-          <span class="toggle-icon text-sm text-ink-4 w-5 text-center flex-shrink-0">◀</span>
-          <span class="sb-label text-xs font-semibold text-ink-3 whitespace-nowrap overflow-hidden">收折選單</span>
-        </button>
-      </div>
-    </nav>
+    <div id="sidebar-root" data-active="pool-overview"></div>
 
     <!-- MAIN CONTENT -->
     <div class="flex-1 overflow-y-auto min-w-0" id="mainContent">
 
-      <!-- PAGE: 資源池總覽 -->
-      <div class="page active" id="page-pool-overview">
+      <!-- 資源池總覽 -->
+      <div id="page-pool-overview" style="padding:24px 28px">
 
         <!-- KPI strip -->
         <div class="kpi-strip grid border border-bord rounded-[8px] overflow-hidden mb-6 bg-white shadow-sm" style="grid-template-columns:repeat(5,1fr)">
@@ -477,130 +350,10 @@
 
       </div><!-- /page-pool-overview -->
 
-      <!-- PAGE: 專案維度 -->
-      <div class="page" id="page-proj-dimension">
-
-        <!-- Search + filter bar -->
-        <div class="proj-search-bar flex items-center gap-2.5 mb-5 flex-wrap">
-          <div class="search-input-wrap relative flex-1 min-w-[220px] max-w-[360px]">
-            <span class="search-icon absolute left-2.5 top-1/2 -translate-y-1/2 text-sm text-ink-4 pointer-events-none">🔍</span>
-            <input type="text" class="search-input w-full py-2.5 pr-3 pl-9 border border-bord rounded-[7px] font-sans text-sm text-ink bg-white transition-all" id="projSearch" placeholder="搜尋專案名稱或代碼…"
-              oninput="filterProjTabs(this.value)">
-          </div>
-          <div class="filter-chips flex gap-1.5 flex-wrap items-center">
-            <span class="text-[13px] text-ink-4 font-semibold flex-shrink-0">篩選：</span>
-            <div class="fchip flex items-center gap-1 px-[13px] py-1.5 rounded-full text-xs font-semibold cursor-pointer border border-bord bg-white text-ink-3 transition-all hover:border-bord-2 hover:bg-surf-2 active-chip" onclick="toggleFilter(this,'all')"><span class="fchip-dot w-1.5 h-1.5 rounded-full" style="background:currentColor;opacity:.7"></span>全部</div>
-            <div class="fchip flex items-center gap-1 px-[13px] py-1.5 rounded-full text-xs font-semibold cursor-pointer border border-bord bg-white text-ink-3 transition-all hover:border-bord-2 hover:bg-surf-2" onclick="toggleFilter(this,'dedicated')"><span class="fchip-dot w-1.5 h-1.5 rounded-full" style="background:#2563eb;opacity:.7"></span>Dedicated</div>
-            <div class="fchip flex items-center gap-1 px-[13px] py-1.5 rounded-full text-xs font-semibold cursor-pointer border border-bord bg-white text-ink-3 transition-all hover:border-bord-2 hover:bg-surf-2" onclick="toggleFilter(this,'shared')"><span class="fchip-dot w-1.5 h-1.5 rounded-full" style="background:#0d9488;opacity:.7"></span>Shared</div>
-            <div class="fchip flex items-center gap-1 px-[13px] py-1.5 rounded-full text-xs font-semibold cursor-pointer border border-bord bg-white text-ink-3 transition-all hover:border-bord-2 hover:bg-surf-2" onclick="toggleFilter(this,'prod')"><span class="fchip-dot w-1.5 h-1.5 rounded-full" style="background:#16a34a;opacity:.7"></span>Prod</div>
-            <div class="fchip flex items-center gap-1 px-[13px] py-1.5 rounded-full text-xs font-semibold cursor-pointer border border-bord bg-white text-ink-3 transition-all hover:border-bord-2 hover:bg-surf-2" onclick="toggleFilter(this,'uat')"><span class="fchip-dot w-1.5 h-1.5 rounded-full" style="background:#7c3aed;opacity:.7"></span>UAT</div>
-          </div>
-        </div>
-
-        <!-- Project tabs -->
-        <div class="proj-tabs-wrap mb-5 border-b border-bord relative">
-          <div class="proj-tabs flex gap-0.5 overflow-x-auto pb-px" id="projTabs">
-            <div class="proj-tab flex items-center gap-[7px] px-[18px] py-[9px] text-[13px] font-semibold text-ink-3 cursor-pointer border-b-2 border-transparent whitespace-nowrap transition-all flex-shrink-0 active" data-proj="power" data-name="電發專案" onclick="selectProjTab('power',this)">
-              <div class="proj-tab-dot w-1.5 h-1.5 rounded-[2px] flex-shrink-0" style="background:#2563eb"></div>
-              電發專案
-              <span class="proj-tab-count font-mono text-[9px] bg-surf-2 border border-bord text-ink-3 px-[5px] py-px rounded-[3px]">10 pools</span>
-            </div>
-            <div class="proj-tab flex items-center gap-[7px] px-[18px] py-[9px] text-[13px] font-semibold text-ink-3 cursor-pointer border-b-2 border-transparent whitespace-nowrap transition-all flex-shrink-0" data-proj="dept1" data-name="一科" onclick="selectProjTab('dept1',this)">
-              <div class="proj-tab-dot w-1.5 h-1.5 rounded-[2px] flex-shrink-0" style="background:#0d9488"></div>
-              一科
-              <span class="proj-tab-count font-mono text-[9px] bg-surf-2 border border-bord text-ink-3 px-[5px] py-px rounded-[3px]">2 pools</span>
-            </div>
-            <div class="proj-tab flex items-center gap-[7px] px-[18px] py-[9px] text-[13px] font-semibold text-ink-3 cursor-pointer border-b-2 border-transparent whitespace-nowrap transition-all flex-shrink-0" data-proj="dept2" data-name="二科" onclick="selectProjTab('dept2',this)">
-              <div class="proj-tab-dot w-1.5 h-1.5 rounded-[2px] flex-shrink-0" style="background:#0d9488"></div>
-              二科
-              <span class="proj-tab-count font-mono text-[9px] bg-surf-2 border border-bord text-ink-3 px-[5px] py-px rounded-[3px]">1 pool</span>
-            </div>
-            <div class="proj-tab flex items-center gap-[7px] px-[18px] py-[9px] text-[13px] font-semibold text-ink-3 cursor-pointer border-b-2 border-transparent whitespace-nowrap transition-all flex-shrink-0" data-proj="dept3" data-name="三科" onclick="selectProjTab('dept3',this)">
-              <div class="proj-tab-dot w-1.5 h-1.5 rounded-[2px] flex-shrink-0" style="background:#0d9488"></div>
-              三科
-              <span class="proj-tab-count font-mono text-[9px] bg-surf-2 border border-bord text-ink-3 px-[5px] py-px rounded-[3px]">1 pool</span>
-            </div>
-            <div class="proj-tab flex items-center gap-[7px] px-[18px] py-[9px] text-[13px] font-semibold text-ink-3 cursor-pointer border-b-2 border-transparent whitespace-nowrap transition-all flex-shrink-0" data-proj="dept4" data-name="四科" onclick="selectProjTab('dept4',this)">
-              <div class="proj-tab-dot w-1.5 h-1.5 rounded-[2px] flex-shrink-0" style="background:#0d9488"></div>
-              四科
-              <span class="proj-tab-count font-mono text-[9px] bg-surf-2 border border-bord text-ink-3 px-[5px] py-px rounded-[3px]">1 pool</span>
-            </div>
-            <!-- placeholder for future projects -->
-            <div class="proj-tab flex items-center gap-[7px] px-[18px] py-[9px] text-[13px] font-semibold text-ink-3 cursor-pointer border-b-2 border-transparent whitespace-nowrap transition-all flex-shrink-0" style="opacity:.35;pointer-events:none" data-name="五科（預留）">
-              <div class="proj-tab-dot w-1.5 h-1.5 rounded-[2px] flex-shrink-0" style="background:#d4d4d4"></div>
-              五科
-              <span class="proj-tab-count font-mono text-[9px] bg-surf-2 border border-bord text-ink-3 px-[5px] py-px rounded-[3px]">—</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Sub-view toggle -->
-        <div class="flex bg-surf-2 border border-bord rounded-[7px] overflow-hidden mb-5 p-[3px] gap-0.5" style="max-width:360px">
-          <button class="stab flex-1 px-4 py-2 text-[13px] font-semibold border-none bg-transparent text-ink-3 cursor-pointer rounded-[5px] transition-all text-center max-w-[200px] active" id="stab-cloud" onclick="switchSubView('cloud')">☁ Cloud / Site</button>
-          <button class="stab flex-1 px-4 py-2 text-[13px] font-semibold border-none bg-transparent text-ink-3 cursor-pointer rounded-[5px] transition-all text-center max-w-[200px]" id="stab-sys" onclick="switchSubView('sys')">⚙ 依系統</button>
-        </div>
-
-        <div id="sv-cloud"></div>
-        <div id="sv-sys" class="hidden"></div>
-
-      </div><!-- /page-proj-dimension -->
-
-      <!-- PLACEHOLDER PAGES -->
-      <div class="page" id="page-apply-vm">
-        <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-ink-4 text-center">
-          <div class="text-[48px] opacity-25">📋</div>
-          <div class="text-base font-bold text-ink-3">申請 VM</div>
-          <div class="text-[13px] text-ink-4 max-w-[320px] leading-relaxed">選擇資源池、填寫規格需求，送出申請後進入審核流程。</div>
-          <button class="mt-1 px-5 py-2.5 rounded-[7px] bg-or text-white text-[13px] font-semibold border-none cursor-pointer transition-colors hover:bg-or-d" onclick="alert('功能開發中')">開始申請</button>
-        </div>
-      </div>
-      <div class="page" id="page-review">
-        <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-ink-4 text-center">
-          <div class="text-[48px] opacity-25">✅</div>
-          <div class="text-base font-bold text-ink-3">審核管理</div>
-          <div class="text-[13px] text-ink-4 max-w-[320px] leading-relaxed">處理待審核的 VM 申請、資源池調整請求。<br>目前有 <strong style="color:#dc2626">5</strong> 筆待審核。</div>
-          <button class="mt-1 px-5 py-2.5 rounded-[7px] bg-or text-white text-[13px] font-semibold border-none cursor-pointer transition-colors hover:bg-or-d" onclick="alert('功能開發中')">查看待審核</button>
-        </div>
-      </div>
-      <div class="page" id="page-quota">
-        <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-ink-4 text-center">
-          <div class="text-[48px] opacity-25">📊</div>
-          <div class="text-base font-bold text-ink-3">配額管理</div>
-          <div class="text-[13px] text-ink-4 max-w-[320px] leading-relaxed">管理各專案的 CPU、Memory、Disk 配額上限。</div>
-          <button class="mt-1 px-5 py-2.5 rounded-[7px] bg-or text-white text-[13px] font-semibold border-none cursor-pointer transition-colors hover:bg-or-d" onclick="alert('功能開發中')">管理配額</button>
-        </div>
-      </div>
-      <div class="page" id="page-users">
-        <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-ink-4 text-center">
-          <div class="text-[48px] opacity-25">👥</div>
-          <div class="text-base font-bold text-ink-3">使用者管理</div>
-          <div class="text-[13px] text-ink-4 max-w-[320px] leading-relaxed">管理使用者帳號、角色與權限。</div>
-          <button class="mt-1 px-5 py-2.5 rounded-[7px] bg-or text-white text-[13px] font-semibold border-none cursor-pointer transition-colors hover:bg-or-d" onclick="alert('功能開發中')">管理使用者</button>
-        </div>
-      </div>
-      <div class="page" id="page-settings">
-        <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-ink-4 text-center">
-          <div class="text-[48px] opacity-25">⚙️</div>
-          <div class="text-base font-bold text-ink-3">系統設定</div>
-          <div class="text-[13px] text-ink-4 max-w-[320px] leading-relaxed">系統參數、通知設定、整合設定。</div>
-          <button class="mt-1 px-5 py-2.5 rounded-[7px] bg-or text-white text-[13px] font-semibold border-none cursor-pointer transition-colors hover:bg-or-d" onclick="alert('功能開發中')">進入設定</button>
-        </div>
-      </div>
-
     </div><!-- /mainContent -->
   </div><!-- /appBody -->
 
   <style>
-    /* active fchip */
-    .fchip.active { background:#0f0f0f; border-color:#0f0f0f; color:#fff }
-    /* active proj-tab */
-    .proj-tab.active { color:#0f0f0f; border-bottom-color:#ea580c }
-    .proj-tab.active .proj-tab-count { background:#fff7ed; border-color:#fed7aa; color:#c2410c }
-    /* filtered-out proj-tab */
-    .proj-tab.filtered-out { display:none }
-    /* active stab */
-    .stab.active { background:#fff; color:#0f0f0f; box-shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04) }
-    /* sb-item active state managed by JS (adds bg-or-l class on the active item) */
     /* cloud-card dim/selected */
     .cloud-card.dim { opacity:.32; transform:none !important; box-shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04) !important }
     .cloud-card.selected { border-color:#d4d4d4; box-shadow:0 16px 36px rgba(0,0,0,.12),0 4px 8px rgba(0,0,0,.06); transform:translateY(-2px) }
@@ -611,11 +364,6 @@
     .pool-row.open .pool-row-hd { background:#fff7ed; border-bottom:2px solid #ea580c }
     .pool-row.open .pool-chevron { transform:rotate(180deg); color:#ea580c }
     .pool-row.open .vm-fullrow { display:block }
-    /* sb-item active style via JS */
-    .sb-item.active { background:#fff7ed }
-    .sb-item.active .sb-label { color:#c2410c }
-    /* sys-card active */
-    .sys-card.active { border-color:#ea580c; background:#fff7ed }
   </style>
 
   <script src="data/bundle.js"></script>
@@ -627,50 +375,6 @@
     const CLOUD_META = { private: { label: '私有雲', color: '#2563eb' }, hicloud: { label: 'hiCloud', color: '#0e7490' }, aws: { label: 'AWS', color: '#b45309' } };
     let SITES_DATA = {};
     let POOLS = {};
-    let PROJ_DATA = {};
-
-    /* ════════════════════════════
-       SIDEBAR
-    ════════════════════════════ */
-    let sidebarCollapsed = false;
-    function toggleSidebar() {
-      sidebarCollapsed = !sidebarCollapsed;
-      document.getElementById('appBody').classList.toggle('sb-collapsed', sidebarCollapsed);
-      document.getElementById('topbar').classList.toggle('sb-collapsed', sidebarCollapsed);
-    }
-
-    /* ════════════════════════════
-       PAGE NAVIGATION
-    ════════════════════════════ */
-    const PAGE_TITLES = {
-      'pool-overview': '資源池總覽',
-      'proj-dimension': '專案維度',
-      'apply-vm': '申請 VM',
-      'review': '審核管理',
-      'quota': '配額管理',
-      'users': '使用者管理',
-      'settings': '系統設定'
-    };
-
-    function navigateTo(key, el) {
-      // update sidebar active
-      document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('active'));
-      if (el) el.classList.add('active');
-
-      // update pages
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      const pg = document.getElementById('page-' + key);
-      if (pg) pg.classList.add('active');
-
-      // update topbar title
-      document.getElementById('tb-title').textContent = PAGE_TITLES[key] || key;
-
-      // init proj view on first visit
-      if (key === 'proj-dimension' && !window._projInited) {
-        window._projInited = true;
-        renderProjView();
-      }
-    }
 
     /* ════════════════════════════
        HELPERS
@@ -809,184 +513,14 @@
     function backToSite() { hide('lv-pool'); show('lv-site'); document.querySelectorAll('.site-card').forEach(c => c.classList.remove('selected', 'dim')); curSite = null; }
     function togglePool(pid) { document.getElementById('pr-' + pid).classList.toggle('open') }
 
-    /* ════════════════════════════
-       PROJECT DIMENSION
-    ════════════════════════════ */
-    let curProj = 'power', curSys = null, curSubView = 'cloud', activeFilter = 'all';
-
-    function filterProjTabs(q) {
-      const s = q.toLowerCase();
-      document.querySelectorAll('.proj-tab').forEach(t => {
-        const name = t.dataset.name || '';
-        t.classList.toggle('filtered-out', !!s && !name.toLowerCase().includes(s));
-      });
-    }
-
-    function toggleFilter(el, val) {
-      activeFilter = val;
-      document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
-      el.classList.add('active');
-      // re-render current proj view with filter context (simplified: just re-render)
-      renderProjView();
-    }
-
-    function selectProjTab(key, el) {
-      curProj = key; curSys = null;
-      document.querySelectorAll('.proj-tab').forEach(t => t.classList.remove('active'));
-      el.classList.add('active');
-      renderProjView();
-    }
-
-    function switchSubView(v) {
-      curSubView = v;
-      document.getElementById('sv-cloud').classList.toggle('hidden', v !== 'cloud');
-      document.getElementById('sv-sys').classList.toggle('hidden', v !== 'sys');
-      document.getElementById('stab-cloud').classList.toggle('active', v === 'cloud');
-      document.getElementById('stab-sys').classList.toggle('active', v === 'sys');
-      renderProjView();
-    }
-
-    function renderProjView() {
-      if (!PROJ_DATA[curProj]) return; // 資料尚未載入
-      if (curSubView === 'cloud') renderProjCloud();
-      else renderProjSys();
-    }
-
-    function projVmTableHtml(p) {
-      const isDed = p.type === 'dedicated';
-      if (isDed && p.vms) {
-        return '<table class="proj-vm-table"><thead><tr><th>VM 名稱</th><th>狀態</th><th>規格 (vCPU / RAM / Disk)</th><th>環境</th><th>IP 位址</th></tr></thead><tbody>' +
-          p.vms.map(v => '<tr>' +
-            '<td><span class="status-dot ' + (v.status === 'running' ? 'dot-run' : 'dot-stop') + '"></span><span class="vm-name">' + v.name + '</span></td>' +
-            '<td><span class="badge ' + (v.status === 'running' ? 'b-run' : 'b-stop') + '" style="font-size:10px">' + (v.status === 'running' ? 'Running' : 'Stopped') + '</span></td>' +
-            '<td class="vm-spec">' + v.vcpu + ' vCPU &nbsp;·&nbsp; ' + v.ram + ' &nbsp;·&nbsp; ' + v.disk + '</td>' +
-            '<td><span class="badge ' + (v.env === 'Prod' ? 'b-prod' : 'b-uat') + '" style="font-size:10px">' + v.env + '</span></td>' +
-            '<td class="vm-ip">' + v.ip + '</td>' +
-            '</tr>').join('') +
-          '</tbody></table>';
-      }
-      if (!isDed && p.allocs) {
-        return '<table class="proj-vm-table"><thead><tr><th>專案</th><th>系統</th><th>環境</th><th>CPU 配額</th><th>Memory 配額</th></tr></thead><tbody>' +
-          p.allocs.map(a => '<tr>' +
-            '<td style="font-weight:700">' + a.proj + '</td>' +
-            '<td>' + a.sys + '</td>' +
-            '<td><span class="badge ' + (a.env === 'Prod' ? 'b-prod' : 'b-uat') + '" style="font-size:10px">' + a.env + '</span></td>' +
-            '<td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">' + a.quota_cpu + '</span></div></td>' +
-            '<td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">' + a.quota_mem + '</span></div></td>' +
-            '</tr>').join('') +
-          '</tbody></table>';
-      }
-      return '';
-    }
-
-    const openMiniPool = {};
-
-    function toggleMiniPool(el, poolId, siteKey) {
-      const pool = POOLS[poolId];
-      if (!pool) return;
-      const isDed = pool.type === 'dedicated';
-      const count = isDed ? (pool.vms?.length || 0) : (pool.allocs?.length || 0);
-      const psiteBlock = el.closest('.psite-block');
-      if (!psiteBlock) return;
-
-      if (el.classList.contains('mp-open')) {
-        el.classList.remove('mp-open');
-        const existing = psiteBlock.querySelector('.proj-vm-fullrow');
-        if (existing) existing.remove();
-        openMiniPool[siteKey] = null;
-        return;
-      }
-
-      psiteBlock.querySelectorAll('.mini-pool.mp-open').forEach(mp => mp.classList.remove('mp-open'));
-      const existing = psiteBlock.querySelector('.proj-vm-fullrow');
-      if (existing) existing.remove();
-
-      el.classList.add('mp-open');
-      openMiniPool[siteKey] = poolId;
-
-      const panel = document.createElement('div');
-      panel.className = 'proj-vm-fullrow visible';
-      const closeId = 'close-' + poolId + '-' + siteKey.replace(/[^a-z0-9]/gi, '');
-      panel.innerHTML =
-        '<div class="proj-vm-fullrow-hd">' +
-        '<div class="proj-vm-fullrow-title">' +
-        (isDed ? '🖥 VM 清單' : '🔗 申請狀況') +
-        ' <span class="chip">' + count + ' 筆 &nbsp;·&nbsp; ' + poolId + ' ' + pool.name + '</span>' +
-        '</div>' +
-        '<button id="' + closeId + '" class="proj-vm-fullrow-close">✕ 收起</button>' +
-        '</div>' +
-        '<div class="proj-vm-table-wrap">' + projVmTableHtml(pool) + '</div>';
-
-      const psitePools = psiteBlock.querySelector('.psite-pools');
-      psitePools.after(panel);
-      document.getElementById(closeId).addEventListener('click', function () {
-        toggleMiniPool(el, poolId, siteKey);
-      });
-      setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
-    }
-
-    function miniPoolDetail(pid) { return ''; }
-
-    function renderProjCloud() {
-      const pd = PROJ_DATA[curProj];
-      let html = '';
-      Object.entries(pd.cloudView).forEach(([ck, cd]) => {
-        html += '<div class="pcloud-block">';
-        html += '<div class="pcloud-hd"><div class="pcloud-dot" style="background:' + cd.color + '"></div><div class="pcloud-name">' + cd.label + '</div><div class="pcloud-region">' + cd.sites.flatMap(s => s.pools).length + ' pools</div></div>';
-        cd.sites.forEach((s, si) => {
-          const siteKey = ck + '-' + si;
-          html += '<div class="psite-block">';
-          html += '<div class="psite-hd"><span class="badge ' + (s.type === 'main' ? 'b-main' : 'b-dr') + '">' + (s.type === 'main' ? '主中心' : '異備 DR') + '</span><span class="psite-name" style="margin-left:8px">' + s.name + '</span><span class="psite-count">' + s.pools.length + ' pools</span></div>';
-          html += '<div class="psite-pools">';
-          s.pools.forEach(pool => {
-            const isDed = pool.type === 'dedicated';
-            const p = POOLS[pool.id];
-            const count = isDed ? (p?.vms?.length || 0) : (p?.allocs?.length || 0);
-            const safeKey = siteKey.replace(/[^a-z0-9]/gi, '');
-            html += '<div class="mini-pool ' + (isDed ? 'mp-ded' : 'mp-shr') + '" data-pool="' + pool.id + '" onclick="toggleMiniPool(this,\'' + pool.id + '\',\'' + siteKey + '\')">' +
-              '<div class="mini-pool-top"><span class="mpid ' + (isDed ? 'mpid-ded' : 'mpid-shr') + '">' + pool.id + '</span><span class="mpname">' + pool.name + '</span><span class="badge b-neutral" style="font-size:10px;margin-left:auto;margin-right:4px">' + count + (isDed ? ' VMs' : ' Allocs') + '</span><span class="mp-chev">▾</span></div>' +
-              '<div class="mini-pool-tags"><span class="mpt ' + (isDed ? 'mpt-ded' : 'mpt-shr') + '">' + pool.type + '</span><span class="mpt ' + (pool.env === 'Prod' ? 'mpt-prod' : 'mpt-uat') + '">' + pool.env + '</span><span class="mpt mpt-sys">' + pool.sys + '</span></div>' +
-              '</div>';
-          });
-          html += '</div></div>';
-        });
-        html += '</div>';
-      });
-      document.getElementById('sv-cloud').innerHTML = html;
-    }
-
-    function renderProjSys() {
-      const pd = PROJ_DATA[curProj];
-      const sysList = Object.entries(pd.sysView);
-      if (!curSys) curSys = sysList[0][0];
-      const selPools = pd.sysView[curSys].pools;
-      const byCloud = {};
-      selPools.forEach(p => {
-        const ck = Object.keys(CLOUD_META).find(k => CLOUD_META[k].label === p.cloud);
-        if (!byCloud[p.cloud]) byCloud[p.cloud] = { label: p.cloud, color: CLOUD_META[ck]?.color || '#0f0f0f', rows: [] };
-        byCloud[p.cloud].rows.push(p);
-      });
-      document.getElementById('sv-sys').innerHTML = `
-    <div class="sys-sel-grid">${sysList.map(([sn, sd]) => `<div class="sys-card ${curSys === sn ? 'active' : ''}" onclick="selectSysInProj('${sn}')"><div class="sys-card-icon">${sd.icon}</div><div class="sys-card-name">${sn}</div><div class="sys-card-sub">${sd.pools.length} pools</div></div>`).join('')}</div>
-    <div class="sys-cloud-grid">${Object.values(byCloud).map((cd, i) => `
-      <div class="sys-cloud-card anim" style="animation-delay:${i * 60}ms">
-        <div class="sys-cloud-hd"><div class="sys-cloud-dot" style="background:${cd.color}"></div><div class="sys-cloud-name">${cd.label}</div><span style="margin-left:auto;font-size:10px;color:#a3a3a3">${cd.rows.length} pools</span></div>
-        <div class="sys-cloud-body">${cd.rows.map(r => `<div class="sys-pool-row"><span class="sys-pool-id ${r.type === 'dedicated' ? 'mpid-ded' : 'mpid-shr'}">${r.id}</span><span class="sys-pool-site">${r.site}</span><span class="badge ${r.type === 'dedicated' ? 'b-ded' : 'b-shr'}" style="font-size:9px">${r.type}</span><span class="badge ${r.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${r.env}</span></div>`).join('')}</div>
-      </div>`).join('')}</div>`;
-    }
-    function selectSysInProj(s) { curSys = s; renderProjSys(); }
-
-    // Async init: load data, build runtime structures, then handle hash navigation
+    /* ── Async init ── */
     (async () => {
-      const CLOUD_LBL = { private:'私有雲', hicloud:'hiCloud', aws:'AWS' };
-      const CLOUD_CLR = { private:'#2563eb', hicloud:'#0e7490', aws:'#b45309' };
       const SITE_META = {
         'tp-main': { id:'tp-main', name:'台北主中心',   region:'台北市', type:'main' },
         'tc-dr'  : { id:'tc-dr',   name:'台中異備中心', region:'台中市', type:'dr'   },
         'e7-main': { id:'e7-main', name:'東七主中心',   region:'東七區', type:'main' },
         'tw-main': { id:'tw-main', name:'台灣主中心',   region:'台灣',   type:'main' },
       };
-      const SYS_ICON = { 'SYS-001':'⚡', 'SYS-002':'📱' };
 
       function fmtGB(gb) { return gb >= 1024 ? +(gb/1024).toFixed(1) + 'TB' : gb + 'GB'; }
       function sumVMs(vmList) {
@@ -1004,7 +538,7 @@
       const projectMap = Object.fromEntries(raw.projects.map(p => [p.id, p]));
       const systemMap  = Object.fromEntries(raw.systems.map(s => [s.id, s]));
 
-      /* ── Build POOLS ──────────────────────────────────── */
+      /* ── Build POOLS ── */
       for (const pool of raw.pools) {
         const pvms = raw.vms.filter(v => v.pool_id === pool.id);
         const used = sumVMs(pvms);
@@ -1042,7 +576,7 @@
         POOLS[pool.id] = entry;
       }
 
-      /* ── Build SITES_DATA ─────────────────────────────── */
+      /* ── Build SITES_DATA ── */
       for (const pool of raw.pools) {
         const ck   = pool.cloud;
         const sm   = SITE_META[pool.site_id] || { id:pool.site_id, name:pool.site_id, region:'', type:'main' };
@@ -1059,43 +593,6 @@
         site.mem.u += used.mem;          site.mem.t += pool.mem_total_gb;
         site.disk.u = +(site.disk.u + used.disk/1024).toFixed(1);
         site.disk.t += pool.disk_total_tb;
-      }
-
-      /* ── Build PROJ_DATA ──────────────────────────────── */
-      for (const proj of raw.projects) {
-        const pkey         = proj.code.toLowerCase();
-        const projAllocs   = raw.allocs.filter(a => a.project_id === proj.id);
-        const dedicatedPools = raw.pools.filter(p => p.project_id === proj.id);
-        const sharedPoolIds  = [...new Set(projAllocs.map(a => a.pool_id))];
-        const sharedPools    = raw.pools.filter(p => sharedPoolIds.includes(p.id));
-        const allPools       = [...dedicatedPools, ...sharedPools];
-        const cloudView = {}, sysView = {};
-        for (const pool of allPools) {
-          const ck  = pool.cloud;
-          const sm  = SITE_META[pool.site_id] || { name:pool.site_id, type:'main' };
-          // Shared pool: 以此專案在該 pool 的 allocation 系統名稱為準
-          let sysName;
-          if (pool.type === 'shared') {
-            const alloc = projAllocs.find(a => a.pool_id === pool.id);
-            sysName = systemMap[alloc?.system_id]?.name || alloc?.system_id || '—';
-          } else {
-            sysName = systemMap[pool.system_id]?.name || pool.system_id || '—';
-          }
-          if (!cloudView[ck]) cloudView[ck] = { label:CLOUD_LBL[ck]||ck, color:CLOUD_CLR[ck]||'#0f0f0f', sites:[] };
-          let site = cloudView[ck].sites.find(s => s.name === sm.name);
-          if (!site) { site = { name:sm.name, type:sm.type, pools:[] }; cloudView[ck].sites.push(site); }
-          site.pools.push({ id:pool.id, name:pool.name, type:pool.type, env:pool.env, role:pool.site_role, sys:sysName });
-          if (!sysView[sysName]) sysView[sysName] = { icon:SYS_ICON[pool.system_id]||'🗂', pools:[] };
-          sysView[sysName].pools.push({ id:pool.id, cloud:CLOUD_LBL[ck]||ck, site:sm.name, env:pool.env, role:pool.site_role, type:pool.type });
-        }
-        PROJ_DATA[pkey] = { name:proj.name, cloudView, sysView };
-      }
-
-      /* ── Hash-based navigation ────────────────────────── */
-      const hash = location.hash.replace('#', '');
-      if (hash) {
-        const el = document.querySelector(`[data-label][onclick*="'${hash}'"]`);
-        if (el) navigateTo(hash, el);
       }
     })();
   </script>
