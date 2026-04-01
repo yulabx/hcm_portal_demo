@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Allocation 管理 — 雲地整合平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="tailwind-config.js"></script>
+  <script src="menu.js"></script>
+  <script src="sidebar.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* progress bar override — taller in this page */
+    .res-track { height: 6px; }
+
+    .tab-btn.active { background:#ea580c; color:#fff; }
+    .tab-btn:not(.active) { background:#fff; color:#737373; }
+    .tab-btn:not(.active):hover { background:#f7f8fa; }
+
+    /* quota input highlight when over limit */
+    .over-limit { border-color:#dc2626 !important; box-shadow:0 0 0 3px rgba(220,38,38,.1) !important; }
+  </style>
+</head>
+<body class="text-ink text-sm font-sans flex flex-col min-h-screen">
+
+<!-- ══ TOP BAR ══ -->
+<header class="h-[52px] bg-white border-b border-bord flex items-center pr-4 sticky top-0 z-30 flex-shrink-0 shadow-sm">
+  <div class="tb-brand flex items-center gap-2.5 px-4 border-r border-bord h-full w-[220px] flex-shrink-0 overflow-hidden transition-all">
+    <div class="w-7 h-7 bg-or rounded-[6px] flex items-center justify-center text-white font-mono text-[10px] font-bold flex-shrink-0">HCM</div>
+    <div class="brand-text overflow-hidden transition-all">
+      <div class="text-sm font-extrabold tracking-tight whitespace-nowrap">雲地整合平台</div>
+      <div class="text-[10px] text-ink-4 font-mono whitespace-nowrap">INFRA PORTAL</div>
+    </div>
+  </div>
+  <div class="flex-1 flex items-center px-5 gap-2">
+    <span class="text-xs text-ink-4 font-semibold">系統設定</span>
+    <span class="text-bord-2">/</span>
+    <span class="text-sm font-bold tracking-tight">Allocation 管理</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <!-- view tabs -->
+    <div class="flex border border-bord rounded-[6px] overflow-hidden text-xs font-semibold">
+      <button onclick="switchTab('pools')" id="tab-pools" class="tab-btn active px-3.5 py-1.5 transition-colors">Pool 配額</button>
+      <button onclick="switchTab('requests')" id="tab-requests" class="tab-btn px-3.5 py-1.5 transition-colors">
+        待執行申請
+        <span class="ml-1 bg-or text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full" id="pending-badge">2</span>
+      </button>
+    </div>
+    <div class="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-ded to-shr flex items-center justify-center text-white text-[11px] font-bold">管</div>
+  </div>
+</header>
+
+<!-- ══ APP BODY ══ -->
+<div class="flex flex-1 min-h-0 overflow-hidden" id="appBody">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar-root" data-active="settings-alloc"></div>
+
+  <!-- MAIN -->
+  <main class="flex-1 overflow-y-auto min-w-0">
+
+    <!-- ══ TAB: Pool 配額 ══ -->
+    <div id="view-pools" class="p-6 max-w-[1100px] mx-auto">
+
+      <!-- KPI -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 border border-bord rounded-[8px] overflow-hidden bg-white shadow-sm mb-6">
+        <div class="px-5 py-4 border-r border-bord relative">
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-shr rounded-tl-[8px]"></div>
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-shr" id="kpi-pools">3</div>
+          <div class="text-[11px] font-semibold text-ink-2">Shared Pools</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">管理配額分配</div>
+        </div>
+        <div class="px-5 py-4 border-r border-bord">
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1" id="kpi-allocs">11</div>
+          <div class="text-[11px] font-semibold text-ink-2">Allocations</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">已分配筆數</div>
+        </div>
+        <div class="px-5 py-4 border-r border-bord">
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-amb" id="kpi-pending-req">2</div>
+          <div class="text-[11px] font-semibold text-ink-2">待執行申請</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">需設定配額</div>
+        </div>
+        <div class="px-5 py-4">
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-red" id="kpi-over">1</div>
+          <div class="text-[11px] font-semibold text-ink-2">容量警示</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">使用率 ≥ 85%</div>
+        </div>
+      </div>
+
+      <!-- Pool cards -->
+      <div class="flex flex-col gap-6" id="pool-cards"></div>
+    </div>
+
+    <!-- ══ TAB: 待執行申請 ══ -->
+    <div id="view-requests" class="hidden p-6 max-w-[860px] mx-auto">
+      <div class="mb-5">
+        <div class="text-sm font-bold text-ink">待執行申請</div>
+        <div class="text-[11px] text-ink-4 mt-0.5">審閱申請內容，設定 Shared Pool 配額後執行開通</div>
+      </div>
+      <div class="flex flex-col gap-4" id="req-list"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ══ ALLOC MODAL ══ -->
+<div id="alloc-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(15,15,15,.45);backdrop-filter:blur(2px)" onclick="handleModalBg(event)">
+  <div class="modal-in bg-white rounded-[10px] shadow-lg w-full max-w-[520px] max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-bord">
+      <div>
+        <h2 class="text-sm font-bold text-ink" id="alloc-modal-title">設定 Allocation</h2>
+        <p class="text-[11px] text-ink-4 mt-0.5" id="alloc-modal-sub">分配系統的資源配額</p>
+      </div>
+      <button onclick="closeAllocModal()" class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surf-2 text-ink-4 text-lg">✕</button>
+    </div>
+
+    <!-- Pool capacity summary inside modal -->
+    <div class="px-6 pt-4">
+      <div class="bg-surf-2 border border-bord rounded-[8px] p-4 flex flex-col gap-3 mb-4" id="modal-pool-cap">
+        <!-- rendered by JS -->
+      </div>
+    </div>
+
+    <div class="px-6 pb-2 flex flex-col gap-4" id="alloc-modal-body">
+      <!-- rows rendered by JS -->
+    </div>
+
+    <div id="alloc-error" class="hidden mx-6 mb-3 text-[11px] text-red bg-red-l border border-red-m rounded-[6px] px-3 py-2"></div>
+
+    <div class="flex items-center justify-between px-6 py-4 border-t border-bord bg-surf-2 rounded-b-[10px] mt-2">
+      <button onclick="closeAllocModal()" class="px-4 py-2 text-xs font-semibold text-ink-3 border border-bord rounded-[6px] bg-white hover:bg-surf-2 transition-all">取消</button>
+      <button onclick="executeAlloc()" class="px-5 py-2 text-xs font-bold text-white bg-shr rounded-[6px] hover:bg-shr/80 transition-all flex items-center gap-2">
+        ▶ 執行開通
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM MODAL ══ -->
+<div id="confirm-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(15,15,15,.45);backdrop-filter:blur(2px)">
+  <div class="modal-in bg-white rounded-[10px] shadow-lg w-full max-w-[360px] p-6">
+    <div class="text-base font-bold text-ink mb-2" id="confirm-title">確認執行</div>
+    <div class="text-xs text-ink-3 mb-5 leading-relaxed" id="confirm-msg"></div>
+    <div class="flex gap-2 justify-end">
+      <button onclick="closeConfirm()" class="px-4 py-2 text-xs font-semibold text-ink-3 border border-bord rounded-[6px] bg-white hover:bg-surf-2 transition-all">取消</button>
+      <button onclick="doConfirm()" class="px-4 py-2 text-xs font-bold text-white bg-shr rounded-[6px] hover:bg-shr/80 transition-all" id="confirm-ok-btn">確認執行</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/bundle.js"></script>
+<script src="data-service.js"></script>
+<script>
+// ══════════════════════════════
+//  DATA — 由 DataService 載入
+// ══════════════════════════════
+let SHARED_POOLS = [];
+let ALLOCS = [];
+
+// Pending requests (from apply page)
+let PENDING_REQS = [
+  { id:'REQ-20240322-003', project:'二科', applicant:'陳美玲', created:'2024-03-22',
+    systems:[
+      { name:'Portal-v2', code:'SYS-PORTAL2', env:'Prod',
+        mounts:[{ pool_id:'S02', est_cpu:12, est_mem:24, note:'Portal 改版需求，需與現有 Portal 隔離' }] }
+    ]
+  },
+  { id:'REQ-20240325-004', project:'電發專案', applicant:'王大明', created:'2024-03-25',
+    systems:[
+      { name:'DataHub', code:'SYS-DH', env:'Prod',
+        mounts:[
+          { pool_id:'S01', est_cpu:10, est_mem:20, note:'資料整合平台' },
+          { pool_id:'S02', est_cpu:8,  est_mem:16, note:'DR 備援用途' },
+        ]
+      }
+    ]
+  },
+];
+
+let allocModal = { poolId: null, reqId: null, draftAllocs: [] };
+let pendingConfirm = null;
+let allocCounter = 9;
+
+// ══════════════════════════════
+//  HELPERS
+// ══════════════════════════════
+// toggleSidebar defined in sidebar.js
+
+function getPoolUsed(poolId, resource) {
+  return ALLOCS.filter(a => a.pool_id === poolId && a.status === 'active')
+               .reduce((s, a) => s + (a[resource] || 0), 0);
+}
+
+function pct(u, t) { return t ? Math.min(100, Math.round(u / t * 100)) : 0; }
+
+function barColor(p) {
+  return p >= 85 ? '#dc2626' : p >= 70 ? '#d97706' : '#0d9488';
+}
+
+function capacityBar(used, total, label, unit) {
+  const p = pct(used, total);
+  const free = +(total - used).toFixed(1);
+  const color = barColor(p);
+  return `<div class="flex flex-col gap-1">
+    <div class="flex justify-between items-center text-[11px]">
+      <span class="text-ink-4 font-semibold">${label}</span>
+      <span class="font-mono text-ink-3">${used}<span class="text-ink-4">/${total}${unit}</span></span>
+    </div>
+    <div class="res-track">
+      <div class="res-fill" style="width:${p}%;background:${color}"></div>
+    </div>
+    <div class="text-[10px] text-ink-4 font-mono">剩餘 ${free}${unit} · ${p}% 已用</div>
+  </div>`;
+}
+
+// ══════════════════════════════
+//  TAB
+// ══════════════════════════════
+function switchTab(tab) {
+  const isPools = tab === 'pools';
+  document.getElementById('view-pools').classList.toggle('hidden', !isPools);
+  document.getElementById('view-requests').classList.toggle('hidden', isPools);
+  document.getElementById('tab-pools').classList.toggle('active', isPools);
+  document.getElementById('tab-requests').classList.toggle('active', !isPools);
+  if (isPools) renderPoolCards();
+  else renderRequests();
+}
+
+// ══════════════════════════════
+//  POOL CARDS
+// ══════════════════════════════
+function renderPoolCards() {
+  const container = document.getElementById('pool-cards');
+  container.innerHTML = SHARED_POOLS.map((pool, pi) => {
+    const allocs = ALLOCS.filter(a => a.pool_id === pool.id && a.status === 'active');
+    const usedCpu  = allocs.reduce((s,a) => s + a.cpu,  0);
+    const usedMem  = allocs.reduce((s,a) => s + a.mem,  0);
+    const usedDisk = allocs.reduce((s,a) => s + a.disk, 0);
+    const cpuP = pct(usedCpu,  pool.cpu.t);
+    const memP = pct(usedMem,  pool.mem.t);
+    const dskP = pct(usedDisk, pool.disk.t);
+    const hasWarn = cpuP >= 85 || memP >= 85 || dskP >= 85;
+
+    return `<div class="bg-white border ${hasWarn ? 'border-red-m' : 'border-bord'} rounded-[10px] shadow-sm overflow-hidden anim" style="animation-delay:${pi*60}ms">
+
+      <!-- Pool header -->
+      <div class="px-5 py-4 border-b border-bord flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2.5 flex-1 min-w-0">
+          <span class="font-mono text-xs font-bold px-2 py-0.5 rounded-[3px] bg-shr-l text-shr border border-shr-m flex-shrink-0">${pool.id}</span>
+          <div class="min-w-0">
+            <div class="text-sm font-bold text-ink truncate">${pool.name}</div>
+            <div class="text-[10px] text-ink-4 font-mono">${pool.cloud} · ${pool.site}</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-shrink-0">
+          ${hasWarn ? '<span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border bg-red-l text-red border-red-m">容量警示</span>' : ''}
+          <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${pool.env==='Prod' ? 'bg-grn-l text-grn border-grn-m' : 'bg-pur-l text-pur border-pur-m'}">${pool.env}</span>
+          <span class="text-[10px] text-ink-4 font-mono">${allocs.length} allocs</span>
+          <button onclick="openAllocModal('${pool.id}', null)"
+            class="flex items-center gap-1 px-3 py-1.5 text-[10px] font-bold bg-shr text-white rounded-[5px] hover:bg-shr/80 transition-all flex-shrink-0">
+            ＋ 新增 Allocation
+          </button>
+        </div>
+      </div>
+
+      <!-- Resource bars -->
+      <div class="px-5 py-4 grid grid-cols-3 gap-6 border-b border-bord">
+        ${capacityBar(usedCpu,  pool.cpu.t,  'CPU',  'C')}
+        ${capacityBar(usedMem,  pool.mem.t,  'Mem',  'GB')}
+        ${capacityBar(+(usedDisk).toFixed(1), pool.disk.t, 'Disk', 'TB')}
+      </div>
+
+      <!-- Allocation table -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-xs border-collapse">
+          <thead>
+            <tr class="bg-surf-2 border-b border-bord">
+              <th class="px-4 py-2.5 text-left text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">系統</th>
+              <th class="px-4 py-2.5 text-left text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">專案</th>
+              <th class="px-4 py-2.5 text-left text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">環境</th>
+              <th class="px-4 py-2.5 text-right text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">CPU (C)</th>
+              <th class="px-4 py-2.5 text-right text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Mem (GB)</th>
+              <th class="px-4 py-2.5 text-right text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Disk (TB)</th>
+              <th class="px-4 py-2.5 text-left text-[9px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${allocs.map(a => `
+            <tr class="border-b border-bord hover:bg-surf-2 transition-colors">
+              <td class="px-4 py-2.5 font-semibold text-ink whitespace-nowrap">${a.system}</td>
+              <td class="px-4 py-2.5 text-ink-3 whitespace-nowrap">${a.project}</td>
+              <td class="px-4 py-2.5 whitespace-nowrap">
+                <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${a.env==='Prod' ? 'bg-grn-l text-grn border-grn-m' : 'bg-pur-l text-pur border-pur-m'}">${a.env}</span>
+              </td>
+              <td class="px-4 py-2.5 text-right font-mono text-ink-2">${a.cpu}</td>
+              <td class="px-4 py-2.5 text-right font-mono text-ink-2">${a.mem}</td>
+              <td class="px-4 py-2.5 text-right font-mono text-ink-2">${a.disk}</td>
+              <td class="px-4 py-2.5 whitespace-nowrap">
+                <div class="flex gap-1.5">
+                  <button onclick="openAllocModal('${pool.id}', '${a.id}')"
+                    class="px-2 py-1 text-[9px] font-semibold border border-bord rounded-[3px] bg-white text-ink-3 hover:border-bord-2 hover:bg-surf-2 transition-all">調整</button>
+                  <button onclick="confirmRemoveAlloc('${a.id}')"
+                    class="px-2 py-1 text-[9px] font-semibold border border-red-m rounded-[3px] bg-red-l text-red hover:bg-red hover:text-white transition-all">移除</button>
+                </div>
+              </td>
+            </tr>`).join('')}
+            <!-- Total row -->
+            <tr class="bg-surf-2 font-bold">
+              <td class="px-4 py-2.5 text-[10px] text-ink-4 uppercase tracking-wide" colspan="3">合計</td>
+              <td class="px-4 py-2.5 text-right font-mono text-xs ${cpuP>=85?'text-red':''}">${usedCpu}<span class="text-ink-4 font-normal">/${pool.cpu.t}</span></td>
+              <td class="px-4 py-2.5 text-right font-mono text-xs ${memP>=85?'text-red':''}">${usedMem}<span class="text-ink-4 font-normal">/${pool.mem.t}</span></td>
+              <td class="px-4 py-2.5 text-right font-mono text-xs ${dskP>=85?'text-red':''}">${usedDisk.toFixed(1)}<span class="text-ink-4 font-normal">/${pool.disk.t}</span></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateKPI();
+}
+
+function updateKPI() {
+  const totalAllocs = ALLOCS.filter(a=>a.status==='active').length;
+  const overCount = SHARED_POOLS.filter(pool => {
+    const allocs = ALLOCS.filter(a => a.pool_id === pool.id && a.status === 'active');
+    const usedCpu = allocs.reduce((s,a)=>s+a.cpu,0);
+    const usedMem = allocs.reduce((s,a)=>s+a.mem,0);
+    return pct(usedCpu,pool.cpu.t)>=85 || pct(usedMem,pool.mem.t)>=85;
+  }).length;
+  document.getElementById('kpi-allocs').textContent = totalAllocs;
+  document.getElementById('kpi-pending-req').textContent = PENDING_REQS.length;
+  document.getElementById('kpi-over').textContent = overCount;
+  document.getElementById('pending-badge').textContent = PENDING_REQS.length;
+}
+
+// ══════════════════════════════
+//  ALLOC MODAL (新增 or 調整)
+// ══════════════════════════════
+function openAllocModal(poolId, allocId) {
+  const pool = SHARED_POOLS.find(p => p.id === poolId);
+  allocModal.poolId = poolId;
+  allocModal.reqId = null;
+
+  if (allocId) {
+    // Edit mode
+    const a = ALLOCS.find(x => x.id === allocId);
+    allocModal.editId = allocId;
+    allocModal.draftAllocs = [{ system: a.system, project: a.project, env: a.env, cpu: a.cpu, mem: a.mem, disk: a.disk }];
+    document.getElementById('alloc-modal-title').textContent = `調整 Allocation — ${a.system}`;
+    document.getElementById('alloc-modal-sub').textContent = `${pool.name} · ${a.project}`;
+  } else {
+    // Add mode
+    allocModal.editId = null;
+    allocModal.draftAllocs = [{ system: '', project: '', env: 'Prod', cpu: '', mem: '', disk: '' }];
+    document.getElementById('alloc-modal-title').textContent = `新增 Allocation — ${pool.id}`;
+    document.getElementById('alloc-modal-sub').textContent = pool.name;
+  }
+
+  renderAllocModal(pool);
+  document.getElementById('alloc-modal').classList.remove('hidden');
+}
+
+function openAllocModalFromReq(reqId, sysIdx, mountIdx) {
+  const req = PENDING_REQS.find(r => r.id === reqId);
+  const sys = req.systems[sysIdx];
+  const mount = sys.mounts[mountIdx];
+  const pool = SHARED_POOLS.find(p => p.id === mount.pool_id);
+
+  allocModal.poolId = mount.pool_id;
+  allocModal.reqId = reqId;
+  allocModal.sysIdx = sysIdx;
+  allocModal.mountIdx = mountIdx;
+  allocModal.editId = null;
+  allocModal.draftAllocs = [{
+    system: sys.name, project: req.project, env: sys.env,
+    cpu: mount.est_cpu || '', mem: mount.est_mem || '', disk: ''
+  }];
+
+  document.getElementById('alloc-modal-title').textContent = `設定 Allocation — ${sys.name}`;
+  document.getElementById('alloc-modal-sub').textContent = `申請單 ${reqId} · ${pool.name}`;
+
+  renderAllocModal(pool);
+  document.getElementById('alloc-modal').classList.remove('hidden');
+}
+
+function renderAllocModal(pool) {
+  // Pool capacity
+  const poolAllocs = ALLOCS.filter(a => a.pool_id === pool.id && a.status === 'active');
+  const editId = allocModal.editId;
+  // Exclude self when editing
+  const otherAllocs = editId ? poolAllocs.filter(a => a.id !== editId) : poolAllocs;
+  const baseCpu  = otherAllocs.reduce((s,a)=>s+a.cpu,0);
+  const baseMem  = otherAllocs.reduce((s,a)=>s+a.mem,0);
+  const baseDisk = otherAllocs.reduce((s,a)=>s+a.disk,0);
+  const freeCpu  = pool.cpu.t  - baseCpu;
+  const freeMem  = pool.mem.t  - baseMem;
+  const freeDisk = pool.disk.t - baseDisk;
+
+  document.getElementById('modal-pool-cap').innerHTML = `
+    <div class="text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 mb-2">${pool.id} · ${pool.name} — 可用容量</div>
+    <div class="grid grid-cols-3 gap-4">
+      ${['CPU','Mem','Disk'].map((lbl,i) => {
+        const totals = [pool.cpu.t, pool.mem.t, pool.disk.t];
+        const frees  = [freeCpu, freeMem, freeDisk];
+        const units  = ['C','GB','TB'];
+        const p = pct(totals[i]-frees[i], totals[i]);
+        return `<div>
+          <div class="flex justify-between text-[10px] mb-1">
+            <span class="text-ink-4">${lbl}</span>
+            <span class="font-mono text-shr font-semibold">剩 ${frees[i]}${units[i]}</span>
+          </div>
+          <div class="res-track"><div class="res-fill" style="width:${p}%;background:${barColor(p)}"></div></div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">總 ${totals[i]}${units[i]}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+
+  // Form rows
+  const draft = allocModal.draftAllocs[0];
+  const isEdit = !!editId;
+
+  document.getElementById('alloc-modal-body').innerHTML = `
+    <div class="flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">系統名稱 <span class="text-red">*</span></label>
+          <input id="af-system" type="text" value="${draft.system}" ${isEdit?'disabled':''} placeholder="例：ERP"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs bg-white transition-all ${isEdit?'bg-surf-2 text-ink-3':''}" oninput="allocModal.draftAllocs[0].system=this.value">
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">專案</label>
+          <input id="af-project" type="text" value="${draft.project}" ${isEdit?'disabled':''} placeholder="例：電發專案"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs bg-white transition-all ${isEdit?'bg-surf-2 text-ink-3':''}" oninput="allocModal.draftAllocs[0].project=this.value">
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[11px] font-semibold text-ink-2">環境</label>
+        <div class="flex gap-3">
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="radio" name="af-env" value="Prod" ${draft.env==='Prod'?'checked':''} onchange="allocModal.draftAllocs[0].env='Prod'" class="accent-grn">
+            <span class="text-xs font-semibold text-grn">Prod</span>
+          </label>
+          <label class="flex items-center gap-1.5 cursor-pointer">
+            <input type="radio" name="af-env" value="UAT" ${draft.env==='UAT'?'checked':''} onchange="allocModal.draftAllocs[0].env='UAT'" class="accent-pur">
+            <span class="text-xs font-semibold text-pur">UAT</span>
+          </label>
+        </div>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-[3px] h-3.5 bg-shr rounded-full"></div>
+          <span class="text-[11px] font-bold uppercase tracking-[.06em] text-ink-2">配額設定</span>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-ink-2">CPU <span class="text-ink-4 font-normal">(Core)</span></label>
+            <input id="af-cpu" type="number" min="0" max="${freeCpu}" value="${draft.cpu}" placeholder="0"
+              class="border border-bord rounded-[6px] px-3 py-2 text-xs font-mono bg-white transition-all"
+              oninput="validateQuota(this,${freeCpu},'CPU',${freeCpu},'C')">
+            <span class="text-[10px] text-ink-4">可分配 ${freeCpu}C</span>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-ink-2">Memory <span class="text-ink-4 font-normal">(GB)</span></label>
+            <input id="af-mem" type="number" min="0" max="${freeMem}" value="${draft.mem}" placeholder="0"
+              class="border border-bord rounded-[6px] px-3 py-2 text-xs font-mono bg-white transition-all"
+              oninput="validateQuota(this,${freeMem},'Memory',${freeMem},'GB')">
+            <span class="text-[10px] text-ink-4">可分配 ${freeMem}GB</span>
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-ink-2">Disk <span class="text-ink-4 font-normal">(TB)</span></label>
+            <input id="af-disk" type="number" min="0" step="0.1" max="${freeDisk}" value="${draft.disk}" placeholder="0"
+              class="border border-bord rounded-[6px] px-3 py-2 text-xs font-mono bg-white transition-all"
+              oninput="validateQuota(this,${freeDisk},'Disk',${freeDisk},'TB')">
+            <span class="text-[10px] text-ink-4">可分配 ${freeDisk.toFixed(1)}TB</span>
+          </div>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('alloc-error').classList.add('hidden');
+}
+
+function validateQuota(el, max, label, free, unit) {
+  const val = parseFloat(el.value);
+  if (!isNaN(val) && val > max) {
+    el.classList.add('over-limit');
+    document.getElementById('alloc-error').textContent = `${label} 超過可分配量（最多 ${free}${unit}）`;
+    document.getElementById('alloc-error').classList.remove('hidden');
+  } else {
+    el.classList.remove('over-limit');
+    document.getElementById('alloc-error').classList.add('hidden');
+  }
+}
+
+function executeAlloc() {
+  const pool = SHARED_POOLS.find(p => p.id === allocModal.poolId);
+  const cpu  = parseFloat(document.getElementById('af-cpu').value)  || 0;
+  const mem  = parseFloat(document.getElementById('af-mem').value)   || 0;
+  const disk = parseFloat(document.getElementById('af-disk').value)  || 0;
+  const system  = document.getElementById('af-system').value.trim();
+  const project = document.getElementById('af-project').value.trim();
+  const env = document.querySelector('input[name="af-env"]:checked').value;
+
+  const err = document.getElementById('alloc-error');
+  const show = msg => { err.textContent = msg; err.classList.remove('hidden'); };
+
+  if (!system) return show('請填寫系統名稱');
+
+  // capacity check (excluding self)
+  const editId = allocModal.editId;
+  const others = ALLOCS.filter(a => a.pool_id === allocModal.poolId && a.status==='active' && a.id !== editId);
+  const usedCpu  = others.reduce((s,a)=>s+a.cpu,0);
+  const usedMem  = others.reduce((s,a)=>s+a.mem,0);
+  const usedDisk = others.reduce((s,a)=>s+a.disk,0);
+
+  if (cpu  > 0 && usedCpu  + cpu  > pool.cpu.t)  return show(`CPU 超過 Pool 總量（${pool.cpu.t}C）`);
+  if (mem  > 0 && usedMem  + mem  > pool.mem.t)  return show(`Memory 超過 Pool 總量（${pool.mem.t}GB）`);
+  if (disk > 0 && usedDisk + disk > pool.disk.t) return show(`Disk 超過 Pool 總量（${pool.disk.t}TB）`);
+
+  if (editId) {
+    const a = ALLOCS.find(x => x.id === editId);
+    a.cpu = cpu; a.mem = mem; a.disk = disk; a.env = env;
+    DataService.updateAllocation(editId, { quota_cpu:cpu, quota_mem_gb:mem, quota_disk_tb:disk, env });
+  } else {
+    const newId = 'A' + String(++allocCounter).padStart(3,'0');
+    const newAlloc = { id: newId, pool_id: allocModal.poolId, project, system, env, cpu, mem, disk, status:'active' };
+    ALLOCS.push(newAlloc);
+    DataService.createAllocation({ id:newId, pool_id:allocModal.poolId, env,
+      _project: project, _system: system,
+      quota_cpu:cpu, quota_mem_gb:mem, quota_disk_tb:disk, status:'active' });
+    // If from request, mark mount as done
+    if (allocModal.reqId) {
+      const req = PENDING_REQS.find(r => r.id === allocModal.reqId);
+      if (req) {
+        req.systems[allocModal.sysIdx].mounts[allocModal.mountIdx]._done = true;
+        // Check if all mounts done
+        const allDone = req.systems.every(s => s.mounts.every(m => m._done));
+        if (allDone) PENDING_REQS.splice(PENDING_REQS.findIndex(r => r.id === allocModal.reqId), 1);
+      }
+    }
+  }
+
+  closeAllocModal();
+  renderPoolCards();
+  updateKPI();
+}
+
+function closeAllocModal() { document.getElementById('alloc-modal').classList.add('hidden'); }
+function handleModalBg(e) { if (e.target === document.getElementById('alloc-modal')) closeAllocModal(); }
+
+// ══════════════════════════════
+//  REMOVE ALLOC
+// ══════════════════════════════
+function confirmRemoveAlloc(allocId) {
+  const a = ALLOCS.find(x => x.id === allocId);
+  document.getElementById('confirm-title').textContent = `移除 Allocation — ${a.system}`;
+  document.getElementById('confirm-msg').textContent = `將移除「${a.system}」在此 Pool 的配額（CPU ${a.cpu}C · Mem ${a.mem}GB · Disk ${a.disk}TB），移除後系統將無法使用此 Pool 的資源。`;
+  document.getElementById('confirm-ok-btn').textContent = '確認移除';
+  document.getElementById('confirm-ok-btn').className = 'px-4 py-2 text-xs font-bold text-white bg-red rounded-[6px] hover:bg-red/80 transition-all';
+  pendingConfirm = () => {
+    ALLOCS = ALLOCS.filter(x => x.id !== allocId);
+    DataService.deleteAllocation(allocId);
+    renderPoolCards();
+  };
+  document.getElementById('confirm-modal').classList.remove('hidden');
+}
+
+function closeConfirm() { document.getElementById('confirm-modal').classList.add('hidden'); pendingConfirm=null; }
+function doConfirm() { if(pendingConfirm) pendingConfirm(); closeConfirm(); }
+
+// ══════════════════════════════
+//  PENDING REQUESTS
+// ══════════════════════════════
+function renderRequests() {
+  const el = document.getElementById('req-list');
+  if (!PENDING_REQS.length) {
+    el.innerHTML = `<div class="bg-white border border-bord rounded-[10px] shadow-sm flex flex-col items-center justify-center py-16 text-ink-4">
+      <div class="text-4xl mb-3 opacity-25">✅</div>
+      <div class="text-sm font-semibold text-ink-3">目前沒有待執行的申請</div>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = PENDING_REQS.map((req, ri) => {
+    const allShrMounts = req.systems.flatMap((s,si) =>
+      s.mounts.filter(m => SHARED_POOLS.find(p=>p.id===m.pool_id))
+              .map((m,mi) => ({...m, sysName:s.name, sysEnv:s.env, si, mi}))
+    );
+    const hasDedOnly = req.systems.every(s => s.mounts.every(m => !SHARED_POOLS.find(p=>p.id===m.pool_id)));
+
+    return `<div class="bg-white border border-bord rounded-[10px] shadow-sm overflow-hidden anim" style="animation-delay:${ri*60}ms">
+      <!-- Req header -->
+      <div class="px-5 py-4 border-b border-bord flex flex-wrap items-start gap-3">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-mono text-xs font-bold text-ink">${req.id}</span>
+            <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border bg-amb-l text-amb border-amb-m">待執行</span>
+          </div>
+          <div class="text-xs text-ink-3 mt-1">專案：<span class="font-semibold text-ink">${req.project}</span>　申請人：${req.applicant}　${req.created}</div>
+        </div>
+      </div>
+
+      <!-- Systems & mounts -->
+      <div class="divide-y divide-bord">
+        ${req.systems.map((sys, si) => `
+          <div class="px-5 py-4">
+            <div class="flex items-center gap-2 mb-3">
+              <span class="text-xs font-bold text-ink">${sys.name}</span>
+              <span class="font-mono text-[10px] text-ink-4">${sys.code}</span>
+              <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${sys.env==='Prod'?'bg-grn-l text-grn border-grn-m':'bg-pur-l text-pur border-pur-m'}">${sys.env}</span>
+            </div>
+            <div class="flex flex-col gap-2">
+              ${sys.mounts.map((m, mi) => {
+                const pool = SHARED_POOLS.find(p=>p.id===m.pool_id);
+                const isDone = m._done;
+                return `<div class="flex items-start gap-3 p-3 rounded-[6px] border ${isDone ? 'border-grn-m bg-grn-l' : 'border-bord bg-surf-2'}">
+                  <span class="font-mono text-[10px] font-bold px-1.5 py-0.5 rounded-[3px] border flex-shrink-0 mt-0.5 ${pool ? 'bg-shr-l text-shr border-shr-m' : 'bg-ded-l text-ded border-ded-m'}">${m.pool_id}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-xs font-semibold text-ink">${pool ? pool.name : m.pool_id}</div>
+                    ${pool ? `<div class="text-[10px] text-ink-4 mt-0.5">
+                      使用者預估：CPU ${m.est_cpu||'—'}C · Mem ${m.est_mem||'—'}GB
+                      ${m.note ? `<span class="ml-2 italic text-ink-3">${m.note}</span>` : ''}
+                    </div>` : '<div class="text-[10px] text-ink-4 mt-0.5">Dedicated Pool — 無需設定 Allocation</div>'}
+                  </div>
+                  ${pool ? (isDone
+                    ? `<span class="text-[10px] font-bold text-grn flex-shrink-0">✓ 已設定</span>`
+                    : `<button onclick="openAllocModalFromReq('${req.id}',${si},${mi})"
+                        class="flex-shrink-0 px-3 py-1.5 text-[10px] font-bold bg-shr text-white rounded-[5px] hover:bg-shr/80 transition-all">
+                        設定配額 →
+                      </button>`)
+                  : `<span class="text-[10px] text-ink-4 flex-shrink-0">自動處理</span>`}
+                </div>`;
+              }).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+
+      <!-- Footer -->
+      <div class="px-5 py-3 bg-surf-2 border-t border-bord flex items-center justify-between">
+        <span class="text-[11px] text-ink-4">
+          ${req.systems.flatMap(s=>s.mounts.filter(m=>SHARED_POOLS.find(p=>p.id===m.pool_id))).filter(m=>m._done).length}
+          /
+          ${req.systems.flatMap(s=>s.mounts.filter(m=>SHARED_POOLS.find(p=>p.id===m.pool_id))).length}
+          個 Shared Pool 已設定配額
+        </span>
+        <button onclick="checkAndExecuteReq('${req.id}')"
+          class="px-4 py-1.5 text-[10px] font-bold text-white rounded-[5px] transition-all
+            ${req.systems.flatMap(s=>s.mounts.filter(m=>SHARED_POOLS.find(p=>p.id===m.pool_id))).every(m=>m._done)
+              ? 'bg-grn hover:bg-grn/80 cursor-pointer'
+              : 'bg-bord-2 text-ink-4 cursor-not-allowed'}">
+          ▶ 執行開通
+        </button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkAndExecuteReq(reqId) {
+  const req = PENDING_REQS.find(r => r.id === reqId);
+  const shrMounts = req.systems.flatMap(s => s.mounts.filter(m => SHARED_POOLS.find(p=>p.id===m.pool_id)));
+  if (!shrMounts.every(m=>m._done)) return;
+
+  document.getElementById('confirm-title').textContent = '執行開通';
+  document.getElementById('confirm-msg').textContent = `確認執行申請單「${reqId}」？開通後申請單將標記為完成，系統可開始使用已分配的資源。`;
+  document.getElementById('confirm-ok-btn').textContent = '確認執行';
+  document.getElementById('confirm-ok-btn').className = 'px-4 py-2 text-xs font-bold text-white bg-shr rounded-[6px] hover:bg-shr/80 transition-all';
+  pendingConfirm = () => {
+    PENDING_REQS.splice(PENDING_REQS.findIndex(r => r.id === reqId), 1);
+    updateKPI();
+    renderRequests();
+  };
+  document.getElementById('confirm-modal').classList.remove('hidden');
+}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') { closeAllocModal(); closeConfirm(); }
+});
+
+(async () => {
+  const CLOUD_LABELS = { private:'私有雲', hicloud:'hiCloud', aws:'AWS' };
+  const SITE_LABELS  = { 'tp-main':'台北主中心','tc-dr':'台中異備中心','e7-main':'東七主中心','tw-main':'台灣主中心' };
+  try {
+    const { raw } = await DataService.loadAll();
+
+    SHARED_POOLS = raw.pools
+      .filter(p => p.type === 'shared')
+      .map(p => ({
+        id: p.id, name: p.name,
+        cloud: CLOUD_LABELS[p.cloud] || p.cloud,
+        site:  SITE_LABELS[p.site_id]  || p.site_id,
+        env: p.env,
+        cpu:  { t: p.cpu_total },
+        mem:  { t: p.mem_total_gb },
+        disk: { t: p.disk_total_tb },
+      }));
+
+    allocCounter = 0;
+    ALLOCS = raw.allocs.map(a => {
+      const proj = raw.projects.find(p => p.id === a.project_id);
+      const sys  = raw.systems.find(s => s.id === a.system_id);
+      const num  = parseInt((a.id||'').replace(/\D/g,'')) || 0;
+      if (num > allocCounter) allocCounter = num;
+      return {
+        id: a.id, pool_id: a.pool_id,
+        project: proj?.name || a._project || a.project_id || '—',
+        system:  sys?.name  || a._system  || a.system_id  || '—',
+        env: a.env, cpu: a.quota_cpu, mem: a.quota_mem_gb,
+        disk: a.quota_disk_tb, status: a.status,
+      };
+    });
+
+    renderPoolCards();
+  } catch(err) {
+    console.error(err);
+    document.getElementById('pool-cards').innerHTML =
+      `<div class="text-center text-red py-12 text-sm">資料載入失敗：${err.message}</div>`;
+  }
+})();
+</script>
+</body>
+</html>

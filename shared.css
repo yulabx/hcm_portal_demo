@@ -1,0 +1,62 @@
+/* ══════════════════════════════════════════════════════
+   shared.css — 跨頁共用樣式
+   所有頁面 <link rel="stylesheet" href="shared.css">
+   各頁面自身的 <style> 只保留頁面專屬規則
+══════════════════════════════════════════════════════ */
+
+/* ── body background ──────────────────────────────── */
+body { background: #f5f6f8; }
+
+/* ── global scrollbar ─────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 99px; }
+
+/* ── sidebar collapse ─────────────────────────────── */
+.sb-collapsed #sidebar { width: 52px; }
+.sb-collapsed #sidebar .sb-label,
+.sb-collapsed #sidebar .sb-section,
+.sb-collapsed #sidebar .sb-badge,
+.sb-collapsed #sidebar .brand-text { opacity: 0; width: 0; overflow: hidden; pointer-events: none; }
+.sb-collapsed #sidebar .sb-item    { justify-content: center; padding: 8px; }
+.sb-collapsed #sidebar .sb-toggle-btn { justify-content: center; padding: 8px; }
+.sb-collapsed #sidebar .toggle-icon   { transform: rotate(180deg); }
+.sb-collapsed .tb-brand  { width: 52px; padding: 0 10px; justify-content: center; }
+.sb-collapsed .brand-text { opacity: 0; width: 0; overflow: hidden; }
+
+/* ── transitions ──────────────────────────────────── */
+#sidebar, .tb-brand, #sidebar .sb-label, #sidebar .sb-section,
+#sidebar .brand-text, #sidebar .sb-badge { transition: all .25s cubic-bezier(.23,1,.32,1); }
+.toggle-icon { transition: transform .25s cubic-bezier(.23,1,.32,1); }
+
+/* ── animations ───────────────────────────────────── */
+@keyframes fadeUp  { from { opacity:0; transform:translateY(6px) } to { opacity:1; transform:none } }
+@keyframes modalIn { from { opacity:0; transform:translateY(10px) scale(.98) } to { opacity:1; transform:none } }
+.anim     { animation: fadeUp  .22s ease both; }
+.modal-in { animation: modalIn .2s  cubic-bezier(.23,1,.32,1) both; }
+
+/* ── resource progress bar ────────────────────────── */
+.res-track { background: #e8e8e8; border-radius: 99px; height: 5px; overflow: hidden; }
+.res-fill  { height: 100%; border-radius: 99px; transition: width .4s cubic-bezier(.23,1,.32,1); }
+
+/* ── form focus ring ──────────────────────────────── */
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #ea580c;
+  box-shadow: 0 0 0 3px rgba(234,88,12,.1);
+}
+input[type=number]::-webkit-inner-spin-button { opacity: .4; }
+
+/* ── modal backdrop ───────────────────────────────── */
+.modal-backdrop { background: rgba(15,15,15,.45); backdrop-filter: blur(2px); }
+
+/* ── badge colour classes ─────────────────────────── */
+.b-ded     { background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; }
+.b-shr     { background:#f0fdfa; color:#0d9488; border:1px solid #99f6e4; }
+.b-prod    { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; }
+.b-uat     { background:#f5f3ff; color:#7c3aed; border:1px solid #ddd6fe; }
+.b-run     { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; }
+.b-stop    { background:#f7f8fa; color:#a3a3a3; border:1px solid #e8e8e8; }
+.b-primary { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; }
+.b-dr      { background:#fef2f2; color:#dc2626; border:1px solid #fecaca; }
+.b-main    { background:#f0fdf4; color:#16a34a; border:1px solid #bbf7d0; }
+.b-neutral { background:#f7f8fa; color:#737373; border:1px solid #e8e8e8; }

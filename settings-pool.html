@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool 管理 — 雲地整合平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="tailwind-config.js"></script>
+  <script src="menu.js"></script>
+  <script src="sidebar.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body class="text-ink text-sm font-sans flex flex-col min-h-screen">
+
+<!-- ══ TOP BAR ══ -->
+<header class="h-[52px] bg-white border-b border-bord flex items-center pr-4 sticky top-0 z-30 flex-shrink-0 shadow-sm">
+  <div class="tb-brand flex items-center gap-2.5 px-4 border-r border-bord h-full w-[220px] flex-shrink-0 overflow-hidden transition-all duration-250">
+    <div class="w-7 h-7 bg-or rounded-[6px] flex items-center justify-center text-white font-mono text-[10px] font-bold flex-shrink-0">HCM</div>
+    <div class="brand-text overflow-hidden transition-all duration-250">
+      <div class="text-sm font-extrabold tracking-tight whitespace-nowrap">雲地整合平台</div>
+      <div class="text-[10px] text-ink-4 font-mono whitespace-nowrap">INFRA PORTAL</div>
+    </div>
+  </div>
+  <div class="flex-1 flex items-center px-5 gap-4">
+    <span class="text-sm font-bold tracking-tight">系統設定</span>
+    <span class="text-bord-2 text-xs">/</span>
+    <span class="text-xs text-ink-3 font-semibold">Pool 管理</span>
+  </div>
+  <div class="flex items-center gap-2">
+    <button id="topAddBtn" onclick="topAdd()" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-or text-white text-xs font-semibold rounded-[6px] hover:bg-or-d transition-colors">
+      <span class="text-base leading-none">＋</span> <span id="topAddLabel">新增 Pool</span>
+    </button>
+    <div class="w-[30px] h-[30px] rounded-full bg-gradient-to-br from-ded to-shr flex items-center justify-center text-white text-[11px] font-bold">管</div>
+  </div>
+</header>
+
+<!-- ══ APP BODY ══ -->
+<div class="flex flex-1 min-h-0 overflow-hidden" id="appBody">
+
+  <!-- ── SIDEBAR ── -->
+  <div id="sidebar-root" data-active="settings-pool"></div>
+
+  <!-- ── MAIN ── -->
+  <main class="flex-1 overflow-y-auto min-w-0">
+    <div class="p-6 max-w-[1200px] mx-auto">
+
+      <!-- Tab switcher -->
+      <div class="flex gap-1 bg-white border border-bord rounded-[8px] p-1 shadow-sm mb-5 w-fit">
+        <button id="tab-pool-btn" onclick="switchTab('pool')"
+          class="px-4 py-1.5 text-xs font-semibold rounded-[5px] bg-or text-white transition-all">Pool 管理</button>
+        <button id="tab-subnet-btn" onclick="switchTab('subnet')"
+          class="px-4 py-1.5 text-xs font-semibold rounded-[5px] bg-transparent text-ink-3 hover:bg-surf-2 transition-all">Subnet 管理</button>
+      </div>
+
+      <!-- ══ POOL TAB ══ -->
+      <div id="tab-pool">
+
+      <!-- KPI strip -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 border border-bord rounded-[8px] overflow-hidden bg-white shadow-sm mb-6">
+        <div class="px-5 py-4 border-r border-bord relative">
+          <div class="absolute top-0 left-0 right-0 h-[3px] bg-or rounded-tl-[8px]"></div>
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1" id="kpi-total">13</div>
+          <div class="text-[11px] font-semibold text-ink-2">Total Pools</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">Ded 10 · Shr 3</div>
+        </div>
+        <div class="px-5 py-4 border-r border-bord sm:border-r">
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-ded" id="kpi-ded">10</div>
+          <div class="text-[11px] font-semibold text-ink-2">Dedicated</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">P01 – P10</div>
+        </div>
+        <div class="px-5 py-4 border-r border-bord">
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-shr" id="kpi-shr">3</div>
+          <div class="text-[11px] font-semibold text-ink-2">Shared</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">S01 – S03</div>
+        </div>
+        <div class="px-5 py-4">
+          <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-red" id="kpi-inactive">1</div>
+          <div class="text-[11px] font-semibold text-ink-2">Inactive</div>
+          <div class="text-[10px] text-ink-4 font-mono mt-0.5">停用中</div>
+        </div>
+      </div>
+
+      <!-- Filter bar -->
+      <div class="flex flex-wrap items-center gap-3 mb-4">
+        <div class="flex items-center gap-1 bg-white border border-bord rounded-[6px] px-3 py-1.5 shadow-sm">
+          <span class="text-ink-4 text-xs">🔍</span>
+          <input id="searchInput" type="text" placeholder="搜尋 Pool ID 或名稱…" oninput="renderTable()"
+            class="text-xs outline-none bg-transparent w-44 placeholder-ink-4 text-ink">
+        </div>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-[10px] text-ink-4 font-semibold">類型：</span>
+          <button onclick="setFilter('type','all',this)" class="fchip active px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-ink text-white transition-all">全部</button>
+          <button onclick="setFilter('type','dedicated',this)" class="fchip px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-ded hover:text-ded transition-all">Dedicated</button>
+          <button onclick="setFilter('type','shared',this)" class="fchip px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-shr hover:text-shr transition-all">Shared</button>
+        </div>
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <span class="text-[10px] text-ink-4 font-semibold">環境：</span>
+          <button onclick="setFilter('env','all',this)" class="fchip2 active px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-ink text-white transition-all">全部</button>
+          <button onclick="setFilter('env','Prod',this)" class="fchip2 px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-grn hover:text-grn transition-all">Prod</button>
+          <button onclick="setFilter('env','UAT',this)" class="fchip2 px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-pur hover:text-pur transition-all">UAT</button>
+        </div>
+        <div class="ml-auto text-[10px] text-ink-4 font-mono" id="resultCount"></div>
+      </div>
+
+      <!-- Table -->
+      <div class="bg-white border border-bord rounded-[8px] shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b border-bord bg-surf-2">
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Pool ID</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">名稱</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">類型</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Cloud</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">環境</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 min-w-[180px]">CPU</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 min-w-[180px]">Memory</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 min-w-[180px]">Disk</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">狀態</th>
+                <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">操作</th>
+              </tr>
+            </thead>
+            <tbody id="poolTableBody"></tbody>
+          </table>
+        </div>
+        <div id="emptyState" class="hidden flex flex-col items-center justify-center py-16 text-ink-4">
+          <div class="text-4xl mb-3 opacity-25">🗄</div>
+          <div class="text-sm font-semibold text-ink-3">找不到符合條件的 Pool</div>
+        </div>
+      </div>
+
+      </div><!-- /tab-pool -->
+
+      <!-- ══ SUBNET TAB ══ -->
+      <div id="tab-subnet" class="hidden">
+
+        <!-- Subnet KPI -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 border border-bord rounded-[8px] overflow-hidden bg-white shadow-sm mb-6">
+          <div class="px-5 py-4 border-r border-bord relative">
+            <div class="absolute top-0 left-0 right-0 h-[3px] bg-or rounded-tl-[8px]"></div>
+            <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1" id="sn-kpi-total">0</div>
+            <div class="text-[11px] font-semibold text-ink-2">Total Subnets</div>
+          </div>
+          <div class="px-5 py-4 border-r border-bord">
+            <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-ink-3" id="sn-kpi-private">0</div>
+            <div class="text-[11px] font-semibold text-ink-2">私有雲</div>
+          </div>
+          <div class="px-5 py-4 border-r border-bord">
+            <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-shr" id="sn-kpi-hicloud">0</div>
+            <div class="text-[11px] font-semibold text-ink-2">hiCloud</div>
+          </div>
+          <div class="px-5 py-4">
+            <div class="text-[28px] font-extrabold tracking-tight leading-none mb-1 text-amb" id="sn-kpi-aws">0</div>
+            <div class="text-[11px] font-semibold text-ink-2">AWS</div>
+          </div>
+        </div>
+
+        <!-- Subnet filter -->
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <div class="flex items-center gap-1 bg-white border border-bord rounded-[6px] px-3 py-1.5 shadow-sm">
+            <span class="text-ink-4 text-xs">🔍</span>
+            <input id="snSearchInput" type="text" placeholder="搜尋 Subnet ID 或名稱…" oninput="renderSubnetTable()"
+              class="text-xs outline-none bg-transparent w-44 placeholder-ink-4 text-ink">
+          </div>
+          <div class="flex items-center gap-1.5 flex-wrap">
+            <span class="text-[10px] text-ink-4 font-semibold">Cloud：</span>
+            <button onclick="setSnFilter('all',this)" class="snchip active px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-ink text-white transition-all">全部</button>
+            <button onclick="setSnFilter('private',this)" class="snchip px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-ink-3 transition-all">私有雲</button>
+            <button onclick="setSnFilter('hicloud',this)" class="snchip px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-shr hover:text-shr transition-all">hiCloud</button>
+            <button onclick="setSnFilter('aws',this)" class="snchip px-2.5 py-1 text-[10px] font-semibold rounded-[4px] border border-bord bg-white text-ink-3 hover:border-amb hover:text-amb transition-all">AWS</button>
+          </div>
+          <div class="ml-auto text-[10px] text-ink-4 font-mono" id="snResultCount"></div>
+        </div>
+
+        <!-- Subnet table -->
+        <div class="bg-white border border-bord rounded-[8px] shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b border-bord bg-surf-2">
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Subnet ID</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">名稱</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">CIDR</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">類型</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Cloud</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">Site</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">狀態</th>
+                  <th class="px-4 py-3 text-left text-[10px] font-bold uppercase tracking-[.1em] text-ink-4 whitespace-nowrap">操作</th>
+                </tr>
+              </thead>
+              <tbody id="subnetTableBody"></tbody>
+            </table>
+          </div>
+          <div id="snEmptyState" class="hidden flex flex-col items-center justify-center py-16 text-ink-4">
+            <div class="text-4xl mb-3 opacity-25">🌐</div>
+            <div class="text-sm font-semibold text-ink-3">找不到符合條件的 Subnet</div>
+          </div>
+        </div>
+
+      </div><!-- /tab-subnet -->
+
+    </div>
+  </main>
+</div>
+
+<!-- ══ SUBNET MODAL ══ -->
+<div id="snModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop" onclick="handleSnBackdrop(event)">
+  <div class="modal-in bg-white rounded-[10px] shadow-lg w-full max-w-[480px]" onclick="event.stopPropagation()">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-bord">
+      <div>
+        <h2 class="text-sm font-bold text-ink" id="snModalTitle">新增 Subnet</h2>
+        <p class="text-[11px] text-ink-4 mt-0.5">定義網段基本資訊</p>
+      </div>
+      <button onclick="closeSnModal()" class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surf-2 text-ink-4 hover:text-ink transition-colors text-lg leading-none">✕</button>
+    </div>
+    <div class="px-6 py-5 flex flex-col gap-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">Subnet ID <span class="text-red">*</span></label>
+          <input id="sn-id" type="text" placeholder="例：SN11" maxlength="8"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all font-mono uppercase">
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">名稱 <span class="text-red">*</span></label>
+          <input id="sn-name" type="text" placeholder="例：內部應用網段"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all">
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[11px] font-semibold text-ink-2">CIDR <span class="text-red">*</span></label>
+        <input id="sn-cidr" type="text" placeholder="例：10.10.1.0/24"
+          class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all font-mono">
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">類型 <span class="text-red">*</span></label>
+          <select id="sn-type" class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all bg-white">
+            <option value="internal">Internal（內部）</option>
+            <option value="dmz">DMZ</option>
+            <option value="management">Management（管理網段）</option>
+            <option value="public">Public（公開）</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">Cloud <span class="text-red">*</span></label>
+          <select id="sn-cloud" class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all bg-white">
+            <option value="private">私有雲</option>
+            <option value="hicloud">hiCloud</option>
+            <option value="aws">AWS</option>
+          </select>
+        </div>
+      </div>
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[11px] font-semibold text-ink-2">Site <span class="text-red">*</span></label>
+        <input id="sn-site" type="text" placeholder="例：台北主中心"
+          class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all">
+      </div>
+      <div id="snFormError" class="hidden text-[11px] text-red bg-red-l border border-red-m rounded-[6px] px-3 py-2"></div>
+    </div>
+    <div class="flex items-center justify-between px-6 py-4 border-t border-bord bg-surf-2 rounded-b-[10px]">
+      <button onclick="closeSnModal()" class="px-4 py-2 text-xs font-semibold text-ink-3 border border-bord rounded-[6px] bg-white hover:border-bord-2 hover:bg-surf-2 transition-all">取消</button>
+      <button onclick="saveSubnet()" class="px-5 py-2 text-xs font-semibold text-white bg-or rounded-[6px] hover:bg-or-d transition-all" id="snSaveBtn">建立 Subnet</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL ══ -->
+<div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop" onclick="handleBackdropClick(event)">
+  <div class="modal-in bg-white rounded-[10px] shadow-lg w-full max-w-[560px] max-h-[90vh] overflow-y-auto" onclick="event.stopPropagation()">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between px-6 py-4 border-b border-bord">
+      <div>
+        <h2 class="text-sm font-bold text-ink" id="modalTitle">新增 Pool</h2>
+        <p class="text-[11px] text-ink-4 mt-0.5" id="modalSub">填寫 Pool 基本資訊與資源容量</p>
+      </div>
+      <button onclick="closeModal()" class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-surf-2 text-ink-4 hover:text-ink transition-colors text-lg leading-none">✕</button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="px-6 py-5 flex flex-col gap-5">
+
+      <!-- Row 1: ID + Name -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">Pool ID <span class="text-red">*</span></label>
+          <input id="f-id" type="text" placeholder="例：S04" maxlength="6"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or focus:ring-1 focus:ring-or/20 transition-all font-mono uppercase">
+          <span class="text-[10px] text-ink-4">4–6 碼，大寫英數</span>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">Pool 名稱 <span class="text-red">*</span></label>
+          <input id="f-name" type="text" placeholder="例：共享運算池 A"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or focus:ring-1 focus:ring-or/20 transition-all">
+        </div>
+      </div>
+
+      <!-- Row 2: Type + Env -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">類型 <span class="text-red">*</span></label>
+          <div class="flex gap-2">
+            <label class="flex-1 flex items-center gap-2 border border-bord rounded-[6px] px-3 py-2 cursor-pointer hover:border-ded transition-all has-[:checked]:border-ded has-[:checked]:bg-ded-l">
+              <input type="radio" name="pool-type" value="dedicated" checked class="accent-ded">
+              <span class="text-xs font-semibold text-ded">Dedicated</span>
+            </label>
+            <label class="flex-1 flex items-center gap-2 border border-bord rounded-[6px] px-3 py-2 cursor-pointer hover:border-shr transition-all has-[:checked]:border-shr has-[:checked]:bg-shr-l">
+              <input type="radio" name="pool-type" value="shared" class="accent-shr">
+              <span class="text-xs font-semibold text-shr">Shared</span>
+            </label>
+          </div>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">環境 <span class="text-red">*</span></label>
+          <div class="flex gap-2">
+            <label class="flex-1 flex items-center gap-2 border border-bord rounded-[6px] px-3 py-2 cursor-pointer hover:border-grn transition-all has-[:checked]:border-grn has-[:checked]:bg-grn-l">
+              <input type="radio" name="pool-env" value="Prod" checked class="accent-grn">
+              <span class="text-xs font-semibold text-grn-DEFAULT">Prod</span>
+            </label>
+            <label class="flex-1 flex items-center gap-2 border border-bord rounded-[6px] px-3 py-2 cursor-pointer hover:border-pur transition-all has-[:checked]:border-pur has-[:checked]:bg-pur-l">
+              <input type="radio" name="pool-env" value="UAT" class="accent-pur">
+              <span class="text-xs font-semibold text-pur">UAT</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 3: Cloud + Site -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">Cloud <span class="text-red">*</span></label>
+          <select id="f-cloud" onchange="renderSubnetCheckboxes()" class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or transition-all bg-white">
+            <option value="private">私有雲</option>
+            <option value="hicloud">hiCloud</option>
+            <option value="aws">AWS</option>
+          </select>
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[11px] font-semibold text-ink-2">Site <span class="text-red">*</span></label>
+          <input id="f-site" type="text" placeholder="例：台北主中心"
+            class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or focus:ring-1 focus:ring-or/20 transition-all">
+        </div>
+      </div>
+
+      <!-- Divider: 資源容量 -->
+      <div>
+        <div class="flex items-center gap-2 mb-3">
+          <div class="w-[3px] h-[14px] bg-or rounded-full"></div>
+          <span class="text-[11px] font-bold uppercase tracking-[.06em] text-ink-2">資源容量（總量）</span>
+        </div>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-ink-2">CPU <span class="text-ink-4 font-normal">(Core)</span></label>
+            <input id="f-cpu" type="number" min="0" placeholder="0"
+              class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or focus:ring-1 focus:ring-or/20 transition-all font-mono">
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-ink-2">Memory <span class="text-ink-4 font-normal">(GB)</span></label>
+            <input id="f-mem" type="number" min="0" placeholder="0"
+              class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or focus:ring-1 focus:ring-or/20 transition-all font-mono">
+          </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-[11px] font-semibold text-ink-2">Disk <span class="text-ink-4 font-normal">(TB)</span></label>
+            <input id="f-disk" type="number" min="0" step="0.1" placeholder="0"
+              class="border border-bord rounded-[6px] px-3 py-2 text-xs outline-none focus:border-or focus:ring-1 focus:ring-or/20 transition-all font-mono">
+          </div>
+        </div>
+        <p class="text-[10px] text-ink-4 mt-2">Shared Pool 的總容量上限；Allocation 分配量不可超過此值</p>
+      </div>
+
+      <!-- Subnet bindings -->
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <div class="w-[3px] h-[14px] bg-or rounded-full"></div>
+          <span class="text-[11px] font-bold uppercase tracking-[.06em] text-ink-2">可用 Subnet</span>
+          <span class="text-[10px] text-ink-4 font-normal ml-1">（依此 Pool 的 Cloud 自動過濾）</span>
+        </div>
+        <div id="f-subnets" class="flex flex-col gap-1 max-h-[160px] overflow-y-auto border border-bord rounded-[6px] p-2.5 bg-surf-2">
+          <div class="text-[10px] text-ink-4 py-1">請先選擇 Cloud</div>
+        </div>
+        <p class="text-[10px] text-ink-4 mt-1.5">建立 VM 時，使用者只能從勾選的 Subnet 中選擇</p>
+      </div>
+
+      <!-- Error msg -->
+      <div id="formError" class="hidden text-[11px] text-red bg-red-l border border-red-m rounded-[6px] px-3 py-2"></div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="flex items-center justify-between px-6 py-4 border-t border-bord bg-surf-2 rounded-b-[10px]">
+      <button onclick="closeModal()" class="px-4 py-2 text-xs font-semibold text-ink-3 border border-bord rounded-[6px] bg-white hover:border-bord-2 hover:bg-surf-2 transition-all">取消</button>
+      <button onclick="savePool()" class="px-5 py-2 text-xs font-semibold text-white bg-or rounded-[6px] hover:bg-or-d transition-all" id="saveBtn">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRM DIALOG ══ -->
+<div id="confirmDialog" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop" onclick="closeConfirm()">
+  <div class="modal-in bg-white rounded-[10px] shadow-lg w-full max-w-[360px] p-6" onclick="event.stopPropagation()">
+    <div class="text-base font-bold text-ink mb-2" id="confirmTitle">確認停用</div>
+    <div class="text-xs text-ink-3 mb-5 leading-relaxed" id="confirmMsg"></div>
+    <div class="flex gap-2 justify-end">
+      <button onclick="closeConfirm()" class="px-4 py-2 text-xs font-semibold text-ink-3 border border-bord rounded-[6px] bg-white hover:bg-surf-2 transition-all">取消</button>
+      <button onclick="confirmAction()" class="px-4 py-2 text-xs font-semibold text-white bg-red rounded-[6px] hover:bg-red/80 transition-all" id="confirmBtn">確認停用</button>
+    </div>
+  </div>
+</div>
+
+<script src="data/bundle.js"></script>
+<script src="data-service.js"></script>
+<script>
+// ══════════════════════════════
+//  DATA — 由 DataService 載入
+// ══════════════════════════════
+let SUBNETS = [];
+let POOLS   = [];
+
+/* 轉換輔助：settings-pool 格式 ↔ JSON 格式 */
+const SITE_IDS = { '台北主中心':'tp-main','台中異備中心':'tc-dr','東七主中心':'e7-main','台灣主中心':'tw-main',
+                   '台中異備':'tc-dr','東七':'e7-main','台灣':'tw-main' };
+
+function poolToJson(p) {
+  return {
+    id: p.id, name: p.name, type: p.type, cloud: p.cloud,
+    site_id: SITE_IDS[p.site] || p.site,
+    env: p.env, site_role: 'primary',
+    cpu_total: p.cpu.t, mem_total_gb: p.mem.t, disk_total_tb: p.disk.t,
+    subnet_ids: p.subnets || [], status: p.status,
+  };
+}
+
+let filters = { type:'all', env:'all' };
+let snFilter = 'all';
+let editingId = null;
+let snEditingId = null;
+let pendingAction = null;
+let activeTab = 'pool';
+
+const CLOUD_LABEL = { private:'私有雲', hicloud:'hiCloud', aws:'AWS' };
+const SN_TYPE_LABEL = { internal:'Internal', dmz:'DMZ', management:'Management', public:'Public' };
+const SN_TYPE_STYLE = {
+  internal:   'bg-ded-l text-ded border-ded-m',
+  dmz:        'bg-red-l text-red border-red-m',
+  management: 'bg-amb-l text-amb border-amb-m',
+  public:     'bg-grn-l text-grn border-grn-m',
+};
+
+// ══════════════════════════════
+//  SIDEBAR
+// ══════════════════════════════
+// toggleSidebar defined in sidebar.js
+
+// ══════════════════════════════
+//  FILTERS
+// ══════════════════════════════
+function setFilter(key, val, el) {
+  filters[key] = val;
+  const cls = key === 'type' ? '.fchip' : '.fchip2';
+  document.querySelectorAll(cls).forEach(b => {
+    b.classList.remove('bg-ink','text-white','border-ink');
+    b.classList.add('bg-white','text-ink-3','border-bord');
+  });
+  el.classList.add('bg-ink','text-white');
+  el.classList.remove('bg-white','text-ink-3');
+  renderTable();
+}
+
+// ══════════════════════════════
+//  RENDER
+// ══════════════════════════════
+function pct(u, t) { return t ? Math.round(u/t*100) : 0; }
+function barColor(p) { return p >= 85 ? '#dc2626' : p >= 70 ? '#d97706' : '#16a34a'; }
+
+function renderTable() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const rows = POOLS.filter(p => {
+    const matchType = filters.type === 'all' || p.type === filters.type;
+    const matchEnv  = filters.env  === 'all' || p.env  === filters.env;
+    const matchQ    = !q || p.id.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+    return matchType && matchEnv && matchQ;
+  });
+
+  document.getElementById('resultCount').textContent = `${rows.length} / ${POOLS.length} pools`;
+  const empty = document.getElementById('emptyState');
+  const tbody = document.getElementById('poolTableBody');
+
+  if (!rows.length) { tbody.innerHTML=''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = rows.map((p, i) => {
+    const cpuP = pct(p.cpu.u, p.cpu.t);
+    const memP = pct(p.mem.u, p.mem.t);
+    const dskP = pct(p.disk.u, p.disk.t);
+    const isDed = p.type === 'dedicated';
+    const isActive = p.status === 'active';
+
+    return `<tr class="border-b border-bord hover:bg-surf-2 transition-colors anim" style="animation-delay:${i*20}ms">
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="font-mono text-xs font-semibold px-2 py-0.5 rounded-[3px] ${isDed ? 'bg-ded-l text-ded border border-ded-m' : 'bg-shr-l text-shr border border-shr-m'}">${p.id}</span>
+      </td>
+      <td class="px-4 py-3">
+        <div class="font-semibold text-ink text-xs">${p.name}</div>
+        <div class="text-[10px] text-ink-4 font-mono mt-0.5">${CLOUD_LABEL[p.cloud]} · ${p.site}</div>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${isDed ? 'bg-ded-l text-ded border-ded-m' : 'bg-shr-l text-shr border-shr-m'}">${isDed ? 'Dedicated' : 'Shared'}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[10px] text-ink-3 font-mono">${CLOUD_LABEL[p.cloud]}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${p.env==='Prod' ? 'bg-grn-l text-grn border-grn-m' : 'bg-pur-l text-pur border-pur-m'}">${p.env}</span>
+      </td>
+      <td class="px-4 py-3 min-w-[160px]">
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-ink-4">CPU</span><span class="font-mono text-ink-3">${p.cpu.u}/${p.cpu.t}C</span></div>
+        <div class="res-track"><div class="res-fill" style="width:${cpuP}%;background:${barColor(cpuP)}"></div></div>
+      </td>
+      <td class="px-4 py-3 min-w-[160px]">
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-ink-4">Mem</span><span class="font-mono text-ink-3">${p.mem.u}/${p.mem.t}GB</span></div>
+        <div class="res-track"><div class="res-fill" style="width:${memP}%;background:${barColor(memP)}"></div></div>
+      </td>
+      <td class="px-4 py-3 min-w-[160px]">
+        <div class="flex justify-between text-[10px] mb-1"><span class="text-ink-4">Disk</span><span class="font-mono text-ink-3">${p.disk.u}/${p.disk.t}TB</span></div>
+        <div class="res-track"><div class="res-fill" style="width:${dskP}%;background:${barColor(dskP)}"></div></div>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${isActive ? 'bg-grn-l text-grn border-grn-m' : 'bg-surf-2 text-ink-4 border-bord'}">${isActive ? 'Active' : 'Inactive'}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <div class="flex items-center gap-1.5">
+          <button onclick="openModal('edit','${p.id}')" class="px-2.5 py-1 text-[10px] font-semibold border border-bord rounded-[4px] bg-white text-ink-3 hover:border-bord-2 hover:bg-surf-2 transition-all">編輯</button>
+          <button onclick="toggleStatus('${p.id}')" class="px-2.5 py-1 text-[10px] font-semibold border rounded-[4px] transition-all ${isActive ? 'border-red-m bg-red-l text-red hover:bg-red hover:text-white' : 'border-grn-m bg-grn-l text-grn hover:bg-grn hover:text-white'}">${isActive ? '停用' : '啟用'}</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateKPI();
+}
+
+function updateKPI() {
+  document.getElementById('kpi-total').textContent = POOLS.length;
+  document.getElementById('kpi-ded').textContent = POOLS.filter(p=>p.type==='dedicated').length;
+  document.getElementById('kpi-shr').textContent = POOLS.filter(p=>p.type==='shared').length;
+  document.getElementById('kpi-inactive').textContent = POOLS.filter(p=>p.status==='inactive').length;
+}
+
+// ══════════════════════════════
+//  MODAL
+// ══════════════════════════════
+function openModal(mode, id) {
+  editingId = id || null;
+  const modal = document.getElementById('modal');
+  document.getElementById('formError').classList.add('hidden');
+
+  if (mode === 'edit' && id) {
+    const p = POOLS.find(x=>x.id===id);
+    document.getElementById('modalTitle').textContent = `編輯 Pool — ${p.id}`;
+    document.getElementById('modalSub').textContent = '修改 Pool 資訊或調整資源容量';
+    document.getElementById('f-id').value = p.id;
+    document.getElementById('f-id').disabled = true;
+    document.getElementById('f-name').value = p.name;
+    document.getElementById('f-cloud').value = p.cloud;
+    document.getElementById('f-site').value = p.site;
+    document.getElementById('f-cpu').value = p.cpu.t;
+    document.getElementById('f-mem').value = p.mem.t;
+    document.getElementById('f-disk').value = p.disk.t;
+    document.querySelector(`input[name="pool-type"][value="${p.type}"]`).checked = true;
+    document.querySelector(`input[name="pool-env"][value="${p.env}"]`).checked = true;
+    document.getElementById('saveBtn').textContent = '儲存變更';
+    renderSubnetCheckboxes(p.subnets || []);
+  } else {
+    document.getElementById('modalTitle').textContent = '新增 Pool';
+    document.getElementById('modalSub').textContent = '填寫 Pool 基本資訊與資源容量';
+    document.getElementById('f-id').value = '';
+    document.getElementById('f-id').disabled = false;
+    document.getElementById('f-name').value = '';
+    document.getElementById('f-cloud').value = 'private';
+    document.getElementById('f-site').value = '';
+    document.getElementById('f-cpu').value = '';
+    document.getElementById('f-mem').value = '';
+    document.getElementById('f-disk').value = '';
+    document.querySelector('input[name="pool-type"][value="dedicated"]').checked = true;
+    document.querySelector('input[name="pool-env"][value="Prod"]').checked = true;
+    document.getElementById('saveBtn').textContent = '建立 Pool';
+    renderSubnetCheckboxes([]);
+  }
+
+  modal.classList.remove('hidden');
+  requestAnimationFrame(()=> document.getElementById('f-name').focus());
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.add('hidden');
+  editingId = null;
+}
+
+function handleBackdropClick(e) {
+  if (e.target === document.getElementById('modal')) closeModal();
+}
+
+function savePool() {
+  const err = document.getElementById('formError');
+  err.classList.add('hidden');
+
+  const id   = document.getElementById('f-id').value.trim().toUpperCase();
+  const name = document.getElementById('f-name').value.trim();
+  const cloud= document.getElementById('f-cloud').value;
+  const site = document.getElementById('f-site').value.trim();
+  const type = document.querySelector('input[name="pool-type"]:checked').value;
+  const env  = document.querySelector('input[name="pool-env"]:checked').value;
+  const cpu  = parseFloat(document.getElementById('f-cpu').value);
+  const mem  = parseFloat(document.getElementById('f-mem').value);
+  const disk = parseFloat(document.getElementById('f-disk').value);
+
+  if (!id || !name || !site || isNaN(cpu) || isNaN(mem) || isNaN(disk)) {
+    err.textContent = '請填寫所有必填欄位'; err.classList.remove('hidden'); return;
+  }
+  if (!editingId && POOLS.find(p=>p.id===id)) {
+    err.textContent = `Pool ID「${id}」已存在`; err.classList.remove('hidden'); return;
+  }
+
+  const subnets = [...document.querySelectorAll('#f-subnets input[type="checkbox"]:checked')].map(cb => cb.value);
+
+  if (editingId) {
+    const p = POOLS.find(x=>x.id===editingId);
+    p.name=name; p.cloud=cloud; p.site=site; p.type=type; p.env=env;
+    p.cpu.t=cpu; p.mem.t=mem; p.disk.t=disk; p.subnets=subnets;
+    DataService.updatePool(editingId, poolToJson(p));
+  } else {
+    const newPool = { id, name, type, cloud, site, env,
+      cpu:{t:cpu,u:0}, mem:{t:mem,u:0}, disk:{t:disk,u:0}, status:'active', subnets };
+    POOLS.push(newPool);
+    DataService.createPool(poolToJson(newPool));
+  }
+
+  closeModal();
+  renderTable();
+}
+
+// ══════════════════════════════
+//  STATUS TOGGLE
+// ══════════════════════════════
+function toggleStatus(id) {
+  const p = POOLS.find(x=>x.id===id);
+  const isActive = p.status === 'active';
+  document.getElementById('confirmTitle').textContent = isActive ? `停用 Pool — ${id}` : `啟用 Pool — ${id}`;
+  document.getElementById('confirmMsg').textContent = isActive
+    ? `停用後此 Pool 將無法新增 Allocation 或 VM，現有資源不受影響。確認繼續？`
+    : `重新啟用 Pool「${p.name}」，啟用後可正常使用。確認繼續？`;
+  document.getElementById('confirmBtn').textContent = isActive ? '確認停用' : '確認啟用';
+  document.getElementById('confirmBtn').className = `px-4 py-2 text-xs font-semibold text-white rounded-[6px] transition-all ${isActive ? 'bg-red hover:bg-red/80' : 'bg-grn hover:bg-grn/80'}`;
+  pendingAction = () => {
+    p.status = isActive ? 'inactive' : 'active';
+    DataService.updatePool(id, { status: p.status });
+    renderTable();
+  };
+  document.getElementById('confirmDialog').classList.remove('hidden');
+}
+
+function closeConfirm() { document.getElementById('confirmDialog').classList.add('hidden'); pendingAction=null; }
+function confirmAction() { if(pendingAction) pendingAction(); closeConfirm(); }
+
+// ══════════════════════════════
+//  TAB SWITCHING
+// ══════════════════════════════
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tab-pool').classList.toggle('hidden', tab !== 'pool');
+  document.getElementById('tab-subnet').classList.toggle('hidden', tab !== 'subnet');
+  document.getElementById('tab-pool-btn').className = `px-4 py-1.5 text-xs font-semibold rounded-[5px] transition-all ${tab==='pool' ? 'bg-or text-white' : 'bg-transparent text-ink-3 hover:bg-surf-2'}`;
+  document.getElementById('tab-subnet-btn').className = `px-4 py-1.5 text-xs font-semibold rounded-[5px] transition-all ${tab==='subnet' ? 'bg-or text-white' : 'bg-transparent text-ink-3 hover:bg-surf-2'}`;
+  document.getElementById('topAddLabel').textContent = tab === 'pool' ? '新增 Pool' : '新增 Subnet';
+  if (tab === 'subnet') renderSubnetTable();
+}
+
+function topAdd() {
+  if (activeTab === 'pool') openModal('add');
+  else openSnModal('add');
+}
+
+// ══════════════════════════════
+//  POOL MODAL — SUBNET CHECKBOXES
+// ══════════════════════════════
+function renderSubnetCheckboxes(selected = []) {
+  const cloud = document.getElementById('f-cloud').value;
+  const container = document.getElementById('f-subnets');
+  const matching = SUBNETS.filter(s => s.cloud === cloud && s.status === 'active');
+  if (!matching.length) {
+    container.innerHTML = '<div class="text-[10px] text-ink-4 py-1">此 Cloud 尚無可用 Subnet</div>';
+    return;
+  }
+  container.innerHTML = matching.map(s => {
+    const checked = selected.includes(s.id) ? 'checked' : '';
+    const ts = SN_TYPE_STYLE[s.type] || '';
+    return `<label class="flex items-center gap-2.5 px-2 py-1.5 rounded-[4px] hover:bg-white cursor-pointer select-none">
+      <input type="checkbox" value="${s.id}" ${checked} class="accent-or w-3.5 h-3.5 flex-shrink-0">
+      <span class="font-mono text-[10px] font-semibold text-ink-4 w-10 flex-shrink-0">${s.id}</span>
+      <span class="text-xs font-semibold text-ink flex-1">${s.name}</span>
+      <span class="font-mono text-[10px] text-ink-4">${s.cidr}</span>
+      <span class="text-[9px] font-bold uppercase px-1 py-0.5 rounded-[3px] border ${ts}">${SN_TYPE_LABEL[s.type]||s.type}</span>
+    </label>`;
+  }).join('');
+}
+
+// ══════════════════════════════
+//  SUBNET TABLE
+// ══════════════════════════════
+function setSnFilter(val, el) {
+  snFilter = val;
+  document.querySelectorAll('.snchip').forEach(b => {
+    b.classList.remove('bg-ink','text-white');
+    b.classList.add('bg-white','text-ink-3');
+  });
+  el.classList.add('bg-ink','text-white');
+  el.classList.remove('bg-white','text-ink-3');
+  renderSubnetTable();
+}
+
+function renderSubnetTable() {
+  const q = (document.getElementById('snSearchInput')?.value || '').toLowerCase();
+  const rows = SUBNETS.filter(s => {
+    const matchCloud = snFilter === 'all' || s.cloud === snFilter;
+    const matchQ = !q || s.id.toLowerCase().includes(q) || s.name.toLowerCase().includes(q) || s.cidr.includes(q);
+    return matchCloud && matchQ;
+  });
+
+  document.getElementById('snResultCount').textContent = `${rows.length} / ${SUBNETS.length} subnets`;
+  const empty = document.getElementById('snEmptyState');
+  const tbody = document.getElementById('subnetTableBody');
+
+  if (!rows.length) { tbody.innerHTML=''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+
+  tbody.innerHTML = rows.map((s, i) => {
+    const ts = SN_TYPE_STYLE[s.type] || 'bg-surf-2 text-ink-4 border-bord';
+    const isActive = s.status === 'active';
+    return `<tr class="border-b border-bord hover:bg-surf-2 transition-colors anim" style="animation-delay:${i*20}ms">
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="font-mono text-xs font-semibold px-2 py-0.5 rounded-[3px] bg-surf-2 text-ink-3 border border-bord">${s.id}</span>
+      </td>
+      <td class="px-4 py-3">
+        <div class="font-semibold text-ink text-xs">${s.name}</div>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="font-mono text-xs text-ink-3">${s.cidr}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${ts}">${SN_TYPE_LABEL[s.type]||s.type}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[10px] text-ink-3 font-mono">${CLOUD_LABEL[s.cloud]}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[10px] text-ink-3">${s.site}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <span class="text-[9px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-[3px] border ${isActive ? 'bg-grn-l text-grn border-grn-m' : 'bg-surf-2 text-ink-4 border-bord'}">${isActive ? 'Active' : 'Inactive'}</span>
+      </td>
+      <td class="px-4 py-3 whitespace-nowrap">
+        <div class="flex items-center gap-1.5">
+          <button onclick="openSnModal('edit','${s.id}')" class="px-2.5 py-1 text-[10px] font-semibold border border-bord rounded-[4px] bg-white text-ink-3 hover:border-bord-2 hover:bg-surf-2 transition-all">編輯</button>
+          <button onclick="deleteSubnet('${s.id}')" class="px-2.5 py-1 text-[10px] font-semibold border border-red-m rounded-[4px] bg-red-l text-red hover:bg-red hover:text-white transition-all">刪除</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // update KPI
+  document.getElementById('sn-kpi-total').textContent = SUBNETS.length;
+  document.getElementById('sn-kpi-private').textContent = SUBNETS.filter(s=>s.cloud==='private').length;
+  document.getElementById('sn-kpi-hicloud').textContent = SUBNETS.filter(s=>s.cloud==='hicloud').length;
+  document.getElementById('sn-kpi-aws').textContent = SUBNETS.filter(s=>s.cloud==='aws').length;
+}
+
+// ══════════════════════════════
+//  SUBNET MODAL
+// ══════════════════════════════
+function openSnModal(mode, id) {
+  snEditingId = id || null;
+  document.getElementById('snFormError').classList.add('hidden');
+  if (mode === 'edit' && id) {
+    const s = SUBNETS.find(x=>x.id===id);
+    document.getElementById('snModalTitle').textContent = `編輯 Subnet — ${s.id}`;
+    document.getElementById('sn-id').value = s.id;
+    document.getElementById('sn-id').disabled = true;
+    document.getElementById('sn-name').value = s.name;
+    document.getElementById('sn-cidr').value = s.cidr;
+    document.getElementById('sn-type').value = s.type;
+    document.getElementById('sn-cloud').value = s.cloud;
+    document.getElementById('sn-site').value = s.site;
+    document.getElementById('snSaveBtn').textContent = '儲存變更';
+  } else {
+    document.getElementById('snModalTitle').textContent = '新增 Subnet';
+    document.getElementById('sn-id').value = '';
+    document.getElementById('sn-id').disabled = false;
+    document.getElementById('sn-name').value = '';
+    document.getElementById('sn-cidr').value = '';
+    document.getElementById('sn-type').value = 'internal';
+    document.getElementById('sn-cloud').value = 'private';
+    document.getElementById('sn-site').value = '';
+    document.getElementById('snSaveBtn').textContent = '建立 Subnet';
+  }
+  document.getElementById('snModal').classList.remove('hidden');
+  requestAnimationFrame(() => document.getElementById('sn-name').focus());
+}
+
+function closeSnModal() {
+  document.getElementById('snModal').classList.add('hidden');
+  snEditingId = null;
+}
+
+function handleSnBackdrop(e) {
+  if (e.target === document.getElementById('snModal')) closeSnModal();
+}
+
+function saveSubnet() {
+  const err = document.getElementById('snFormError');
+  err.classList.add('hidden');
+  const id   = document.getElementById('sn-id').value.trim().toUpperCase();
+  const name = document.getElementById('sn-name').value.trim();
+  const cidr = document.getElementById('sn-cidr').value.trim();
+  const type = document.getElementById('sn-type').value;
+  const cloud= document.getElementById('sn-cloud').value;
+  const site = document.getElementById('sn-site').value.trim();
+  if (!id || !name || !cidr || !site) {
+    err.textContent = '請填寫所有必填欄位'; err.classList.remove('hidden'); return;
+  }
+  if (!snEditingId && SUBNETS.find(s=>s.id===id)) {
+    err.textContent = `Subnet ID「${id}」已存在`; err.classList.remove('hidden'); return;
+  }
+  if (snEditingId) {
+    const s = SUBNETS.find(x=>x.id===snEditingId);
+    s.name=name; s.cidr=cidr; s.type=type; s.cloud=cloud; s.site=site;
+    DataService.updateSubnet(snEditingId, { name, cidr, type, cloud,
+      site_id: SITE_IDS[site] || site });
+  } else {
+    const newSn = { id, name, cidr, type, cloud, site, status:'active' };
+    SUBNETS.push(newSn);
+    DataService.createSubnet({ id, name, cidr, type, cloud,
+      site_id: SITE_IDS[site] || site, status:'active' });
+  }
+  closeSnModal();
+  renderSubnetTable();
+}
+
+function deleteSubnet(id) {
+  if (!confirm(`確認刪除 Subnet「${id}」？此操作不可復原。`)) return;
+  SUBNETS = SUBNETS.filter(s => s.id !== id);
+  POOLS.forEach(p => { p.subnets = (p.subnets||[]).filter(sid => sid !== id); });
+  DataService.deleteSubnet(id);
+  renderSubnetTable();
+}
+
+// ══════════════════════════════
+//  INIT
+// ══════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') { closeModal(); closeConfirm(); closeSnModal(); }
+});
+
+(async () => {
+  try {
+    const { raw } = await DataService.loadAll();
+    const sumUsed = (vms, pid) => vms.filter(v => v.pool_id === pid)
+      .reduce((a,v) => ({ cpu:a.cpu+(v.vcpu||0), mem:a.mem+(v.ram_gb||0), disk:a.disk+(v.disk_gb||0) }), {cpu:0,mem:0,disk:0});
+
+    SUBNETS = raw.subnets.map(s => ({
+      id:s.id, name:s.name, cidr:s.cidr, type:s.type,
+      cloud:s.cloud, site:s.site_id, status:s.status,
+    }));
+
+    POOLS = raw.pools.map(p => {
+      const used = sumUsed(raw.vms, p.id);
+      return {
+        id:p.id, name:p.name, type:p.type, cloud:p.cloud,
+        site: ({ 'tp-main':'台北主中心','tc-dr':'台中異備中心','e7-main':'東七主中心','tw-main':'台灣主中心' })[p.site_id] || p.site_id,
+        env:p.env,
+        cpu:{ t:p.cpu_total, u:used.cpu },
+        mem:{ t:p.mem_total_gb, u:used.mem },
+        disk:{ t:p.disk_total_tb, u:Math.round(used.disk/1024*10)/10 },
+        status:p.status,
+        subnets:p.subnet_ids||[],
+      };
+    });
+
+    renderTable();
+  } catch(err) {
+    console.error(err);
+    document.getElementById('poolTableBody').innerHTML =
+      `<tr><td colspan="8" class="text-center text-red py-6 text-xs">資料載入失敗：${err.message}</td></tr>`;
+  }
+})();
+</script>
+</body>
+</html>
