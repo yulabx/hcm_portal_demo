@@ -72,7 +72,7 @@
       background: var(--bg);
       color: var(--ink);
       font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.5;
       min-height: 100vh;
       display: flex;
@@ -1345,11 +1345,11 @@
 
     .search-input {
       width: 100%;
-      padding: 9px 12px 9px 36px;
+      padding: 8px 12px 8px 34px;
       border: 1px solid var(--border);
       border-radius: 7px;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-size: 14px;
+      font-size: 13px;
       color: var(--ink);
       background: var(--surface);
       transition: border-color .15s, box-shadow .15s;
@@ -1373,7 +1373,7 @@
     }
 
     .filter-lbl {
-      font-size: 13px;
+      font-size: 11px;
       color: var(--ink4);
       font-weight: 600;
       flex-shrink: 0
@@ -1382,10 +1382,10 @@
     .fchip {
       display: flex;
       align-items: center;
-      gap: 5px;
-      padding: 6px 13px;
+      gap: 4px;
+      padding: 5px 11px;
       border-radius: 99px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       cursor: pointer;
       border: 1px solid var(--border);
@@ -1406,8 +1406,8 @@
     }
 
     .fchip-dot {
-      width: 6px;
-      height: 6px;
+      width: 5px;
+      height: 5px;
       border-radius: 50%;
       background: currentColor;
       opacity: .7
@@ -1439,9 +1439,9 @@
     .proj-tab {
       display: flex;
       align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      font-size: 13px;
+      gap: 6px;
+      padding: 8px 16px;
+      font-size: 12px;
       font-weight: 600;
       color: var(--ink3);
       cursor: pointer;
@@ -1502,8 +1502,8 @@
 
     .stab {
       flex: 1;
-      padding: 8px 16px;
-      font-size: 13px;
+      padding: 7px 14px;
+      font-size: 12px;
       font-weight: 600;
       border: none;
       background: transparent;
@@ -1546,13 +1546,13 @@
     }
 
     .pcloud-name {
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 700;
       letter-spacing: -.01em
     }
 
     .pcloud-region {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--ink4);
       font-family: 'Fira Code', monospace;
       margin-left: auto
@@ -1570,16 +1570,16 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 10px 16px
+      padding: 9px 16px
     }
 
     .psite-name {
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600
     }
 
     .psite-count {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--ink4);
       font-family: 'Fira Code', monospace;
       margin-left: auto
@@ -1587,9 +1587,9 @@
 
     .psite-pools {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      padding: 12px 16px 0 40px
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 8px;
+      padding: 10px 16px 14px 40px
     }
 
     /* ── Mini pool card (in project view) ── */
@@ -1599,8 +1599,7 @@
       overflow: hidden;
       cursor: pointer;
       transition: all .15s;
-      position: relative;
-      min-height: 92px
+      position: relative
     }
 
     .mini-pool::before {
@@ -1634,8 +1633,7 @@
     }
 
     .mini-pool.mp-open {
-      border-color: var(--or);
-      box-shadow: 0 0 0 1px var(--or)
+      border-color: var(--or)
     }
 
     .mini-pool.mp-open::before {
@@ -1645,15 +1643,15 @@
     .mini-pool-top {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 14px 2px 14px
+      gap: 7px;
+      padding: 9px 10px 0 10px
     }
 
     .mpid {
       font-family: 'Fira Code', monospace;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      padding: 3px 7px;
+      padding: 2px 6px;
       border-radius: 3px
     }
 
@@ -1670,7 +1668,7 @@
     }
 
     .mpname {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 600;
       color: var(--ink);
       flex: 1;
@@ -1681,7 +1679,7 @@
     }
 
     .mp-chev {
-      font-size: 12px;
+      font-size: 11px;
       color: var(--ink4);
       transition: transform .2s;
       flex-shrink: 0
@@ -1696,16 +1694,16 @@
       display: flex;
       gap: 4px;
       flex-wrap: wrap;
-      padding: 8px 14px 14px
+      padding: 5px 10px 9px
     }
 
     .mpt {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
-      padding: 2px 7px;
+      padding: 2px 6px;
       border-radius: 3px;
       text-transform: uppercase;
-      letter-spacing: .05em;
+      letter-spacing: .06em;
       white-space: nowrap
     }
 
@@ -1751,99 +1749,49 @@
       border: 1px solid var(--shr-bd)
     }
 
-    /* full-width VM panel — sits OUTSIDE the grid, inside psite-block */
+    /* full-width VM panel in mini-pool (project view) */
     .mini-pool-detail {
-      display: none
-    }
-
-    .proj-vm-fullrow {
       display: none;
       border-top: 1px solid var(--border);
-      border-left: 3px solid var(--or);
-      background: var(--surface2);
-      margin: 0 0 14px 0;
-      animation: fadeUp .2s ease both;
+      background: var(--surface);
+      overflow-x: auto;
     }
 
-    .proj-vm-fullrow.visible {
+    .mini-pool.mp-open .mini-pool-detail {
       display: block
     }
 
-    .proj-vm-fullrow-hd {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 20px;
-      border-bottom: 1px solid var(--border);
-      background: var(--or-l);
-    }
-
-    .proj-vm-fullrow-title {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--or-d);
-      display: flex;
-      align-items: center;
-      gap: 8px
-    }
-
-    .proj-vm-fullrow-close {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--ink3);
-      cursor: pointer;
-      padding: 3px 8px;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      transition: all .15s;
-      font-family: inherit;
-    }
-
-    .proj-vm-fullrow-close:hover {
-      border-color: var(--or);
-      color: var(--or)
-    }
-
-    .proj-vm-table-wrap {
-      overflow-x: auto;
-      padding: 0 20px 16px;
-    }
-
-    .proj-vm-table {
+    .mini-vm-table {
       width: 100%;
-      border-collapse: collapse;
-      margin-top: 14px;
+      border-collapse: collapse
     }
 
-    .proj-vm-table th {
-      font-size: 10px;
+    .mini-vm-table th {
+      font-size: 9px;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: .1em;
       color: var(--ink4);
-      padding: 9px 14px;
-      background: var(--surface);
-      border-bottom: 2px solid var(--border);
-      text-align: left;
-      white-space: nowrap;
-    }
-
-    .proj-vm-table td {
-      font-size: 13px;
-      padding: 10px 14px;
+      padding: 7px 12px;
+      background: var(--or-l);
       border-bottom: 1px solid var(--border);
-      vertical-align: middle;
+      text-align: left;
+      white-space: nowrap
     }
 
-    .proj-vm-table tr:last-child td {
+    .mini-vm-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      vertical-align: middle
+    }
+
+    .mini-vm-table tr:last-child td {
       border-bottom: none
     }
 
-    .proj-vm-table tr:hover td {
-      background: color-mix(in srgb, var(--or) 4%, white)
+    .mini-vm-table tr:hover td {
+      background: var(--or-l)
     }
 
     /* sys view */
@@ -1882,13 +1830,13 @@
     }
 
     .sys-card-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: var(--ink)
     }
 
     .sys-card-sub {
-      font-size: 11px;
+      font-size: 10px;
       color: var(--ink4);
       font-family: 'Fira Code', monospace;
       margin-top: 2px
@@ -1924,33 +1872,33 @@
     }
 
     .sys-cloud-name {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700
     }
 
     .sys-cloud-body {
-      padding: 10px 14px;
+      padding: 8px 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px
+      gap: 5px
     }
 
     .sys-pool-row {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 9px 12px;
+      padding: 7px 10px;
       background: var(--surface2);
       border: 1px solid var(--border);
       border-radius: 5px;
-      font-size: 13px
+      font-size: 12px
     }
 
     .sys-pool-id {
       font-family: 'Fira Code', monospace;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 600;
-      padding: 3px 7px;
+      padding: 2px 6px;
       border-radius: 3px;
       flex-shrink: 0
     }
@@ -1958,7 +1906,7 @@
     .sys-pool-site {
       color: var(--ink3);
       flex: 1;
-      font-size: 12px
+      font-size: 11px
     }
 
     /* other pages placeholder */
@@ -2180,13 +2128,10 @@
 
       <div class="sb-section-label">作業</div>
       <div style="padding:0 6px">
-        <div class="sb-item" data-label="申請 VM" onclick="window.location.href='vm.html'">
-          <div class="sb-item-icon">🖥</div>
-          <div class="sb-item-label">申請 VM</div>
-        </div>
-        <div class="sb-item" data-label="申請專案/系統" onclick="window.location.href='apply.html'">
+        <div class="sb-item" data-label="申請 VM" onclick="navigateTo('apply-vm',this)">
           <div class="sb-item-icon">📋</div>
-          <div class="sb-item-label">申請專案/系統</div>
+          <div class="sb-item-label">申請 VM</div>
+          <div class="sb-item-badge">3</div>
         </div>
       </div>
 
@@ -2198,7 +2143,7 @@
           <div class="sb-item-icon">👥</div>
           <div class="sb-item-label">使用者管理</div>
         </div>
-        <div class="sb-item" data-label="系統設定" onclick="window.location.href='settings-pool.html'">
+        <div class="sb-item" data-label="系統設定" onclick="navigateTo('settings',this)">
           <div class="sb-item-icon">⚙️</div>
           <div class="sb-item-label">系統設定</div>
         </div>
@@ -2566,16 +2511,41 @@
     </div><!-- /main-content -->
   </div><!-- /app-body -->
 
-  <script src="data/bundle.js"></script>
-  <script src="data-service.js"></script>
   <script>
     /* ════════════════════════════
-       DATA — 由 DataService 載入
+       DATA
     ════════════════════════════ */
     const CLOUD_META = { private: { label: '私有雲', color: 'var(--blue)' }, hicloud: { label: 'hiCloud', color: '#0e7490' }, aws: { label: 'AWS', color: '#b45309' } };
-    let SITES_DATA = {};
-    let POOLS = {};
-    let PROJ_DATA = {};
+    const SITES_DATA = {
+      private: [
+        { id: 'tp-main', name: '台北主中心', region: '台北', type: 'main', pools: ['P01', 'P02', 'S01'], cpu: { u: 200, t: 340 }, mem: { u: 500, t: 768 }, disk: { u: 17, t: 30 } },
+        { id: 'tc-dr', name: '台中異備中心', region: '台中', type: 'dr', pools: ['P03', 'P04', 'S02'], cpu: { u: 110, t: 200 }, mem: { u: 208, t: 384 }, disk: { u: 8, t: 16 } }
+      ],
+      hicloud: [{ id: 'e7-main', name: '東七主中心', region: '東七', type: 'main', pools: ['P05', 'P06', 'P07', 'P08', 'S03'], cpu: { u: 128, t: 220 }, mem: { u: 284, t: 480 }, disk: { u: 12, t: 20 } }],
+      aws: [{ id: 'tw-main', name: '台灣主中心', region: '台灣', type: 'main', pools: ['P09', 'P10'], cpu: { u: 56, t: 88 }, mem: { u: 110, t: 176 }, disk: { u: 4.5, t: 7 } }]
+    };
+    const POOLS = {
+      P01: { name: '電發私有雲主中心-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '電發系統', cpu: { u: 60, t: 120 }, mem: { u: 200, t: 256 }, disk: { u: 6, t: 10 }, vms: [{ name: 'vm-power-prod-01', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '10.0.1.11' }, { name: 'vm-power-prod-02', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '10.0.1.12' }, { name: 'vm-power-prod-db', status: 'running', vcpu: 16, ram: '64GB', disk: '2TB', env: 'Prod', ip: '10.0.1.20' }, { name: 'vm-power-prod-gw', status: 'running', vcpu: 4, ram: '16GB', disk: '100GB', env: 'Prod', ip: '10.0.1.5' }] },
+      P02: { name: '電發私有雲主中心-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '電發系統', cpu: { u: 20, t: 40 }, mem: { u: 60, t: 128 }, disk: { u: 1.5, t: 5 }, vms: [{ name: 'vm-power-uat-01', status: 'running', vcpu: 8, ram: '32GB', disk: '200GB', env: 'UAT', ip: '10.0.2.11' }, { name: 'vm-power-uat-db', status: 'stopped', vcpu: 8, ram: '32GB', disk: '500GB', env: 'UAT', ip: '10.0.2.20' }] },
+      P03: { name: '電發私有雲異備-Prod', type: 'dedicated', env: 'Prod', role: 'dr', sys: '電發系統', cpu: { u: 40, t: 80 }, mem: { u: 128, t: 256 }, disk: { u: 4, t: 10 }, vms: [{ name: 'vm-power-dr-01', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '10.1.1.11' }, { name: 'vm-power-dr-db', status: 'running', vcpu: 16, ram: '64GB', disk: '2TB', env: 'Prod', ip: '10.1.1.20' }] },
+      P04: { name: '電發私有雲異備-UAT', type: 'dedicated', env: 'UAT', role: 'dr', sys: '電發系統', cpu: { u: 20, t: 40 }, mem: { u: 40, t: 128 }, disk: { u: 1, t: 5 }, vms: [{ name: 'vm-power-dr-uat-01', status: 'stopped', vcpu: 8, ram: '32GB', disk: '200GB', env: 'UAT', ip: '10.1.2.11' }] },
+      P05: { name: '電發 hiCloud-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '電發系統', cpu: { u: 40, t: 80 }, mem: { u: 128, t: 192 }, disk: { u: 4, t: 8 }, vms: [{ name: 'vm-hic-power-prod-01', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '172.16.1.11' }, { name: 'vm-hic-power-prod-02', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '172.16.1.12' }, { name: 'vm-hic-power-prod-db', status: 'running', vcpu: 16, ram: '64GB', disk: '2TB', env: 'Prod', ip: '172.16.1.20' }] },
+      P06: { name: '電發 hiCloud-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '電發系統', cpu: { u: 16, t: 32 }, mem: { u: 48, t: 64 }, disk: { u: 1.5, t: 3 }, vms: [{ name: 'vm-hic-power-uat-01', status: 'running', vcpu: 8, ram: '32GB', disk: '200GB', env: 'UAT', ip: '172.16.2.11' }] },
+      P07: { name: '兌獎APP hiCloud-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '允獎APP', cpu: { u: 20, t: 32 }, mem: { u: 48, t: 64 }, disk: { u: 1, t: 2 }, vms: [{ name: 'vm-hic-app-prod-01', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '172.16.3.11' }, { name: 'vm-hic-app-prod-db', status: 'running', vcpu: 8, ram: '16GB', disk: '500GB', env: 'Prod', ip: '172.16.3.20' }] },
+      P08: { name: '兌獎APP hiCloud-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '允獎APP', cpu: { u: 8, t: 16 }, mem: { u: 16, t: 32 }, disk: { u: .5, t: 1 }, vms: [{ name: 'vm-hic-app-uat-01', status: 'stopped', vcpu: 4, ram: '16GB', disk: '200GB', env: 'UAT', ip: '172.16.4.11' }] },
+      P09: { name: '電發 AWS-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '電發系統', cpu: { u: 40, t: 64 }, mem: { u: 80, t: 128 }, disk: { u: 3, t: 5 }, vms: [{ name: 'ec2-power-prod-01', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'Prod', ip: '192.168.1.11' }, { name: 'ec2-power-prod-db', status: 'running', vcpu: 16, ram: '64GB', disk: '2TB', env: 'Prod', ip: '192.168.1.20' }] },
+      P10: { name: '電發 AWS-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '電發系統', cpu: { u: 16, t: 24 }, mem: { u: 30, t: 48 }, disk: { u: 1.5, t: 2 }, vms: [{ name: 'ec2-power-uat-01', status: 'running', vcpu: 8, ram: '32GB', disk: '200GB', env: 'UAT', ip: '192.168.2.11' }, { name: 'ec2-power-uat-db', status: 'running', vcpu: 8, ram: '32GB', disk: '500GB', env: 'UAT', ip: '192.168.2.20' }] },
+      S01: { name: '共用私有雲主中心-Prod', type: 'shared', env: 'Prod', role: 'primary', sys: '共用平台', cpu: { u: 120, t: 200 }, mem: { u: 240, t: 384 }, disk: { u: 9, t: 15 }, allocs: [{ proj: '一科', sys: '系統A', env: 'Prod', role: 'primary', quota_cpu: '40C', quota_mem: '96GB' }, { proj: '二科', sys: '系統B', env: 'Prod', role: 'primary', quota_cpu: '30C', quota_mem: '64GB' }] },
+      S02: { name: '共用私有雲異備-Prod', type: 'shared', env: 'Prod', role: 'dr', sys: '共用平台', cpu: { u: 40, t: 120 }, mem: { u: 96, t: 256 }, disk: { u: 3, t: 10 }, allocs: [{ proj: '一科', sys: '系統A', env: 'Prod', role: 'dr', quota_cpu: '40C', quota_mem: '96GB' }] },
+      S03: { name: '共用 hiCloud-Prod', type: 'shared', env: 'Prod', role: 'primary', sys: '共用平台', cpu: { u: 64, t: 160 }, mem: { u: 160, t: 320 }, disk: { u: 5, t: 12 }, allocs: [{ proj: '三科', sys: '系統C', env: 'Prod', role: 'primary', quota_cpu: '32C', quota_mem: '64GB' }, { proj: '四科', sys: '系統D', env: 'UAT', role: 'primary', quota_cpu: '16C', quota_mem: '32GB' }] }
+    };
+    const PROJ_DATA = {
+      power: { name: '電發專案', cloudView: { private: { label: '私有雲', color: 'var(--blue)', sites: [{ name: '台北主中心', type: 'main', pools: [{ id: 'P01', name: '電發私有雲主中心-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '電發系統' }, { id: 'P02', name: '電發私有雲主中心-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '電發系統' }] }, { name: '台中異備中心', type: 'dr', pools: [{ id: 'P03', name: '電發私有雲異備-Prod', type: 'dedicated', env: 'Prod', role: 'dr', sys: '電發系統' }, { id: 'P04', name: '電發私有雲異備-UAT', type: 'dedicated', env: 'UAT', role: 'dr', sys: '電發系統' }] }] }, hicloud: { label: 'hiCloud', color: '#0e7490', sites: [{ name: '東七主中心', type: 'main', pools: [{ id: 'P05', name: '電發 hiCloud-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '電發系統' }, { id: 'P06', name: '電發 hiCloud-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '電發系統' }, { id: 'P07', name: '兌獎APP hiCloud-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '允獎APP' }, { id: 'P08', name: '兌獎APP hiCloud-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '允獎APP' }] }] }, aws: { label: 'AWS', color: '#b45309', sites: [{ name: '台灣主中心', type: 'main', pools: [{ id: 'P09', name: '電發 AWS-Prod', type: 'dedicated', env: 'Prod', role: 'primary', sys: '電發系統' }, { id: 'P10', name: '電發 AWS-UAT', type: 'dedicated', env: 'UAT', role: 'primary', sys: '電發系統' }] }] } }, sysView: { '電發系統': { icon: '⚡', pools: [{ id: 'P01', cloud: '私有雲', site: '台北主中心', env: 'Prod', role: 'primary', type: 'dedicated' }, { id: 'P02', cloud: '私有雲', site: '台北主中心', env: 'UAT', role: 'primary', type: 'dedicated' }, { id: 'P03', cloud: '私有雲', site: '台中異備', env: 'Prod', role: 'dr', type: 'dedicated' }, { id: 'P04', cloud: '私有雲', site: '台中異備', env: 'UAT', role: 'dr', type: 'dedicated' }, { id: 'P05', cloud: 'hiCloud', site: '東七主中心', env: 'Prod', role: 'primary', type: 'dedicated' }, { id: 'P06', cloud: 'hiCloud', site: '東七主中心', env: 'UAT', role: 'primary', type: 'dedicated' }, { id: 'P09', cloud: 'AWS', site: '台灣主中心', env: 'Prod', role: 'primary', type: 'dedicated' }, { id: 'P10', cloud: 'AWS', site: '台灣主中心', env: 'UAT', role: 'primary', type: 'dedicated' }] }, '允獎APP': { icon: '📱', pools: [{ id: 'P07', cloud: 'hiCloud', site: '東七主中心', env: 'Prod', role: 'primary', type: 'dedicated' }, { id: 'P08', cloud: 'hiCloud', site: '東七主中心', env: 'UAT', role: 'primary', type: 'dedicated' }] } } },
+      dept1: { name: '一科', cloudView: { private: { label: '私有雲', color: 'var(--blue)', sites: [{ name: '台北主中心', type: 'main', pools: [{ id: 'S01', name: '共用私有雲主中心-Prod', type: 'shared', env: 'Prod', role: 'primary', sys: '系統A' }] }, { name: '台中異備中心', type: 'dr', pools: [{ id: 'S02', name: '共用私有雲異備-Prod', type: 'shared', env: 'Prod', role: 'dr', sys: '系統A' }] }] } }, sysView: { '系統A': { icon: '🗂', pools: [{ id: 'S01', cloud: '私有雲', site: '台北主中心', env: 'Prod', role: 'primary', type: 'shared' }, { id: 'S02', cloud: '私有雲', site: '台中異備', env: 'Prod', role: 'dr', type: 'shared' }] } } },
+      dept2: { name: '二科', cloudView: { private: { label: '私有雲', color: 'var(--blue)', sites: [{ name: '台北主中心', type: 'main', pools: [{ id: 'S01', name: '共用私有雲主中心-Prod', type: 'shared', env: 'Prod', role: 'primary', sys: '系統B' }] }] } }, sysView: { '系統B': { icon: '🗂', pools: [{ id: 'S01', cloud: '私有雲', site: '台北主中心', env: 'Prod', role: 'primary', type: 'shared' }] } } },
+      dept3: { name: '三科', cloudView: { hicloud: { label: 'hiCloud', color: '#0e7490', sites: [{ name: '東七主中心', type: 'main', pools: [{ id: 'S03', name: '共用 hiCloud-Prod', type: 'shared', env: 'Prod', role: 'primary', sys: '系統C' }] }] } }, sysView: { '系統C': { icon: '🗂', pools: [{ id: 'S03', cloud: 'hiCloud', site: '東七主中心', env: 'Prod', role: 'primary', type: 'shared' }] } } },
+      dept4: { name: '四科', cloudView: { hicloud: { label: 'hiCloud', color: '#0e7490', sites: [{ name: '東七主中心', type: 'main', pools: [{ id: 'S03', name: '共用 hiCloud-Prod', type: 'shared', env: 'UAT', role: 'primary', sys: '系統D' }] }] } }, sysView: { '系統D': { icon: '🗂', pools: [{ id: 'S03', cloud: 'hiCloud', site: '東七主中心', env: 'UAT', role: 'primary', type: 'shared' }] } } }
+    };
 
     /* ════════════════════════════
        SIDEBAR
@@ -2646,12 +2616,12 @@
 
     function allocTableHtml(p) {
       return `<table class="vm-table">
-    <thead><tr><th>專案</th><th>系統</th><th>環境</th><!--th>角色</th--><th>CPU 配額</th><th>Memory 配額</th><th>用法</th></tr></thead>
+    <thead><tr><th>專案</th><th>系統</th><th>環境</th><th>角色</th><th>CPU 配額</th><th>Memory 配額</th><th>用法</th></tr></thead>
     <tbody>${p.allocs.map(a => `<tr>
       <td class="alloc-proj">${a.proj}</td>
       <td class="alloc-sys">${a.sys}</td>
       <td><span class="badge ${a.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${a.env}</span></td>
-      <!--td><span class="badge ${a.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${a.role}</span></td-->
+      <td><span class="badge ${a.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${a.role}</span></td>
       <td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:${Math.floor(Math.random() * 35 + 45)}%"></div></div><span class="quota-val">${a.quota_cpu}</span></div></td>
       <td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:${Math.floor(Math.random() * 35 + 45)}%"></div></div><span class="quota-val">${a.quota_mem}</span></div></td>
       <td><span class="badge b-shr" style="font-size:9px">shared</span></td>
@@ -2725,6 +2695,7 @@
                 <div class="pool-tags">
                   <span class="badge ${isDed ? 'b-ded' : 'b-shr'}" style="font-size:9px">${p.type}</span>
                   <span class="badge ${p.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${p.env}</span>
+                  <span class="badge ${p.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${p.role}</span>
                   <span class="badge b-neutral" style="font-size:9px">${p.sys}</span>
                 </div>
               </div>
@@ -2795,112 +2766,38 @@
     }
 
     function renderProjView() {
-      if (!PROJ_DATA[curProj]) return; // 資料尚未載入
       if (curSubView === 'cloud') renderProjCloud();
       else renderProjSys();
     }
 
-    function projVmTableHtml(p) {
-      const isDed = p.type === 'dedicated';
-      if (isDed && p.vms) {
-        return '<table class="proj-vm-table"><thead><tr><th>VM 名稱</th><th>狀態</th><th>規格 (vCPU / RAM / Disk)</th><th>環境</th><th>IP 位址</th></tr></thead><tbody>' +
-          p.vms.map(v => '<tr>' +
-            '<td><span class="status-dot ' + (v.status === 'running' ? 'dot-run' : 'dot-stop') + '"></span><span class="vm-name">' + v.name + '</span></td>' +
-            '<td><span class="badge ' + (v.status === 'running' ? 'b-run' : 'b-stop') + '" style="font-size:10px">' + (v.status === 'running' ? 'Running' : 'Stopped') + '</span></td>' +
-            '<td class="vm-spec">' + v.vcpu + ' vCPU &nbsp;·&nbsp; ' + v.ram + ' &nbsp;·&nbsp; ' + v.disk + '</td>' +
-            '<td><span class="badge ' + (v.env === 'Prod' ? 'b-prod' : 'b-uat') + '" style="font-size:10px">' + v.env + '</span></td>' +
-            '<td class="vm-ip">' + v.ip + '</td>' +
-            '</tr>').join('') +
-          '</tbody></table>';
-      }
-      if (!isDed && p.allocs) {
-        return '<table class="proj-vm-table"><thead><tr><th>專案</th><th>系統</th><th>環境</th><th>CPU 配額</th><th>Memory 配額</th></tr></thead><tbody>' +
-          p.allocs.map(a => '<tr>' +
-            '<td style="font-weight:700">' + a.proj + '</td>' +
-            '<td>' + a.sys + '</td>' +
-            '<td><span class="badge ' + (a.env === 'Prod' ? 'b-prod' : 'b-uat') + '" style="font-size:10px">' + a.env + '</span></td>' +
-            '<td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">' + a.quota_cpu + '</span></div></td>' +
-            '<td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">' + a.quota_mem + '</span></div></td>' +
-            '</tr>').join('') +
-          '</tbody></table>';
-      }
+    function miniPoolDetail(pid) {
+      const p = POOLS[pid]; if (!p) return '';
+      if (p.type === 'dedicated' && p.vms) return `<table class="mini-vm-table"><thead><tr><th>VM 名稱</th><th>狀態</th><th>規格</th><th>IP</th></tr></thead><tbody>${p.vms.map(v => `<tr><td><span class="status-dot ${v.status === 'running' ? 'dot-run' : 'dot-stop'}"></span><span class="vm-name">${v.name}</span></td><td><span class="badge ${v.status === 'running' ? 'b-run' : 'b-stop'}" style="font-size:9px">${v.status === 'running' ? 'Running' : 'Stopped'}</span></td><td class="vm-spec">${v.vcpu}C · ${v.ram} · ${v.disk}</td><td class="vm-ip">${v.ip}</td></tr>`).join('')}</tbody></table>`;
+      if (p.type === 'shared' && p.allocs) return `<table class="mini-vm-table"><thead><tr><th>專案</th><th>系統</th><th>環境</th><th>CPU 配額</th><th>Memory 配額</th></tr></thead><tbody>${p.allocs.map(a => `<tr><td style="font-weight:700">${a.proj}</td><td>${a.sys}</td><td><span class="badge ${a.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${a.env}</span></td><td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">${a.quota_cpu}</span></div></td><td><div class="quota-bar"><div class="quota-track"><div class="quota-fill" style="width:55%"></div></div><span class="quota-val">${a.quota_mem}</span></div></td></tr>`).join('')}</tbody></table>`;
       return '';
     }
 
-    const openMiniPool = {};
-
-    function toggleMiniPool(el, poolId, siteKey) {
-      const pool = POOLS[poolId];
-      if (!pool) return;
-      const isDed = pool.type === 'dedicated';
-      const count = isDed ? (pool.vms?.length || 0) : (pool.allocs?.length || 0);
-      const psiteBlock = el.closest('.psite-block');
-      if (!psiteBlock) return;
-
-      if (el.classList.contains('mp-open')) {
-        el.classList.remove('mp-open');
-        const existing = psiteBlock.querySelector('.proj-vm-fullrow');
-        if (existing) existing.remove();
-        openMiniPool[siteKey] = null;
-        return;
-      }
-
-      psiteBlock.querySelectorAll('.mini-pool.mp-open').forEach(mp => mp.classList.remove('mp-open'));
-      const existing = psiteBlock.querySelector('.proj-vm-fullrow');
-      if (existing) existing.remove();
-
-      el.classList.add('mp-open');
-      openMiniPool[siteKey] = poolId;
-
-      const panel = document.createElement('div');
-      panel.className = 'proj-vm-fullrow visible';
-      const closeId = 'close-' + poolId + '-' + siteKey.replace(/[^a-z0-9]/gi, '');
-      panel.innerHTML =
-        '<div class="proj-vm-fullrow-hd">' +
-        '<div class="proj-vm-fullrow-title">' +
-        (isDed ? '🖥 VM 清單' : '🔗 申請狀況') +
-        ' <span class="chip">' + count + ' 筆 &nbsp;·&nbsp; ' + poolId + ' ' + pool.name + '</span>' +
-        '</div>' +
-        '<button id="' + closeId + '" class="proj-vm-fullrow-close">✕ 收起</button>' +
-        '</div>' +
-        '<div class="proj-vm-table-wrap">' + projVmTableHtml(pool) + '</div>';
-
-      const psitePools = psiteBlock.querySelector('.psite-pools');
-      psitePools.after(panel);
-      document.getElementById(closeId).addEventListener('click', function () {
-        toggleMiniPool(el, poolId, siteKey);
-      });
-      setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
-    }
-
-    function miniPoolDetail(pid) { return ''; }
-
     function renderProjCloud() {
       const pd = PROJ_DATA[curProj];
-      let html = '';
-      Object.entries(pd.cloudView).forEach(([ck, cd]) => {
-        html += '<div class="pcloud-block">';
-        html += '<div class="pcloud-hd"><div class="pcloud-dot" style="background:' + cd.color + '"></div><div class="pcloud-name">' + cd.label + '</div><div class="pcloud-region">' + cd.sites.flatMap(s => s.pools).length + ' pools</div></div>';
-        cd.sites.forEach((s, si) => {
-          const siteKey = ck + '-' + si;
-          html += '<div class="psite-block">';
-          html += '<div class="psite-hd"><span class="badge ' + (s.type === 'main' ? 'b-main' : 'b-dr') + '">' + (s.type === 'main' ? '主中心' : '異備 DR') + '</span><span class="psite-name" style="margin-left:8px">' + s.name + '</span><span class="psite-count">' + s.pools.length + ' pools</span></div>';
-          html += '<div class="psite-pools">';
-          s.pools.forEach(pool => {
-            const isDed = pool.type === 'dedicated';
-            const p = POOLS[pool.id];
-            const count = isDed ? (p?.vms?.length || 0) : (p?.allocs?.length || 0);
-            const safeKey = siteKey.replace(/[^a-z0-9]/gi, '');
-            html += '<div class="mini-pool ' + (isDed ? 'mp-ded' : 'mp-shr') + '" data-pool="' + pool.id + '" onclick="toggleMiniPool(this,\'' + pool.id + '\',\'' + siteKey + '\')">' +
-              '<div class="mini-pool-top"><span class="mpid ' + (isDed ? 'mpid-ded' : 'mpid-shr') + '">' + pool.id + '</span><span class="mpname">' + pool.name + '</span><span class="badge b-neutral" style="font-size:10px;margin-left:auto;margin-right:4px">' + count + (isDed ? ' VMs' : ' Allocs') + '</span><span class="mp-chev">▾</span></div>' +
-              '<div class="mini-pool-tags"><span class="mpt ' + (isDed ? 'mpt-ded' : 'mpt-shr') + '">' + pool.type + '</span><span class="mpt ' + (pool.env === 'Prod' ? 'mpt-prod' : 'mpt-uat') + '">' + pool.env + '</span><span class="mpt mpt-sys">' + pool.sys + '</span></div>' +
-              '</div>';
-          });
-          html += '</div></div>';
-        });
-        html += '</div>';
-      });
-      document.getElementById('sv-cloud').innerHTML = html;
+      document.getElementById('sv-cloud').innerHTML =
+        Object.entries(pd.cloudView).map(([ck, cd]) => `
+    <div class="pcloud-block">
+      <div class="pcloud-hd"><div class="pcloud-dot" style="background:${cd.color}"></div><div class="pcloud-name">${cd.label}</div><div class="pcloud-region">${cd.sites.flatMap(s => s.pools).length} pools</div></div>
+      ${cd.sites.map(s => `
+        <div class="psite-block">
+          <div class="psite-hd"><span class="badge ${s.type === 'main' ? 'b-main' : 'b-dr'}">${s.type === 'main' ? '主中心' : '異備 DR'}</span><span class="psite-name" style="margin-left:8px">${s.name}</span><span class="psite-count">${s.pools.length} pools</span></div>
+          <div class="psite-pools">${s.pools.map(pool => {
+          const isDed = pool.type === 'dedicated';
+          const p = POOLS[pool.id];
+          const count = isDed ? (p?.vms?.length || 0) : (p?.allocs?.length || 0);
+          return `<div class="mini-pool ${isDed ? 'mp-ded' : 'mp-shr'}" onclick="this.classList.toggle('mp-open')">
+              <div class="mini-pool-top"><span class="mpid ${isDed ? 'mpid-ded' : 'mpid-shr'}">${pool.id}</span><span class="mpname">${pool.name}</span><span class="badge b-neutral" style="font-size:9px;margin-left:auto;margin-right:4px">${count}${isDed ? ' VMs' : ' Allocs'}</span><span class="mp-chev">▾</span></div>
+              <div class="mini-pool-tags"><span class="mpt ${isDed ? 'mpt-ded' : 'mpt-shr'}">${pool.type}</span><span class="mpt ${pool.env === 'Prod' ? 'mpt-prod' : 'mpt-uat'}">${pool.env}</span><span class="mpt ${pool.role === 'primary' ? 'mpt-primary' : 'mpt-dr'}">${pool.role}</span><span class="mpt mpt-sys">${pool.sys}</span></div>
+              <div class="mini-pool-detail">${miniPoolDetail(pool.id)}</div>
+            </div>`;
+        }).join('')}</div>
+        </div>`).join('')}
+    </div>`).join('');
     }
 
     function renderProjSys() {
@@ -2919,133 +2816,10 @@
     <div class="sys-cloud-grid">${Object.values(byCloud).map((cd, i) => `
       <div class="sys-cloud-card anim" style="animation-delay:${i * 60}ms">
         <div class="sys-cloud-hd"><div class="sys-cloud-dot" style="background:${cd.color}"></div><div class="sys-cloud-name">${cd.label}</div><span style="margin-left:auto;font-size:10px;color:var(--ink4)">${cd.rows.length} pools</span></div>
-        <div class="sys-cloud-body">${cd.rows.map(r => `<div class="sys-pool-row"><span class="sys-pool-id ${r.type === 'dedicated' ? 'mpid-ded' : 'mpid-shr'}">${r.id}</span><span class="sys-pool-site">${r.site}</span><span class="badge ${r.type === 'dedicated' ? 'b-ded' : 'b-shr'}" style="font-size:9px">${r.type}</span><span class="badge ${r.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${r.env}</span></div>`).join('')}</div>
+        <div class="sys-cloud-body">${cd.rows.map(r => `<div class="sys-pool-row"><span class="sys-pool-id ${r.type === 'dedicated' ? 'mpid-ded' : 'mpid-shr'}">${r.id}</span><span class="sys-pool-site">${r.site}</span><span class="badge ${r.type === 'dedicated' ? 'b-ded' : 'b-shr'}" style="font-size:9px">${r.type}</span><span class="badge ${r.env === 'Prod' ? 'b-prod' : 'b-uat'}" style="font-size:9px">${r.env}</span><span class="badge ${r.role === 'primary' ? 'b-primary' : 'b-dr'}" style="font-size:9px">${r.role}</span></div>`).join('')}</div>
       </div>`).join('')}</div>`;
     }
     function selectSysInProj(s) { curSys = s; renderProjSys(); }
-
-    // Async init: load data, build runtime structures, then handle hash navigation
-    (async () => {
-      const CLOUD_LBL = { private:'私有雲', hicloud:'hiCloud', aws:'AWS' };
-      const CLOUD_CLR = { private:'var(--blue)', hicloud:'#0e7490', aws:'#b45309' };
-      const SITE_META = {
-        'tp-main': { id:'tp-main', name:'台北主中心',   region:'台北市', type:'main' },
-        'tc-dr'  : { id:'tc-dr',   name:'台中異備中心', region:'台中市', type:'dr'   },
-        'e7-main': { id:'e7-main', name:'東七主中心',   region:'東七區', type:'main' },
-        'tw-main': { id:'tw-main', name:'台灣主中心',   region:'台灣',   type:'main' },
-      };
-      const SYS_ICON = { 'SYS-001':'⚡', 'SYS-002':'📱' };
-
-      function fmtGB(gb) { return gb >= 1024 ? +(gb/1024).toFixed(1) + 'TB' : gb + 'GB'; }
-      function sumVMs(vmList) {
-        return vmList.reduce((a,v)=>({ cpu:a.cpu+(v.vcpu||0), mem:a.mem+(v.ram_gb||0), disk:a.disk+(v.disk_gb||0) }), {cpu:0,mem:0,disk:0});
-      }
-
-      let raw;
-      try {
-        ({ raw } = await DataService.loadAll());
-      } catch(e) {
-        console.error('資料載入失敗', e);
-        return;
-      }
-
-      const projectMap = Object.fromEntries(raw.projects.map(p => [p.id, p]));
-      const systemMap  = Object.fromEntries(raw.systems.map(s => [s.id, s]));
-
-      /* ── Build POOLS ──────────────────────────────────── */
-      for (const pool of raw.pools) {
-        const pvms = raw.vms.filter(v => v.pool_id === pool.id);
-        const used = sumVMs(pvms);
-        const sys  = systemMap[pool.system_id];
-        const entry = {
-          name : pool.name,
-          type : pool.type,
-          env  : pool.env,
-          role : pool.site_role,
-          sys  : sys?.name || pool.system_id || '—',
-          cpu  : { u: used.cpu,                     t: pool.cpu_total },
-          mem  : { u: used.mem,                     t: pool.mem_total_gb },
-          disk : { u: +(used.disk/1024).toFixed(1), t: pool.disk_total_tb },
-        };
-        if (pool.type === 'dedicated') {
-          entry.vms = pvms.map(v => ({
-            name  : v.name,
-            status: v.status,
-            vcpu  : v.vcpu,
-            ram   : fmtGB(v.ram_gb),
-            disk  : fmtGB(v.disk_gb),
-            env   : v.tags?.env || pool.env,
-            ip    : v.ip || '—',
-          }));
-        } else {
-          entry.allocs = raw.allocs.filter(a => a.pool_id === pool.id).map(a => ({
-            proj      : projectMap[a.project_id]?.name || a.project_id,
-            sys       : systemMap[a.system_id]?.name   || a.system_id,
-            env       : a.env,
-            role      : a.site_role,
-            quota_cpu : a.quota_cpu + 'C',
-            quota_mem : a.quota_mem_gb + 'GB',
-          }));
-        }
-        POOLS[pool.id] = entry;
-      }
-
-      /* ── Build SITES_DATA ─────────────────────────────── */
-      for (const pool of raw.pools) {
-        const ck   = pool.cloud;
-        const sm   = SITE_META[pool.site_id] || { id:pool.site_id, name:pool.site_id, region:'', type:'main' };
-        const pvms = raw.vms.filter(v => v.pool_id === pool.id);
-        const used = sumVMs(pvms);
-        if (!SITES_DATA[ck]) SITES_DATA[ck] = [];
-        let site = SITES_DATA[ck].find(s => s.id === pool.site_id);
-        if (!site) {
-          site = { ...sm, pools:[], cpu:{u:0,t:0}, mem:{u:0,t:0}, disk:{u:0,t:0} };
-          SITES_DATA[ck].push(site);
-        }
-        site.pools.push(pool.id);
-        site.cpu.u += used.cpu;          site.cpu.t += pool.cpu_total;
-        site.mem.u += used.mem;          site.mem.t += pool.mem_total_gb;
-        site.disk.u = +(site.disk.u + used.disk/1024).toFixed(1);
-        site.disk.t += pool.disk_total_tb;
-      }
-
-      /* ── Build PROJ_DATA ──────────────────────────────── */
-      for (const proj of raw.projects) {
-        const pkey         = proj.code.toLowerCase();
-        const projAllocs   = raw.allocs.filter(a => a.project_id === proj.id);
-        const dedicatedPools = raw.pools.filter(p => p.project_id === proj.id);
-        const sharedPoolIds  = [...new Set(projAllocs.map(a => a.pool_id))];
-        const sharedPools    = raw.pools.filter(p => sharedPoolIds.includes(p.id));
-        const allPools       = [...dedicatedPools, ...sharedPools];
-        const cloudView = {}, sysView = {};
-        for (const pool of allPools) {
-          const ck  = pool.cloud;
-          const sm  = SITE_META[pool.site_id] || { name:pool.site_id, type:'main' };
-          // Shared pool: 以此專案在該 pool 的 allocation 系統名稱為準
-          let sysName;
-          if (pool.type === 'shared') {
-            const alloc = projAllocs.find(a => a.pool_id === pool.id);
-            sysName = systemMap[alloc?.system_id]?.name || alloc?.system_id || '—';
-          } else {
-            sysName = systemMap[pool.system_id]?.name || pool.system_id || '—';
-          }
-          if (!cloudView[ck]) cloudView[ck] = { label:CLOUD_LBL[ck]||ck, color:CLOUD_CLR[ck]||'var(--ink)', sites:[] };
-          let site = cloudView[ck].sites.find(s => s.name === sm.name);
-          if (!site) { site = { name:sm.name, type:sm.type, pools:[] }; cloudView[ck].sites.push(site); }
-          site.pools.push({ id:pool.id, name:pool.name, type:pool.type, env:pool.env, role:pool.site_role, sys:sysName });
-          if (!sysView[sysName]) sysView[sysName] = { icon:SYS_ICON[pool.system_id]||'🗂', pools:[] };
-          sysView[sysName].pools.push({ id:pool.id, cloud:CLOUD_LBL[ck]||ck, site:sm.name, env:pool.env, role:pool.site_role, type:pool.type });
-        }
-        PROJ_DATA[pkey] = { name:proj.name, cloudView, sysView };
-      }
-
-      /* ── Hash-based navigation ────────────────────────── */
-      const hash = location.hash.replace('#', '');
-      if (hash) {
-        const el = document.querySelector(`[data-label][onclick*="'${hash}'"]`);
-        if (el) navigateTo(hash, el);
-      }
-    })();
   </script>
 </body>
 
