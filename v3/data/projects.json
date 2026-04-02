@@ -1,7 +1,0 @@
-[
-  { "id": "PROJ-001", "name": "電發專案", "code": "POWER", "owner": "王大明", "dept": "資訊處" },
-  { "id": "PROJ-002", "name": "一科",     "code": "DEPT1",  "owner": "李小華", "dept": "一科室" },
-  { "id": "PROJ-003", "name": "二科",     "code": "DEPT2",  "owner": "陳美玲", "dept": "二科室" },
-  { "id": "PROJ-004", "name": "三科",     "code": "DEPT3",  "owner": "張志強", "dept": "三科室" },
-  { "id": "PROJ-005", "name": "四科",     "code": "DEPT4",  "owner": "林佳蓉", "dept": "四科室" }
-]
