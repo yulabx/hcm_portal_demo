@@ -1,0 +1,1 @@
+import{D as e,L as t,Q as n,X as r,j as i}from"./cloudProviders-CNoysQll.js";var a=i({__name:`EnvBadge`,props:{env:{}},setup(i){return(a,o)=>(t(),e(`span`,{class:r([`rounded-[3px] border px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide`,i.env===`Prod`?`bg-grn-l text-grn border-grn-m`:`bg-pur-l text-pur border-pur-m`])},n(i.env),3))}});export{a as t};
